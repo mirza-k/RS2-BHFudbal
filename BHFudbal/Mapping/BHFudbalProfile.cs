@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BHFudbal.Mapping
 {
@@ -10,7 +6,8 @@ namespace BHFudbal.Mapping
     {
         public BHFudbalProfile()
         {
-            //CreateMap<DB.Model, Model.VM>();
+            CreateMap<Database.Država, Model.Drzava>();
+            CreateMap<Database.Grad, Model.Grad>();
         }
     }
 }
