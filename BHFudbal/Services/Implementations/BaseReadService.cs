@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BHFudbal.Database;
+using BHFudbal.BHFudbalDatabase;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,9 +7,9 @@ namespace BHFudbal.Services
 {
     public class BaseReadService<T, TDb, TSearch> : IReadService<T, TSearch> where T : class where TDb : class where TSearch : class
     {
-        public BHFudbalContext Context { get; set; }
+        public BHFudbalDBContext Context { get; set; }
         protected readonly IMapper _mapper;
-        public BaseReadService(BHFudbalContext context, IMapper mapper)
+        public BaseReadService(BHFudbalDBContext context, IMapper mapper)
         {
             Context = context;
             _mapper = mapper;

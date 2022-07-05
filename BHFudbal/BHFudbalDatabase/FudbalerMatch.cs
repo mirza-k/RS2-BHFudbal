@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace BHFudbal.Database
+namespace BHFudbal.BHFudbalDatabase
 {
     public partial class FudbalerMatch
     {

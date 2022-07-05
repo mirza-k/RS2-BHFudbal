@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace BHFudbal.Database
+namespace BHFudbal.BHFudbalDatabase
 {
-    public partial class BHFudbalContext : DbContext
+    public partial class BHFudbalDBContext : DbContext
     {
-        public BHFudbalContext()
+        public BHFudbalDBContext()
         {
         }
 
-        public BHFudbalContext(DbContextOptions<BHFudbalContext> options)
+        public BHFudbalDBContext(DbContextOptions<BHFudbalDBContext> options)
             : base(options)
         {
         }
@@ -38,7 +38,7 @@ namespace BHFudbal.Database
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BHFudbal");
+                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BHFudbalDB");
             }
         }
 
@@ -50,8 +50,6 @@ namespace BHFudbal.Database
             {
                 entity.ToTable("Država");
 
-                entity.Property(e => e.DržavaId).ValueGeneratedNever();
-
                 entity.Property(e => e.Naziv)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -60,8 +58,6 @@ namespace BHFudbal.Database
             modelBuilder.Entity<Fudbaler>(entity =>
             {
                 entity.ToTable("Fudbaler");
-
-                entity.Property(e => e.FudbalerId).ValueGeneratedNever();
 
                 entity.Property(e => e.DatumRodjenja).HasColumnType("datetime");
 
@@ -102,8 +98,6 @@ namespace BHFudbal.Database
             {
                 entity.ToTable("FudbalerMatch");
 
-                entity.Property(e => e.FudbalerMatchId).ValueGeneratedNever();
-
                 entity.HasOne(d => d.Fudbaler)
                     .WithMany(p => p.FudbalerMatches)
                     .HasForeignKey(d => d.FudbalerId)
@@ -120,8 +114,6 @@ namespace BHFudbal.Database
             modelBuilder.Entity<FudbalerStatistika>(entity =>
             {
                 entity.ToTable("FudbalerStatistika");
-
-                entity.Property(e => e.FudbalerStatistikaId).ValueGeneratedNever();
 
                 entity.HasOne(d => d.Fudbaler)
                     .WithMany(p => p.FudbalerStatistikas)
@@ -146,8 +138,6 @@ namespace BHFudbal.Database
             {
                 entity.ToTable("Grad");
 
-                entity.Property(e => e.GradId).ValueGeneratedNever();
-
                 entity.Property(e => e.Naziv)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -156,8 +146,6 @@ namespace BHFudbal.Database
             modelBuilder.Entity<Klub>(entity =>
             {
                 entity.ToTable("Klub");
-
-                entity.Property(e => e.KlubId).ValueGeneratedNever();
 
                 entity.Property(e => e.DatumOsnivanja).HasColumnType("datetime");
 
@@ -217,8 +205,6 @@ namespace BHFudbal.Database
             {
                 entity.ToTable("KorisničkiRačun");
 
-                entity.Property(e => e.KorisničkiRačunId).ValueGeneratedNever();
-
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -235,9 +221,7 @@ namespace BHFudbal.Database
 
                 entity.ToTable("LigaId");
 
-                entity.Property(e => e.LigaId1)
-                    .ValueGeneratedNever()
-                    .HasColumnName("LigaId");
+                entity.Property(e => e.LigaId1).HasColumnName("LigaId");
 
                 entity.Property(e => e.Naziv)
                     .IsRequired()
@@ -250,6 +234,8 @@ namespace BHFudbal.Database
                     .HasName("Pk_LigaKlub_LigaKlubIdLigaIdKlubIdSezonaId");
 
                 entity.ToTable("LigaKlub");
+
+                entity.Property(e => e.LigaKlubId).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Klub)
                     .WithMany(p => p.LigaKlubs)
@@ -273,8 +259,6 @@ namespace BHFudbal.Database
             modelBuilder.Entity<Match>(entity =>
             {
                 entity.ToTable("Match");
-
-                entity.Property(e => e.MatchId).ValueGeneratedNever();
 
                 entity.Property(e => e.Datum).HasColumnType("datetime");
 
@@ -309,8 +293,6 @@ namespace BHFudbal.Database
             {
                 entity.ToTable("Sezona");
 
-                entity.Property(e => e.SezonaId).ValueGeneratedNever();
-
                 entity.Property(e => e.Naziv)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -319,15 +301,11 @@ namespace BHFudbal.Database
             modelBuilder.Entity<Statistika>(entity =>
             {
                 entity.ToTable("Statistika");
-
-                entity.Property(e => e.StatistikaId).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<Transfer>(entity =>
             {
                 entity.ToTable("Transfer");
-
-                entity.Property(e => e.TransferId).ValueGeneratedNever();
 
                 entity.HasOne(d => d.Fudbaler)
                     .WithMany(p => p.Transfers)
@@ -351,8 +329,6 @@ namespace BHFudbal.Database
             modelBuilder.Entity<Uloga>(entity =>
             {
                 entity.ToTable("Uloga");
-
-                entity.Property(e => e.UlogaId).ValueGeneratedNever();
 
                 entity.Property(e => e.Deskripcija)
                     .IsRequired()

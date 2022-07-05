@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BHFudbal.Database;
+using BHFudbal.BHFudbalDatabase;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
@@ -10,7 +10,7 @@ namespace BHFudbal.Services.Implementations
 {
     public class GradService : BaseCRUDService<Model.Grad, GradSearchObject, Grad, GradInsertRequest, GradUpdateRequest>, IGradService
     {
-        public GradService(BHFudbalContext context, IMapper mapper) : base(context, mapper) { }
+        public GradService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper) { }
 
         public override IEnumerable<Model.Grad> Get(GradSearchObject search = null)
         {
@@ -19,7 +19,6 @@ namespace BHFudbal.Services.Implementations
                 entity = entity.Where(x => x.Naziv.Contains(search.Naziv));
             entity.ToList();
             return _mapper.Map<List<Model.Grad>>(entity).ToList();
-
         }
     }
 }

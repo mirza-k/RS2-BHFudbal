@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BHFudbal.BHFudbalDatabase;
+using BHFudbal.Model.Requests;
 
 namespace BHFudbal.Mapping
 {
@@ -6,8 +8,17 @@ namespace BHFudbal.Mapping
     {
         public BHFudbalProfile()
         {
-            CreateMap<Database.Država, Model.Drzava>();
-            CreateMap<Database.Grad, Model.Grad>();
+            //Drzava
+            CreateMap<Država, Model.Drzava>();
+            
+            //Grad
+            CreateMap<GradInsertRequest, Grad>().ReverseMap();
+            CreateMap<Grad, Model.Grad>().ReverseMap();
+
+            //Klub
+            CreateMap<KlubInsertRequest, Klub>().ReverseMap();
+            CreateMap<KlubUpdateRequest, Klub>().ReverseMap();
+            CreateMap<Klub, Model.Klub>().ReverseMap();
         }
     }
 }

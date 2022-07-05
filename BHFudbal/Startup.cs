@@ -1,5 +1,5 @@
 using AutoMapper;
-using BHFudbal.Database;
+using BHFudbal.BHFudbalDatabase;
 using BHFudbal.Services;
 using BHFudbal.Services.Implementations;
 using BHFudbal.Services.Interfaces;
@@ -30,10 +30,11 @@ namespace BHFudbal
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
-            services.AddDbContext<BHFudbalContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BHFudbalDB")));
+            services.AddDbContext<BHFudbalDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BHFudbalDB")));
 
             services.AddScoped<IDrzavaService, DrzavaService>();
             services.AddScoped<IGradService, GradService>();
+            services.AddScoped<IKlubService, KlubService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
