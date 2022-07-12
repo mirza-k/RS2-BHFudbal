@@ -1,5 +1,4 @@
-﻿using BHFudbal.Model;
-using BHFudbal.Model.QueryObjects;
+﻿using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 

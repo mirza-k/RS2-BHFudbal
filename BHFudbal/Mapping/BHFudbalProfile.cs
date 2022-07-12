@@ -19,6 +19,11 @@ namespace BHFudbal.Mapping
             CreateMap<KlubInsertRequest, Klub>().ReverseMap();
             CreateMap<KlubUpdateRequest, Klub>().ReverseMap();
             CreateMap<Klub, Model.Klub>().ReverseMap();
+
+            //Fudbaler
+            CreateMap<FudbalerInsertRequest, Fudbaler>().ReverseMap();
+            CreateMap<FudbalerUpdateRequest, Fudbaler>();
+            CreateMap<Fudbaler, Model.Fudbaler>();
         }
     }
 }
