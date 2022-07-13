@@ -1,10 +1,8 @@
 ﻿using System;
 
-#nullable disable
-
-namespace BHFudbal.BHFudbalDatabase
+namespace BHFudbal.Model
 {
-    public partial class Korisnik
+    public class Korisnik
     {
         public int KorisnikId { get; set; }
         public string Ime { get; set; }
@@ -15,10 +13,7 @@ namespace BHFudbal.BHFudbalDatabase
         public int DržavaId { get; set; }
         public int KorisničkiRačunId { get; set; }
         public bool IsPremium { get; set; }
-
-        public virtual Država Država { get; set; }
-        public virtual Grad Grad { get; set; }
-        public virtual KorisničkiRačun KorisničkiRačun { get; set; }
-        public virtual Uloga Uloga { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
