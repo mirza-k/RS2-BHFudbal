@@ -24,6 +24,9 @@ namespace BHFudbal.Mapping
             CreateMap<FudbalerInsertRequest, Fudbaler>().ReverseMap();
             CreateMap<FudbalerUpdateRequest, Fudbaler>();
             CreateMap<Fudbaler, Model.Fudbaler>();
+
+            //Liga
+            CreateMap<LigaId, Model.Liga>();
         }
     }
 }

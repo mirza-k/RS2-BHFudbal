@@ -22,8 +22,11 @@ namespace BHFudbal.BHFudbalDatabase
         public string Nadimak { get; set; }
         public int GradId { get; set; }
         public int GodinaOsnivanja { get; set; }
+        public int LigaId { get; set; }
+        public byte[] Grb { get; set; }
 
         public virtual Grad Grad { get; set; }
+        public virtual LigaId Liga { get; set; }
         public virtual ICollection<Fudbaler> Fudbalers { get; set; }
         public virtual ICollection<LigaKlub> LigaKlubs { get; set; }
         public virtual ICollection<Match> MatchDomacins { get; set; }

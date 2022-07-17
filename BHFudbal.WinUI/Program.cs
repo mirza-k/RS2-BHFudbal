@@ -1,4 +1,5 @@
-﻿using BHFudbal.WinUI.Login;
+﻿using BHFudbal.WinUI.Klub;
+using BHFudbal.WinUI.Login;
 using System;
 using System.Windows.Forms;
 
@@ -14,7 +15,7 @@ namespace BHFudbal.WinUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmLogin());
+            Application.Run(new frmKlub());
         }
     }
 }

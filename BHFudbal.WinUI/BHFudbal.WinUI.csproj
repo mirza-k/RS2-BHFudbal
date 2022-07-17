@@ -62,6 +62,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Klub\frmKlub.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Klub\frmKlub.Designer.cs">
+      <DependentUpon>frmKlub.cs</DependentUpon>
+    </Compile>
     <Compile Include="Korisnici\frmKorisnici.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +82,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Klub\frmKlub.resx">
+      <DependentUpon>frmKlub.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Korisnici\frmKorisnici.resx">
       <DependentUpon>frmKorisnici.cs</DependentUpon>
     </EmbeddedResource>

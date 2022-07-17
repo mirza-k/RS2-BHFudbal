@@ -25,6 +25,15 @@ namespace BHFudbal.WinUI
             return result;
         }
 
+        public async Task<T> Post<T>(object request)
+        {
+            var url = $"{Properties.Settings.Default.APIUrl}/{_route}";
+
+            var result = await url.PostJsonAsync(request).ReceiveJson<T>();
+
+            return result;
+        }
+
         public async Task<bool> Login (KorisnikInsertRequest request)
         {
             var url = $"{Properties.Settings.Default.APIUrl}/{_route}";
