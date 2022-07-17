@@ -62,6 +62,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Fudbaler\frmFudbaler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Fudbaler\frmFudbaler.Designer.cs">
+      <DependentUpon>frmFudbaler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Klub\frmKlub.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +88,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Fudbaler\frmFudbaler.resx">
+      <DependentUpon>frmFudbaler.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Klub\frmKlub.resx">
       <DependentUpon>frmKlub.cs</DependentUpon>
     </EmbeddedResource>

@@ -20,12 +20,13 @@ namespace BHFudbal.BHFudbalDatabase
         public string Visina { get; set; }
         public string Težina { get; set; }
         public DateTime DatumRodjenja { get; set; }
-        public int GradId { get; set; }
         public int KlubId { get; set; }
+        public int DrzavaId { get; set; }
         public string JačaNoga { get; set; }
+        public byte[] Slika { get; set; }
 
-        public virtual Grad Grad { get; set; }
         public virtual Klub Klub { get; set; }
+        public virtual Država Drzava { get; set; }
         public virtual ICollection<FudbalerMatch> FudbalerMatches { get; set; }
         public virtual ICollection<FudbalerStatistika> FudbalerStatistikas { get; set; }
         public virtual ICollection<Transfer> Transfers { get; set; }

@@ -81,11 +81,11 @@ namespace BHFudbal.BHFudbalDatabase
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.Grad)
-                    .WithMany(p => p.Fudbalers)
-                    .HasForeignKey(d => d.GradId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Fk_Grad_Fudbaler_GradId");
+                //entity.HasOne(d => d.Grad)
+                //    .WithMany(p => p.Fudbalers)
+                //    .HasForeignKey(d => d.GradId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("Fk_Grad_Fudbaler_GradId");
 
                 entity.HasOne(d => d.Klub)
                     .WithMany(p => p.Fudbalers)

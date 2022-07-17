@@ -10,7 +10,9 @@ namespace BHFudbal.Model.Requests
         public string Težina { get; set; }
         public DateTime DatumRodjenja { get; set; }
         public int GradId { get; set; }
+        public int DrzavaId { get; set; }
         public int KlubId { get; set; }
         public string JačaNoga { get; set; }
+        public byte[] Slika { get; set; }
     }
 }

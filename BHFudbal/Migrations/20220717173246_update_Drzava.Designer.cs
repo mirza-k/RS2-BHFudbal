@@ -4,14 +4,16 @@ using BHFudbal.BHFudbalDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BHFudbal.Migrations
 {
     [DbContext(typeof(BHFudbalDBContext))]
-    partial class BHFudbalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220717173246_update_Drzava")]
+    partial class update_Drzava
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,7 @@ namespace BHFudbal.Migrations
                     b.Property<int>("DrzavaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GradId")
+                    b.Property<int>("GradId")
                         .HasColumnType("int");
 
                     b.Property<string>("Ime")
@@ -70,9 +72,6 @@ namespace BHFudbal.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte[]>("Slika")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Težina")
                         .IsRequired()
@@ -489,9 +488,11 @@ namespace BHFudbal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BHFudbal.BHFudbalDatabase.Grad", null)
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Grad", "Grad")
                         .WithMany("Fudbalers")
-                        .HasForeignKey("GradId");
+                        .HasForeignKey("GradId")
+                        .HasConstraintName("Fk_Grad_Fudbaler_GradId")
+                        .IsRequired();
 
                     b.HasOne("BHFudbal.BHFudbalDatabase.Klub", "Klub")
                         .WithMany("Fudbalers")
@@ -500,6 +501,8 @@ namespace BHFudbal.Migrations
                         .IsRequired();
 
                     b.Navigation("Drzava");
+
+                    b.Navigation("Grad");
 
                     b.Navigation("Klub");
                 });
