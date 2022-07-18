@@ -50,6 +50,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.cmbDrzava = new System.Windows.Forms.ComboBox();
             this.btnUploadSliku = new System.Windows.Forms.Button();
             this.dpDatumRodjenjanja = new System.Windows.Forms.DateTimePicker();
+            this.btnUredi = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbFudbaler)).BeginInit();
             this.SuspendLayout();
             // 
@@ -214,7 +215,7 @@ namespace BHFudbal.WinUI.Fudbaler
             // 
             // btnDodaj
             // 
-            this.btnDodaj.Location = new System.Drawing.Point(380, 441);
+            this.btnDodaj.Location = new System.Drawing.Point(352, 441);
             this.btnDodaj.Name = "btnDodaj";
             this.btnDodaj.Size = new System.Drawing.Size(82, 34);
             this.btnDodaj.TabIndex = 25;
@@ -250,11 +251,23 @@ namespace BHFudbal.WinUI.Fudbaler
             this.dpDatumRodjenjanja.Size = new System.Drawing.Size(180, 30);
             this.dpDatumRodjenjanja.TabIndex = 28;
             // 
+            // btnUredi
+            // 
+            this.btnUredi.Location = new System.Drawing.Point(352, 401);
+            this.btnUredi.Name = "btnUredi";
+            this.btnUredi.Size = new System.Drawing.Size(82, 34);
+            this.btnUredi.TabIndex = 29;
+            this.btnUredi.Text = "Uredi";
+            this.btnUredi.UseVisualStyleBackColor = true;
+            this.btnUredi.Visible = false;
+            this.btnUredi.Click += new System.EventHandler(this.btnUredi_Click);
+            // 
             // frmFudbaler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 487);
+            this.Controls.Add(this.btnUredi);
             this.Controls.Add(this.dpDatumRodjenjanja);
             this.Controls.Add(this.btnUploadSliku);
             this.Controls.Add(this.cmbDrzava);
@@ -308,5 +321,6 @@ namespace BHFudbal.WinUI.Fudbaler
         private System.Windows.Forms.ComboBox cmbDrzava;
         private System.Windows.Forms.Button btnUploadSliku;
         private System.Windows.Forms.DateTimePicker dpDatumRodjenjanja;
+        private System.Windows.Forms.Button btnUredi;
     }
 }

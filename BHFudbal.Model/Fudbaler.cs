@@ -12,6 +12,9 @@ namespace BHFudbal.Model
         public DateTime DatumRodjenja { get; set; }
         public int Grad { get; set; }
         public int KlubId { get; set; }
+        public string Klub { get; set; }
         public string JačaNoga { get; set; }
+        public int DrzavaId { get; set; }
+        public byte[] Slika { get; set; }
     }
 }

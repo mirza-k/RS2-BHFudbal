@@ -68,11 +68,24 @@
     <Compile Include="Fudbaler\frmFudbaler.Designer.cs">
       <DependentUpon>frmFudbaler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Fudbaler\frmPrikazFudbalera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Fudbaler\frmPrikazFudbalera.Designer.cs">
+      <DependentUpon>frmPrikazFudbalera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Klub\frmKlub.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Klub\frmKlub.Designer.cs">
       <DependentUpon>frmKlub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Klub\frmPrikazKlubova.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Klub\frmPrikazKlubova.Designer.cs">
+      <DependentUpon>frmPrikazKlubova.cs</DependentUpon>
     </Compile>
     <Compile Include="Korisnici\frmKorisnici.cs">
       <SubType>Form</SubType>
@@ -91,8 +104,14 @@
     <EmbeddedResource Include="Fudbaler\frmFudbaler.resx">
       <DependentUpon>frmFudbaler.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Fudbaler\frmPrikazFudbalera.resx">
+      <DependentUpon>frmPrikazFudbalera.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Klub\frmKlub.resx">
       <DependentUpon>frmKlub.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Klub\frmPrikazKlubova.resx">
+      <DependentUpon>frmPrikazKlubova.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Korisnici\frmKorisnici.resx">
       <DependentUpon>frmKorisnici.cs</DependentUpon>

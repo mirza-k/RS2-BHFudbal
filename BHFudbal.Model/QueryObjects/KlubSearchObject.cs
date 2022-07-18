@@ -3,5 +3,6 @@
     public class KlubSearchObject
     {
         public string Naziv { get; set; }
+        public int LigaId { get; set; }
     }
 }

@@ -13,5 +13,6 @@ namespace BHFudbal.Model
         public string Liga { get; set; }
         public int LigaId { get; set; }
         public byte[] Grb { get; set; }
+        public string Stadion { get; set; }
     }
 }

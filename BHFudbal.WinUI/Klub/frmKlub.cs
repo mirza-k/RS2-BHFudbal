@@ -1,8 +1,9 @@
-﻿using BHFudbal.Model.Requests;
+﻿using BHFudbal.Model.Enums;
+using BHFudbal.Model.Requests;
+using BHFudbal.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,9 +14,45 @@ namespace BHFudbal.WinUI.Klub
         private readonly APIService _gradService = new APIService("Grad");
         private readonly APIService _ligaService = new APIService("Liga");
         private readonly APIService _klubService = new APIService("Klub");
+
+        private int KlubId { get; set; }
         public frmKlub()
         {
             InitializeComponent();
+        }
+
+        public frmKlub(int klubId, ActionType actionType)
+        {
+            InitializeComponent();
+            if (actionType == ActionType.Update)
+                DisplayDetails(klubId);
+        }
+
+        private async void DisplayDetails(int klubId)
+        {
+            this.KlubId = klubId;
+
+            Model.Klub result = await _klubService.GetById<Model.Klub>(klubId);
+
+            lblDodajNoviKlub.Text = "Uređivanje";
+
+            txtGodinaOsnivanja.Text = result.GodinaOsnivanja.ToString();
+
+            cmbGrad.SelectedValue = result.GradId;
+
+            cmbLiga.SelectedValue = result.LigaId;
+
+            txtNadimak.Text = result.Nadimak;
+
+            txtNadimak.Text = result.Nadimak;
+
+            txtNaziv.Text = result.Naziv;
+
+            if (result.Grb != null && result.Grb.Length > 0)
+                imgGrb.Image = ImageHelper.FromByteToImage(result.Grb);
+
+            btnDodajKlub.Visible = false;
+            btnUredi.Visible = true;
         }
 
         private async void frmKlub_Load(object sender, EventArgs e)
@@ -63,23 +100,33 @@ namespace BHFudbal.WinUI.Klub
             }
         }
 
-        private byte[] FromImageToByte(Image image)
-        {
-            ImageConverter converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(image, typeof(byte[]));
-        }
-
         private async void btnDodajKlub_Click(object sender, EventArgs e)
         {
             var request = new KlubInsertRequest();
-            request.GodinaOsnivanja = string.IsNullOrEmpty(txtGodinaOsnivanja.Text) || txtGodinaOsnivanja.Text is string ? 0 : Int32.Parse(txtGodinaOsnivanja.Text);
+            request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
             request.GradId = int.Parse(cmbGrad.SelectedValue.ToString());
             request.LigaId = int.Parse(cmbLiga.SelectedValue.ToString());
-            request.Nadimak = txtNadimak.Text;
             request.Naziv = txtNaziv.Text;
-            request.Grb = FromImageToByte(imgGrb.Image);
+            request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
 
             await _klubService.Post<Model.Klub>(request);
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            var request = new KlubUpdateRequest();
+            request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
+            request.GradId = int.Parse(cmbGrad.SelectedValue.ToString());
+            request.LigaId = int.Parse(cmbLiga.SelectedValue.ToString());
+            request.Naziv = txtNaziv.Text;
+            request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
+
+            var result = await _klubService.Update<Model.Klub>(this.KlubId, request);
+            if(result != null)
+            {
+                var frm = new frmPrikazKlubova();
+                frm.ShowDialog(frm);
+            }
         }
     }
 }
