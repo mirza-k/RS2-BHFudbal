@@ -30,9 +30,6 @@ namespace BHFudbal.WinUI.Fudbaler
         private void InitializeComponent()
         {
             this.dgvFudbaleri = new System.Windows.Forms.DataGridView();
-            this.cmbLiga = new System.Windows.Forms.ComboBox();
-            this.cmbKlub = new System.Windows.Forms.ComboBox();
-            this.cmbPrikazi = new System.Windows.Forms.Button();
             this.Ime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Prezime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Visina = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -40,6 +37,9 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Klub = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DatumRodjenja = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.JačaNoga = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cmbLiga = new System.Windows.Forms.ComboBox();
+            this.cmbKlub = new System.Windows.Forms.ComboBox();
+            this.cmbPrikazi = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFudbaleri)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,34 +61,6 @@ namespace BHFudbal.WinUI.Fudbaler
             this.dgvFudbaleri.Size = new System.Drawing.Size(930, 386);
             this.dgvFudbaleri.TabIndex = 0;
             this.dgvFudbaleri.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFudbaleri_CellDoubleClick);
-            // 
-            // cmbLiga
-            // 
-            this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbLiga.FormattingEnabled = true;
-            this.cmbLiga.Location = new System.Drawing.Point(12, 12);
-            this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(139, 30);
-            this.cmbLiga.TabIndex = 1;
-            // 
-            // cmbKlub
-            // 
-            this.cmbKlub.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbKlub.FormattingEnabled = true;
-            this.cmbKlub.Location = new System.Drawing.Point(203, 12);
-            this.cmbKlub.Name = "cmbKlub";
-            this.cmbKlub.Size = new System.Drawing.Size(139, 30);
-            this.cmbKlub.TabIndex = 2;
-            // 
-            // cmbPrikazi
-            // 
-            this.cmbPrikazi.Location = new System.Drawing.Point(713, 12);
-            this.cmbPrikazi.Name = "cmbPrikazi";
-            this.cmbPrikazi.Size = new System.Drawing.Size(75, 30);
-            this.cmbPrikazi.TabIndex = 3;
-            this.cmbPrikazi.Text = "Prikazi";
-            this.cmbPrikazi.UseVisualStyleBackColor = true;
-            this.cmbPrikazi.Click += new System.EventHandler(this.cmbPrikazi_Click);
             // 
             // Ime
             // 
@@ -145,6 +117,35 @@ namespace BHFudbal.WinUI.Fudbaler
             this.JačaNoga.MinimumWidth = 6;
             this.JačaNoga.Name = "JačaNoga";
             this.JačaNoga.Width = 125;
+            // 
+            // cmbLiga
+            // 
+            this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbLiga.FormattingEnabled = true;
+            this.cmbLiga.Location = new System.Drawing.Point(12, 12);
+            this.cmbLiga.Name = "cmbLiga";
+            this.cmbLiga.Size = new System.Drawing.Size(139, 30);
+            this.cmbLiga.TabIndex = 1;
+            this.cmbLiga.SelectedIndexChanged += new System.EventHandler(this.cmbLiga_SelectedIndexChanged);
+            // 
+            // cmbKlub
+            // 
+            this.cmbKlub.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbKlub.FormattingEnabled = true;
+            this.cmbKlub.Location = new System.Drawing.Point(203, 12);
+            this.cmbKlub.Name = "cmbKlub";
+            this.cmbKlub.Size = new System.Drawing.Size(139, 30);
+            this.cmbKlub.TabIndex = 2;
+            // 
+            // cmbPrikazi
+            // 
+            this.cmbPrikazi.Location = new System.Drawing.Point(713, 12);
+            this.cmbPrikazi.Name = "cmbPrikazi";
+            this.cmbPrikazi.Size = new System.Drawing.Size(75, 30);
+            this.cmbPrikazi.TabIndex = 3;
+            this.cmbPrikazi.Text = "Prikazi";
+            this.cmbPrikazi.UseVisualStyleBackColor = true;
+            this.cmbPrikazi.Click += new System.EventHandler(this.cmbPrikazi_Click);
             // 
             // frmPrikazFudbalera
             // 

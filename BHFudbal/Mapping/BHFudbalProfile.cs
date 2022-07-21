@@ -29,6 +29,13 @@ namespace BHFudbal.Mapping
 
             //Liga
             CreateMap<LigaId, Model.Liga>();
+
+            //Transfer
+            CreateMap<TransferInsertRequest, Transfer>();
+            CreateMap<Transfer, Model.Transfer>()
+                .ForMember(m => m.ImeFudbalera, db => db.MapFrom(x => x.Fudbaler.Ime + " " + x.Fudbaler.Prezime))
+                .ForMember(m => m.NazivSezone, db => db.MapFrom(x => x.Sezona.Naziv))
+                .ForMember(m => m.NazivKluba, db => db.MapFrom(x => x.Klub.Naziv));
         }
     }
 }

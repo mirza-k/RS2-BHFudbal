@@ -22,7 +22,6 @@ namespace BHFudbal.WinUI.Fudbaler
         {
             dgvFudbaleri.AutoGenerateColumns = false;
             await LoadLige();
-            await LoadKlubove();
         }
 
         private async void cmbPrikazi_Click(object sender, EventArgs e)
@@ -39,11 +38,17 @@ namespace BHFudbal.WinUI.Fudbaler
             cmbLiga.DataSource = lige;
             cmbLiga.DisplayMember = "Naziv";
             cmbLiga.ValueMember = "LigaId1";
+
+            var ligaId = (cmbLiga.SelectedItem as Model.Liga).LigaId1;
+
+            await LoadKlubove(ligaId);
         }
 
-        private async Task LoadKlubove()
+        private async Task LoadKlubove(int id)
         {
-            List<Model.Klub> klubovi = await _klubService.Get<List<Model.Klub>>();
+            var request = new KlubSearchObject() { LigaId = id };
+
+            List<Model.Klub> klubovi = await _klubService.Get<List<Model.Klub>>(request);
             cmbKlub.DataSource = klubovi;
             cmbKlub.DisplayMember = "Naziv";
             cmbKlub.ValueMember = "KlubId";
@@ -61,6 +66,12 @@ namespace BHFudbal.WinUI.Fudbaler
                     frm.ShowDialog();
                 }
             }
+        }
+
+        private async void cmbLiga_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var ligaId = (cmbLiga.SelectedItem as Model.Liga).LigaId1;
+            await LoadKlubove(ligaId);
         }
     }
 }
