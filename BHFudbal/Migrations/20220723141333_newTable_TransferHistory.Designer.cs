@@ -4,14 +4,16 @@ using BHFudbal.BHFudbalDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BHFudbal.Migrations
 {
     [DbContext(typeof(BHFudbalDBContext))]
-    partial class BHFudbalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220723141333_newTable_TransferHistory")]
+    partial class newTable_TransferHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -448,9 +450,6 @@ namespace BHFudbal.Migrations
                     b.Property<int>("SezonaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StariKlubId")
-                        .HasColumnType("int");
-
                     b.HasKey("TransferId");
 
                     b.HasIndex("FudbalerId");
@@ -459,9 +458,39 @@ namespace BHFudbal.Migrations
 
                     b.HasIndex("SezonaId");
 
+                    b.ToTable("Transfer");
+                });
+
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.TransferHistory", b =>
+                {
+                    b.Property<int>("TransferHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FudbalerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NoviKlubId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SezonaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StariKlubId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TransferHistoryId");
+
+                    b.HasIndex("FudbalerId");
+
+                    b.HasIndex("NoviKlubId");
+
+                    b.HasIndex("SezonaId");
+
                     b.HasIndex("StariKlubId");
 
-                    b.ToTable("Transfer");
+                    b.ToTable("TransferHistories");
                 });
 
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Uloga", b =>
@@ -683,6 +712,33 @@ namespace BHFudbal.Migrations
                         .HasConstraintName("Fk_Sezona_Transfer_SezonaId")
                         .IsRequired();
 
+                    b.Navigation("Fudbaler");
+
+                    b.Navigation("Klub");
+
+                    b.Navigation("Sezona");
+                });
+
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.TransferHistory", b =>
+                {
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
+                        .WithMany()
+                        .HasForeignKey("FudbalerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Klub", "NoviKlub")
+                        .WithMany()
+                        .HasForeignKey("NoviKlubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Sezona", "Sezona")
+                        .WithMany()
+                        .HasForeignKey("SezonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BHFudbal.BHFudbalDatabase.Klub", "StariKlub")
                         .WithMany()
                         .HasForeignKey("StariKlubId")
@@ -691,7 +747,7 @@ namespace BHFudbal.Migrations
 
                     b.Navigation("Fudbaler");
 
-                    b.Navigation("Klub");
+                    b.Navigation("NoviKlub");
 
                     b.Navigation("Sezona");
 

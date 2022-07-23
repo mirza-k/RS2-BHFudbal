@@ -13,9 +13,11 @@ namespace BHFudbal.BHFudbalDatabase
         public int FudbalerId { get; set; }
         public int SezonaId { get; set; }
         public int BrojGodinaUgovora { get; set; }
+        public int StariKlubId { get; set; }
 
         public virtual Fudbaler Fudbaler { get; set; }
         public virtual Klub Klub { get; set; }
+        public virtual Klub StariKlub { get; set; }
         public virtual Sezona Sezona { get; set; }
     }
 }

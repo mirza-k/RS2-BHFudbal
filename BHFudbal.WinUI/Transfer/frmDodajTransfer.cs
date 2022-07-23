@@ -1,4 +1,5 @@
 ﻿using BHFudbal.Model.QueryObjects;
+using BHFudbal.Model.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace BHFudbal.WinUI
         private readonly APIService _ligaService = new APIService("Liga");
         private readonly APIService _klubService = new APIService("Klub");
         private readonly APIService _fudbalerService = new APIService("Fudbaler");
+        private readonly APIService _transferService = new APIService("Transfer");
 
         public frmDodajTransfer()
         {
@@ -23,9 +25,51 @@ namespace BHFudbal.WinUI
             await LoadNoveLige();
         }
 
-        private void btnZavrsi_Click(object sender, EventArgs e)
+        private async void btnZavrsi_Click(object sender, EventArgs e)
         {
+            var request = new TransferInsertRequest()
+            {
+                FudbalerId = int.Parse(cmbFudbaler.SelectedValue.ToString()),
+                KlubId = int.Parse(cmbKlubNovi.SelectedValue.ToString()),
+                Cijena = int.Parse(txtCijena.Text),
+                BrojGodinaUgovora = int.Parse(txtGodineUgovora.Text),
+                SezonaId = 1,
+                StariKlubId = int.Parse(cmbKlub.SelectedValue.ToString())
+            };
 
+            var validationResults = await IsTransferValid(request);
+            if(validationResults != null)
+            {
+                MessageBox.Show(validationResults);
+                return;
+            }
+
+            var result = await _transferService.Post<Model.Transfer>(request);
+
+            if (result != null)
+                MessageBox.Show("Uspjesno izvrsen transfer.");
+        }
+
+        private async Task<string> IsTransferValid(TransferInsertRequest request)
+        {
+            if (request.StariKlubId == request.KlubId)
+            {
+                return "Ne moze se izvrsiti transfer između istih klubova!";
+            }
+
+            var searchObject = new TransferSearchObject()
+            {
+                FudbalerId = request.FudbalerId,
+                SezonaId = request.SezonaId
+            };
+
+            var result = await _transferService.Get<List<Model.Transfer>>(searchObject);
+            if(result.Count > 0)
+            {
+                return "Igrač je već obavio jedan transfer za tekuću sezonu!";
+            }
+
+            return null;
         }
 
         private async Task LoadLige()
