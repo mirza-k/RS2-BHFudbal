@@ -25,7 +25,9 @@ namespace BHFudbal.Mapping
             //Fudbaler
             CreateMap<FudbalerInsertRequest, Fudbaler>();
             CreateMap<FudbalerUpdateRequest, Fudbaler>();
-            CreateMap<Fudbaler, Model.Fudbaler>().ForMember(m => m.Klub, db => db.MapFrom(x => x.Klub.Naziv));
+            CreateMap<Fudbaler, Model.Fudbaler>()
+                .ForMember(m => m.Klub, db => db.MapFrom(x => x.Klub.Naziv))
+                .ForMember(m => m.Drzava, db => db.MapFrom(x => x.Drzava.Naziv));
 
             //Liga
             CreateMap<LigaId, Model.Liga>();

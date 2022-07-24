@@ -27,15 +27,26 @@ namespace BHFudbal.WinUI
 
         private async void btnZavrsi_Click(object sender, EventArgs e)
         {
+            if (!isRequestValid())
+            {
+                return;
+            }
+
             var request = new TransferInsertRequest()
             {
                 FudbalerId = int.Parse(cmbFudbaler.SelectedValue.ToString()),
                 KlubId = int.Parse(cmbKlubNovi.SelectedValue.ToString()),
-                Cijena = int.Parse(txtCijena.Text),
-                BrojGodinaUgovora = int.Parse(txtGodineUgovora.Text),
                 SezonaId = 1,
                 StariKlubId = int.Parse(cmbKlub.SelectedValue.ToString())
             };
+
+            int cijena;
+            if (int.TryParse(txtCijena.Text, out cijena))
+                request.Cijena = cijena;
+
+            int brojGodinaUgovora;
+            if (int.TryParse(txtGodineUgovora.Text, out brojGodinaUgovora))
+                request.BrojGodinaUgovora = brojGodinaUgovora;
 
             var validationResults = await IsTransferValid(request);
             if(validationResults != null)
@@ -48,6 +59,16 @@ namespace BHFudbal.WinUI
 
             if (result != null)
                 MessageBox.Show("Uspjesno izvrsen transfer.");
+        }
+
+        private bool isRequestValid()
+        {
+            return
+                cmbFudbaler.SelectedValue != null &&
+                cmbKlub.SelectedValue != null &&
+                cmbKlubNovi.SelectedValue != null &&
+                cmbLiga.SelectedValue != null &&
+                cmbLigaNovi != null;
         }
 
         private async Task<string> IsTransferValid(TransferInsertRequest request)

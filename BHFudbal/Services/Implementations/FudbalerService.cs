@@ -17,12 +17,12 @@ namespace BHFudbal.Services.Implementations
         public override IEnumerable<Model.Fudbaler> Get(FudbalerSearchObject search = null)
         {
             var entity = Context.Set<Fudbaler>().AsQueryable();
-            if(search.KlubId != 0)
+            if (search.KlubId != 0)
             {
                 entity = entity.Where(x => x.KlubId == search.KlubId);
             }
 
-            entity = entity.Include(x => x.Klub);
+            entity = entity.Include(x => x.Klub).Include(x => x.Drzava);
 
             return _mapper.Map<List<Model.Fudbaler>>(entity);
         }

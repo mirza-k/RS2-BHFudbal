@@ -15,6 +15,7 @@ namespace BHFudbal.Model
         public string Klub { get; set; }
         public string JačaNoga { get; set; }
         public int DrzavaId { get; set; }
+        public string Drzava { get; set; }
         public byte[] Slika { get; set; }
     }
 }

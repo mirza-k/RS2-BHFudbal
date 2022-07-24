@@ -26,10 +26,7 @@ namespace BHFudbal.WinUI.Fudbaler
 
         private async void cmbPrikazi_Click(object sender, EventArgs e)
         {
-            var request = new FudbalerSearchObject() { KlubId = int.Parse(cmbKlub.SelectedValue.ToString()) };
-
-            var result = await _fudbalerService.Get<List<Model.Fudbaler>>(request);
-            dgvFudbaleri.DataSource = result;
+            await RefreshGrid();
         }
 
         private async Task LoadLige()
@@ -63,9 +60,15 @@ namespace BHFudbal.WinUI.Fudbaler
                 if (f != null)
                 {
                     frmFudbaler frm = new frmFudbaler(f.FudbalerId, ActionType.Update);
+                    frm.FormClosed += new FormClosedEventHandler(frmFudbaler_Closed);
                     frm.ShowDialog();
                 }
             }
+        }
+
+        async void frmFudbaler_Closed(object sender, EventArgs e)
+        {
+            await RefreshGrid();
         }
 
         private async void cmbLiga_SelectedIndexChanged(object sender, EventArgs e)
@@ -73,5 +76,14 @@ namespace BHFudbal.WinUI.Fudbaler
             var ligaId = (cmbLiga.SelectedItem as Model.Liga).LigaId1;
             await LoadKlubove(ligaId);
         }
+
+        private async Task RefreshGrid()
+        {
+            var request = new FudbalerSearchObject() { KlubId = int.Parse(cmbKlub.SelectedValue.ToString()) };
+
+            var result = await _fudbalerService.Get<List<Model.Fudbaler>>(request);
+            dgvFudbaleri.DataSource = result;
+        }
+
     }
 }

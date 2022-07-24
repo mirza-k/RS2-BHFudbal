@@ -56,6 +56,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.JačaNoga});
             this.dgvFudbaleri.Location = new System.Drawing.Point(12, 52);
             this.dgvFudbaleri.Name = "dgvFudbaleri";
+            this.dgvFudbaleri.ReadOnly = true;
             this.dgvFudbaleri.RowHeadersWidth = 51;
             this.dgvFudbaleri.RowTemplate.Height = 24;
             this.dgvFudbaleri.Size = new System.Drawing.Size(930, 386);
@@ -68,6 +69,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Ime.HeaderText = "Ime";
             this.Ime.MinimumWidth = 6;
             this.Ime.Name = "Ime";
+            this.Ime.ReadOnly = true;
             this.Ime.Width = 125;
             // 
             // Prezime
@@ -76,6 +78,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Prezime.HeaderText = "Prezime";
             this.Prezime.MinimumWidth = 6;
             this.Prezime.Name = "Prezime";
+            this.Prezime.ReadOnly = true;
             this.Prezime.Width = 125;
             // 
             // Visina
@@ -84,6 +87,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Visina.HeaderText = "Visina";
             this.Visina.MinimumWidth = 6;
             this.Visina.Name = "Visina";
+            this.Visina.ReadOnly = true;
             this.Visina.Width = 125;
             // 
             // Težina
@@ -92,6 +96,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Težina.HeaderText = "Težina";
             this.Težina.MinimumWidth = 6;
             this.Težina.Name = "Težina";
+            this.Težina.ReadOnly = true;
             this.Težina.Width = 125;
             // 
             // Klub
@@ -100,6 +105,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Klub.HeaderText = "Klub";
             this.Klub.MinimumWidth = 6;
             this.Klub.Name = "Klub";
+            this.Klub.ReadOnly = true;
             this.Klub.Width = 125;
             // 
             // DatumRodjenja
@@ -108,6 +114,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.DatumRodjenja.HeaderText = "Datum rodjenja";
             this.DatumRodjenja.MinimumWidth = 6;
             this.DatumRodjenja.Name = "DatumRodjenja";
+            this.DatumRodjenja.ReadOnly = true;
             this.DatumRodjenja.Width = 125;
             // 
             // JačaNoga
@@ -116,6 +123,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.JačaNoga.HeaderText = "Jača noga";
             this.JačaNoga.MinimumWidth = 6;
             this.JačaNoga.Name = "JačaNoga";
+            this.JačaNoga.ReadOnly = true;
             this.JačaNoga.Width = 125;
             // 
             // cmbLiga
@@ -124,7 +132,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(12, 12);
             this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(139, 30);
+            this.cmbLiga.Size = new System.Drawing.Size(139, 25);
             this.cmbLiga.TabIndex = 1;
             this.cmbLiga.SelectedIndexChanged += new System.EventHandler(this.cmbLiga_SelectedIndexChanged);
             // 
@@ -134,7 +142,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.cmbKlub.FormattingEnabled = true;
             this.cmbKlub.Location = new System.Drawing.Point(203, 12);
             this.cmbKlub.Name = "cmbKlub";
-            this.cmbKlub.Size = new System.Drawing.Size(139, 30);
+            this.cmbKlub.Size = new System.Drawing.Size(139, 25);
             this.cmbKlub.TabIndex = 2;
             // 
             // cmbPrikazi

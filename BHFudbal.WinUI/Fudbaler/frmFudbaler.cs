@@ -3,8 +3,6 @@ using BHFudbal.Model.Requests;
 using BHFudbal.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,6 +14,7 @@ namespace BHFudbal.WinUI.Fudbaler
         private readonly APIService _fudbalerService = new APIService("FUdbaler");
         private readonly APIService _drzavaService = new APIService("Drzava");
         private int FudbalerId;
+        private ActionType actionType;
 
         public frmFudbaler()
         {
@@ -27,14 +26,18 @@ namespace BHFudbal.WinUI.Fudbaler
             InitializeComponent();
             if (actionType == ActionType.Update)
             {
+                this.actionType = actionType;
                 DisplayDetails(fudbalerId);
             }
 
         }
         private async void Form1_Load(object sender, EventArgs e)
         {
-            await LoadDrzave();
-            await LoadKlubove();
+            if (this.actionType != ActionType.Update)
+            {
+                await LoadDrzave();
+                await LoadKlubove();
+            }
         }
 
         private async Task LoadDrzave()
@@ -62,13 +65,12 @@ namespace BHFudbal.WinUI.Fudbaler
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string imageLocation = dialog.FileName;
-
                     pbFudbaler.ImageLocation = imageLocation;
                 }
             }
             catch
             {
-                MessageBox.Show("An error ocurred.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowErrorMessage("Desila se greška!", "Greška");
             }
         }
 
@@ -79,6 +81,12 @@ namespace BHFudbal.WinUI.Fudbaler
 
         private async void btnDodaj_Click(object sender, EventArgs e)
         {
+            if (!isRequestValid())
+            {
+                MessageBoxHelper.ShowErrorMessage("Potrebno popuniti sva polja!", "Greška");
+                return;
+            }
+
             var request = new FudbalerInsertRequest();
             request.Ime = txtIme.Text;
             request.Prezime = txtPrezime.Text;
@@ -88,12 +96,22 @@ namespace BHFudbal.WinUI.Fudbaler
             request.KlubId = int.Parse(cmbKlub.SelectedValue.ToString());
             request.DrzavaId = int.Parse(cmbDrzava.SelectedValue.ToString());
             request.DatumRodjenja = dpDatumRodjenjanja.Value;
+            request.Slika = ImageHelper.FromImageToByte(pbFudbaler.Image);
 
-            await _fudbalerService.Post<Model.Fudbaler>(request);
+            var result = await _fudbalerService.Post<Model.Fudbaler>(request);
+
+            if (result != null)
+            {
+                MessageBoxHelper.ShowSuccessMessage("Uspjesno dodan fudbaler.", "");
+                Close();
+            }
         }
 
         private async void DisplayDetails(int fudbalerId)
         {
+            await LoadKlubove();
+            await LoadDrzave();
+
             this.FudbalerId = fudbalerId;
             Model.Fudbaler result = await _fudbalerService.GetById<Model.Fudbaler>(fudbalerId);
 
@@ -109,7 +127,7 @@ namespace BHFudbal.WinUI.Fudbaler
 
             txtJacaNoga.Text = result.JačaNoga;
 
-            cmbKlub.SelectedValue = result.KlubId.ToString();
+            cmbKlub.SelectedValue = result.KlubId;
 
             cmbDrzava.SelectedValue = result.DrzavaId;
 
@@ -124,6 +142,12 @@ namespace BHFudbal.WinUI.Fudbaler
 
         private async void btnUredi_Click(object sender, EventArgs e)
         {
+            if (!isRequestValid())
+            {
+                MessageBoxHelper.ShowErrorMessage("Potrebno popuniti sva polja!", "Greška");
+                return;
+            }
+
             var request = new FudbalerUpdateRequest();
             request.Ime = txtIme.Text;
             request.Prezime = txtPrezime.Text;
@@ -133,13 +157,29 @@ namespace BHFudbal.WinUI.Fudbaler
             request.KlubId = int.Parse(cmbKlub.SelectedValue.ToString());
             request.DrzavaId = int.Parse(cmbDrzava.SelectedValue.ToString());
             request.DatumRodjenja = dpDatumRodjenjanja.Value;
+            request.Slika = ImageHelper.FromImageToByte(pbFudbaler.Image);
 
             var result = await _fudbalerService.Update<Model.Fudbaler>(this.FudbalerId, request);
 
-            //if(result != null)
-            //{
-            //    var frm = new frmPrikazFudbalera();
-            //}
+            if (result != null)
+            {
+                MessageBoxHelper.ShowSuccessMessage("Uspjesno uređene informacije o fudbaleru.", "");
+                Close();
+            }
         }
+
+        private bool isRequestValid()
+        {
+            return
+                cmbDrzava.SelectedValue != null &&
+                cmbKlub.SelectedValue != null &&
+                !string.IsNullOrEmpty(txtIme.Text) &&
+                !string.IsNullOrEmpty(txtPrezime.Text) &&
+                !string.IsNullOrEmpty(txtVisina.Text) &&
+                !string.IsNullOrEmpty(txtTezina.Text) &&
+                !string.IsNullOrEmpty(txtJacaNoga.Text) &&
+                dpDatumRodjenjanja.Value != null;
+        }
+
     }
 }
