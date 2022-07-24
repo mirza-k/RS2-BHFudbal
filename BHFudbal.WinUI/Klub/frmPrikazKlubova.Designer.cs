@@ -30,13 +30,13 @@ namespace BHFudbal.WinUI.Klub
         private void InitializeComponent()
         {
             this.dgvKlub = new System.Windows.Forms.DataGridView();
-            this.cmbLiga = new System.Windows.Forms.ComboBox();
-            this.btbPrikazi = new System.Windows.Forms.Button();
             this.Naziv = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Grad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GodinaOsnivanja = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Liga = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Nadimak = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cmbLiga = new System.Windows.Forms.ComboBox();
+            this.btbPrikazi = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKlub)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,25 +56,6 @@ namespace BHFudbal.WinUI.Klub
             this.dgvKlub.Size = new System.Drawing.Size(776, 387);
             this.dgvKlub.TabIndex = 0;
             this.dgvKlub.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvKlub_CellDoubleClick);
-            // 
-            // cmbLiga
-            // 
-            this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbLiga.FormattingEnabled = true;
-            this.cmbLiga.Location = new System.Drawing.Point(12, 12);
-            this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(177, 33);
-            this.cmbLiga.TabIndex = 1;
-            // 
-            // btbPrikazi
-            // 
-            this.btbPrikazi.Location = new System.Drawing.Point(710, 12);
-            this.btbPrikazi.Name = "btbPrikazi";
-            this.btbPrikazi.Size = new System.Drawing.Size(78, 33);
-            this.btbPrikazi.TabIndex = 2;
-            this.btbPrikazi.Text = "Prikazi";
-            this.btbPrikazi.UseVisualStyleBackColor = true;
-            this.btbPrikazi.Click += new System.EventHandler(this.button1_Click);
             // 
             // Naziv
             // 
@@ -116,6 +97,25 @@ namespace BHFudbal.WinUI.Klub
             this.Nadimak.Name = "Nadimak";
             this.Nadimak.Width = 125;
             // 
+            // cmbLiga
+            // 
+            this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbLiga.FormattingEnabled = true;
+            this.cmbLiga.Location = new System.Drawing.Point(12, 12);
+            this.cmbLiga.Name = "cmbLiga";
+            this.cmbLiga.Size = new System.Drawing.Size(177, 28);
+            this.cmbLiga.TabIndex = 1;
+            // 
+            // btbPrikazi
+            // 
+            this.btbPrikazi.Location = new System.Drawing.Point(710, 12);
+            this.btbPrikazi.Name = "btbPrikazi";
+            this.btbPrikazi.Size = new System.Drawing.Size(78, 33);
+            this.btbPrikazi.TabIndex = 2;
+            this.btbPrikazi.Text = "Prikazi";
+            this.btbPrikazi.UseVisualStyleBackColor = true;
+            this.btbPrikazi.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmPrikazKlubova
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -125,6 +125,7 @@ namespace BHFudbal.WinUI.Klub
             this.Controls.Add(this.cmbLiga);
             this.Controls.Add(this.dgvKlub);
             this.Name = "frmPrikazKlubova";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmPrikazKlubova";
             this.Load += new System.EventHandler(this.frmPrikazKlubova_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvKlub)).EndInit();

@@ -31,10 +31,7 @@ namespace BHFudbal.WinUI.Klub
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var currentLigeId = int.Parse(cmbLiga.SelectedValue.ToString());
-            var request = new KlubSearchObject() { LigaId = currentLigeId };
-            var result = await _klubService.Get<List<Model.Klub>>(request);
-            dgvKlub.DataSource = result;
+            await RefreshGrid();
         }
 
         private void dgvKlub_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -46,9 +43,23 @@ namespace BHFudbal.WinUI.Klub
                 if (k != null)
                 {
                     frmKlub frm = new frmKlub(k.KlubId, Model.Enums.ActionType.Update);
+                    frm.FormClosed += new FormClosedEventHandler(frmKlub_ClosedEvent);
                     frm.ShowDialog();
                 }
             }
+        }
+
+        public async void frmKlub_ClosedEvent(object sender, EventArgs e)
+        {
+            await RefreshGrid();
+        }
+
+        private async Task RefreshGrid()
+        {
+            var currentLigeId = int.Parse(cmbLiga.SelectedValue.ToString());
+            var request = new KlubSearchObject() { LigaId = currentLigeId };
+            var result = await _klubService.Get<List<Model.Klub>>(request);
+            dgvKlub.DataSource = result;
         }
     }
 }

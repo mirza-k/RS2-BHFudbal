@@ -53,7 +53,7 @@ namespace BHFudbal.WinUI.Klub
             this.txtNaziv.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNaziv.Location = new System.Drawing.Point(51, 123);
             this.txtNaziv.Name = "txtNaziv";
-            this.txtNaziv.Size = new System.Drawing.Size(209, 28);
+            this.txtNaziv.Size = new System.Drawing.Size(209, 24);
             this.txtNaziv.TabIndex = 0;
             // 
             // txtGodinaOsnivanja
@@ -61,7 +61,7 @@ namespace BHFudbal.WinUI.Klub
             this.txtGodinaOsnivanja.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtGodinaOsnivanja.Location = new System.Drawing.Point(51, 275);
             this.txtGodinaOsnivanja.Name = "txtGodinaOsnivanja";
-            this.txtGodinaOsnivanja.Size = new System.Drawing.Size(209, 28);
+            this.txtGodinaOsnivanja.Size = new System.Drawing.Size(209, 24);
             this.txtGodinaOsnivanja.TabIndex = 1;
             // 
             // txtNadimak
@@ -70,7 +70,7 @@ namespace BHFudbal.WinUI.Klub
             this.txtNadimak.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNadimak.Location = new System.Drawing.Point(51, 197);
             this.txtNadimak.Name = "txtNadimak";
-            this.txtNadimak.Size = new System.Drawing.Size(209, 28);
+            this.txtNadimak.Size = new System.Drawing.Size(209, 24);
             this.txtNadimak.TabIndex = 3;
             // 
             // cmbGrad
@@ -79,7 +79,7 @@ namespace BHFudbal.WinUI.Klub
             this.cmbGrad.FormattingEnabled = true;
             this.cmbGrad.Location = new System.Drawing.Point(513, 121);
             this.cmbGrad.Name = "cmbGrad";
-            this.cmbGrad.Size = new System.Drawing.Size(199, 30);
+            this.cmbGrad.Size = new System.Drawing.Size(199, 25);
             this.cmbGrad.TabIndex = 4;
             // 
             // lblDodajNoviKlub
@@ -88,7 +88,7 @@ namespace BHFudbal.WinUI.Klub
             this.lblDodajNoviKlub.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDodajNoviKlub.Location = new System.Drawing.Point(253, 25);
             this.lblDodajNoviKlub.Name = "lblDodajNoviKlub";
-            this.lblDodajNoviKlub.Size = new System.Drawing.Size(279, 44);
+            this.lblDodajNoviKlub.Size = new System.Drawing.Size(221, 36);
             this.lblDodajNoviKlub.TabIndex = 6;
             this.lblDodajNoviKlub.Text = "Dodaj novi klub";
             // 
@@ -98,7 +98,7 @@ namespace BHFudbal.WinUI.Klub
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(46, 91);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 29);
+            this.label1.Size = new System.Drawing.Size(56, 24);
             this.label1.TabIndex = 7;
             this.label1.Text = "Naziv";
             // 
@@ -108,7 +108,7 @@ namespace BHFudbal.WinUI.Klub
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(46, 243);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(198, 29);
+            this.label2.Size = new System.Drawing.Size(155, 24);
             this.label2.TabIndex = 8;
             this.label2.Text = "Godina osnivanja";
             // 
@@ -118,7 +118,7 @@ namespace BHFudbal.WinUI.Klub
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(46, 165);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(109, 29);
+            this.label3.Size = new System.Drawing.Size(84, 24);
             this.label3.TabIndex = 9;
             this.label3.Text = "Nadimak";
             // 
@@ -128,7 +128,7 @@ namespace BHFudbal.WinUI.Klub
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(508, 91);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 29);
+            this.label5.Size = new System.Drawing.Size(51, 24);
             this.label5.TabIndex = 11;
             this.label5.Text = "Grad";
             // 
@@ -138,7 +138,7 @@ namespace BHFudbal.WinUI.Klub
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(508, 162);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 29);
+            this.label6.Size = new System.Drawing.Size(41, 24);
             this.label6.TabIndex = 12;
             this.label6.Text = "Grb";
             // 
@@ -167,7 +167,7 @@ namespace BHFudbal.WinUI.Klub
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(46, 317);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 29);
+            this.label7.Size = new System.Drawing.Size(45, 24);
             this.label7.TabIndex = 16;
             this.label7.Text = "Liga";
             // 
@@ -177,7 +177,7 @@ namespace BHFudbal.WinUI.Klub
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(51, 349);
             this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(209, 30);
+            this.cmbLiga.Size = new System.Drawing.Size(209, 25);
             this.cmbLiga.TabIndex = 17;
             // 
             // upldGrb
@@ -223,6 +223,7 @@ namespace BHFudbal.WinUI.Klub
             this.Controls.Add(this.txtGodinaOsnivanja);
             this.Controls.Add(this.txtNaziv);
             this.Name = "frmKlub";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.frmKlub_Load);
             ((System.ComponentModel.ISupportInitialize)(this.imgGrb)).EndInit();
             this.ResumeLayout(false);

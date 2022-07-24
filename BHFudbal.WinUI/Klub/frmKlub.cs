@@ -14,6 +14,7 @@ namespace BHFudbal.WinUI.Klub
         private readonly APIService _gradService = new APIService("Grad");
         private readonly APIService _ligaService = new APIService("Liga");
         private readonly APIService _klubService = new APIService("Klub");
+        private readonly ActionType actionType;
 
         private int KlubId { get; set; }
         public frmKlub()
@@ -25,11 +26,17 @@ namespace BHFudbal.WinUI.Klub
         {
             InitializeComponent();
             if (actionType == ActionType.Update)
+            {
+                this.actionType = actionType;
                 DisplayDetails(klubId);
+            }
         }
 
         private async void DisplayDetails(int klubId)
         {
+            await LoadGradove();
+            await LoadLige();
+
             this.KlubId = klubId;
 
             Model.Klub result = await _klubService.GetById<Model.Klub>(klubId);
@@ -57,8 +64,11 @@ namespace BHFudbal.WinUI.Klub
 
         private async void frmKlub_Load(object sender, EventArgs e)
         {
-            await LoadGradove();
-            await LoadLige();
+            if (actionType != ActionType.Update)
+            {
+                await LoadGradove();
+                await LoadLige();
+            }
         }
         private void upldGrb_Click(object sender, EventArgs e)
         {
@@ -102,6 +112,12 @@ namespace BHFudbal.WinUI.Klub
 
         private async void btnDodajKlub_Click(object sender, EventArgs e)
         {
+            if (!IsRequestValid())
+            {
+                MessageBoxHelper.ShowErrorMessage("Potrebno popuniti sva polja!", "Greška");
+                return;
+            }
+
             var request = new KlubInsertRequest();
             request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
             request.GradId = int.Parse(cmbGrad.SelectedValue.ToString());
@@ -109,24 +125,50 @@ namespace BHFudbal.WinUI.Klub
             request.Naziv = txtNaziv.Text;
             request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
 
-            await _klubService.Post<Model.Klub>(request);
+            var result = await _klubService.Post<Model.Klub>(request);
+
+            if (result != null)
+            {
+                MessageBoxHelper.ShowSuccessMessage("Uspjesno dodan klub!", "");
+                Close();
+            }
         }
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            if (!IsRequestValid())
+            {
+                MessageBoxHelper.ShowErrorMessage("Potrebno popuniti sva polja!", "Greška");
+                return;
+            }
+
             var request = new KlubUpdateRequest();
-            request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
             request.GradId = int.Parse(cmbGrad.SelectedValue.ToString());
             request.LigaId = int.Parse(cmbLiga.SelectedValue.ToString());
             request.Naziv = txtNaziv.Text;
             request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
+            request.Nadimak = txtNadimak.Text;
+
+            int godinaOsnivanja;
+            if (int.TryParse(txtGodinaOsnivanja.Text, out godinaOsnivanja))
+                request.GodinaOsnivanja = godinaOsnivanja;
 
             var result = await _klubService.Update<Model.Klub>(this.KlubId, request);
-            if(result != null)
+            if (result != null)
             {
-                var frm = new frmPrikazKlubova();
-                frm.ShowDialog(frm);
+                MessageBoxHelper.ShowSuccessMessage("Uspjesno ste uredili informacije o klubu!", "");
+                Close();
             }
+        }
+
+        private bool IsRequestValid()
+        {
+            return
+                !string.IsNullOrEmpty(txtGodinaOsnivanja.Text) &&
+                !string.IsNullOrEmpty(txtNaziv.Text) &&
+                !string.IsNullOrEmpty(txtNadimak.Text) &&
+                cmbGrad.SelectedValue != null &&
+                cmbLiga.SelectedValue != null;
         }
     }
 }
