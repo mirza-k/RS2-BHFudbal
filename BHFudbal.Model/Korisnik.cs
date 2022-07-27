@@ -9,7 +9,9 @@ namespace BHFudbal.Model
         public string Prezime { get; set; }
         public DateTime DatumRodjenja { get; set; }
         public int GradId { get; set; }
+        public string Grad { get; set; }
         public int UlogaId { get; set; }
+        public string Uloga { get; set; }
         public int DržavaId { get; set; }
         public int KorisničkiRačunId { get; set; }
         public bool IsPremium { get; set; }

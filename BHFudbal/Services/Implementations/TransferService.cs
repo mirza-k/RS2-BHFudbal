@@ -5,6 +5,7 @@ using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BHFudbal.Services.Implementations
 {
@@ -18,7 +19,12 @@ namespace BHFudbal.Services.Implementations
         {
             var entity = Context.Set<Transfer>().AsQueryable();
 
-            entity = entity.Include(x => x.Klub).Include(x => x.Sezona).Include(x => x.Fudbaler);
+            if(search?.SezonaId != null)
+            {
+                entity = entity.Where(x => x.SezonaId == search.SezonaId);
+            }
+
+            entity = entity.Include(x => x.Klub).Include(x => x.Sezona).Include(x => x.Fudbaler).Include(x => x.StariKlub);
 
             return _mapper.Map<List<Model.Transfer>>(entity);
         }

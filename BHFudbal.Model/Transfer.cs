@@ -15,5 +15,6 @@ namespace BHFudbal.Model
         public int SezonaId { get; set; }
         public string NazivSezone { get; set; }
         public int BrojGodinaUgovora { get; set; }
+        public string StariKlub { get; set; }
     }
 }

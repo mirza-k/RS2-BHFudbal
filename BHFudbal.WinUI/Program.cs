@@ -1,5 +1,5 @@
-﻿using BHFudbal.WinUI.Fudbaler;
-using BHFudbal.WinUI.Klub;
+﻿using BHFudbal.WinUI.Korisnici;
+using BHFudbal.WinUI.Transfer;
 using System;
 using System.Windows.Forms;
 
@@ -15,7 +15,7 @@ namespace BHFudbal.WinUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmPrikazKlubova());
+            Application.Run(new frmPrikazTransfera());
         }
     }
 }

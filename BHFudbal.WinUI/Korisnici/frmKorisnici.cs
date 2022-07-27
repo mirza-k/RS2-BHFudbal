@@ -7,7 +7,7 @@ namespace BHFudbal.WinUI.Korisnici
 {
     public partial class frmKorisnici : Form
     {
-        public APIService _apiService = new APIService("Grad");
+        public APIService _korisnikService = new APIService("Korisnik");
         public frmKorisnici()
         {
             InitializeComponent();
@@ -15,13 +15,18 @@ namespace BHFudbal.WinUI.Korisnici
 
         private async void btnPrikazi_Click(object sender, EventArgs e)
         {
-            var search = new GradSearchObject()
+            var search = new KorisnikSearchObject()
             {
-                Naziv = txtPretraga.Text
+                Ime = txtPretraga.Text
             };
 
-            var result = await _apiService.Get<List<Model.Grad>>(search);
+            var result = await _korisnikService.Get<List<Model.Korisnik>>(search);
             dgvKorisnici.DataSource = result;
+        }
+
+        private void frmKorisnici_Load(object sender, EventArgs e)
+        {
+            dgvKorisnici.AutoGenerateColumns = false;
         }
     }
 }

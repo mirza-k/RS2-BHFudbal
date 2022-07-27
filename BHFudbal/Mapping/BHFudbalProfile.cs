@@ -37,7 +37,17 @@ namespace BHFudbal.Mapping
             CreateMap<Transfer, Model.Transfer>()
                 .ForMember(m => m.ImeFudbalera, db => db.MapFrom(x => x.Fudbaler.Ime + " " + x.Fudbaler.Prezime))
                 .ForMember(m => m.NazivSezone, db => db.MapFrom(x => x.Sezona.Naziv))
-                .ForMember(m => m.NazivKluba, db => db.MapFrom(x => x.Klub.Naziv));
+                .ForMember(m => m.NazivKluba, db => db.MapFrom(x => x.Klub.Naziv))
+                .ForMember(m => m.StariKlub, db => db.MapFrom(x => x.StariKlub.Naziv));
+
+            //Korisnik
+            CreateMap<Korisnik, Model.Korisnik>()
+                .ForMember(m => m.Grad, db => db.MapFrom(x => x.Grad.Naziv))
+                .ForMember(m => m.Uloga, db => db.MapFrom(x => x.Uloga.Naziv))
+                .ForMember(m => m.Username, db => db.MapFrom(x => x.KorisničkiRačun.Username));
+
+            //Sezona
+            CreateMap<Sezona, Model.Sezona>();
         }
     }
 }

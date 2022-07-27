@@ -4,6 +4,7 @@ using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BHFudbal.Services.Implementations
@@ -24,6 +25,20 @@ namespace BHFudbal.Services.Implementations
             }
 
             return false;
+        }
+
+        public override IEnumerable<Model.Korisnik> Get(KorisnikSearchObject search = null)
+        {
+            var entity = Context.Set<Korisnik>().AsQueryable();
+
+            if(search?.Ime != null)
+            {
+                entity = entity.Where(x => x.Ime.Contains(search.Ime));
+            }
+
+            entity = entity.Include(x => x.Grad).Include(x => x.KorisničkiRačun).Include(x => x.Uloga);
+
+            return _mapper.Map<List<Model.Korisnik>>(entity);
         }
     }
 }
