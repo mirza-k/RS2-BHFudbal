@@ -15,7 +15,7 @@ namespace BHFudbal.WinUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmPrikazTransfera());
+            Application.Run(new frmDodajTransfer());
         }
     }
 }

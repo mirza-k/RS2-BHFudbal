@@ -1,5 +1,7 @@
-﻿using BHFudbal.Model.QueryObjects;
+﻿using BHFudbal.Model;
+using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
+using BHFudbal.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -49,7 +51,7 @@ namespace BHFudbal.WinUI
                 request.BrojGodinaUgovora = brojGodinaUgovora;
 
             var validationResults = await IsTransferValid(request);
-            if(validationResults != null)
+            if (validationResults != null)
             {
                 MessageBox.Show(validationResults);
                 return;
@@ -58,7 +60,12 @@ namespace BHFudbal.WinUI
             var result = await _transferService.Post<Model.Transfer>(request);
 
             if (result != null)
+            {
+                await UpdatePlayerAfterCompleteTransfer(request);
+                await LoadLige();
+                await LoadNoveLige();
                 MessageBox.Show("Uspješno izvršen transfer.");
+            }
         }
 
         private bool isRequestValid()
@@ -85,78 +92,55 @@ namespace BHFudbal.WinUI
             };
 
             var result = await _transferService.Get<List<Model.Transfer>>(searchObject);
-            if(result.Count > 0)
+            if (result.Count > 0)
             {
                 return "Fudbaler je već obavio jedan transfer za tekuću sezonu!";
             }
+
+            //var fudbaler = await _fudbalerService.GetById<Model.Fudbaler>(request.FudbalerId);
+            //if(fudbaler.KlubId == request.KlubId)
+            //{
+            //    return "Nemoguće izvršiti transfer jer se fudbaler vec nalazi u tom klubu!";
+            //}
 
             return null;
         }
 
         private async Task LoadLige()
         {
-            List<Model.Liga> lige = await _ligaService.Get<List<Model.Liga>>();
-            cmbLiga.DataSource = lige;
-            cmbLiga.DisplayMember = "Naziv";
-            cmbLiga.ValueMember = "LigaId1";
-
+            await ServiceHelper<LigaSearchObject, Liga>.Load("Liga", cmbLiga, "Naziv", "LigaId1", null);
             var ligaId = (cmbLiga.SelectedItem as Model.Liga).LigaId1;
-
             await LoadKlubove(ligaId);
         }
 
         private async Task LoadNoveLige()
         {
-            List<Model.Liga> lige = await _ligaService.Get<List<Model.Liga>>();
-            cmbLigaNovi.DataSource = lige;
-            cmbLigaNovi.DisplayMember = "Naziv";
-            cmbLigaNovi.ValueMember = "LigaId1";
-
+            await ServiceHelper<LigaSearchObject, Model.Liga>.Load("Liga", cmbLigaNovi, "Naziv", "LigaId1", null);
             var ligaId = (cmbLiga.SelectedItem as Model.Liga).LigaId1;
-
             await LoadNoveKlubove(ligaId);
         }
 
         private async Task LoadNoveKlubove(int ligaId)
         {
             var request = new KlubSearchObject() { LigaId = ligaId };
-
-            List<Model.Klub> klubovi = await _klubService.Get<List<Model.Klub>>(request);
-            cmbKlubNovi.DataSource = klubovi;
-            cmbKlubNovi.DisplayMember = "Naziv";
-            cmbKlubNovi.ValueMember = "KlubId";
-
-            if (klubovi.Count == 0)
+            var models = await ServiceHelper<KlubSearchObject, Model.Klub>.Load("Klub", cmbKlubNovi, "Naziv", "KlubId", request);
+            if (models.Count == 0)
                 cmbKlubNovi.ResetText();
         }
 
         private async Task LoadKlubove(int ligaId)
         {
             var request = new KlubSearchObject() { LigaId = ligaId };
-
-            List<Model.Klub> klubovi = await _klubService.Get<List<Model.Klub>>(request);
-            cmbKlub.DataSource = klubovi;
-            cmbKlub.DisplayMember = "Naziv";
-            cmbKlub.ValueMember = "KlubId";
-
+            await ServiceHelper<KlubSearchObject, Model.Klub>.Load("Klub", cmbKlub, "Naziv", "KlubId", request);
             var klubId = (cmbKlub.SelectedItem as Model.Klub).KlubId;
-
             await LoadFudbaleri(klubId);
         }
 
         private async Task LoadFudbaleri(int klubId)
         {
-            var request = new FudbalerSearchObject()
-            {
-                KlubId = klubId
-            };
-
-            var fudbaleri = await _fudbalerService.Get<List<Model.Fudbaler>>(request);
-            cmbFudbaler.DataSource = fudbaleri;
-            cmbFudbaler.DisplayMember = "Ime";
-            cmbFudbaler.ValueMember = "FudbalerId";
-
-            if (fudbaleri.Count == 0)
+            var request = new FudbalerSearchObject() { KlubId = klubId };
+            var models = await ServiceHelper<FudbalerSearchObject, Model.Fudbaler>.Load("Fudbaler", cmbFudbaler, "Ime", "FudbalerId", request);
+            if (models.Count == 0)
                 cmbFudbaler.ResetText();
         }
 
@@ -179,6 +163,13 @@ namespace BHFudbal.WinUI
         {
             var ligaId = (cmbLigaNovi.SelectedItem as Model.Liga).LigaId1;
             await LoadNoveKlubove(ligaId);
+        }
+
+        private async Task UpdatePlayerAfterCompleteTransfer(TransferInsertRequest request)
+        {
+            var fudbaler = await _fudbalerService.GetById<Model.Fudbaler>(request.FudbalerId);
+            fudbaler.KlubId = request.KlubId;
+            await _fudbalerService.Update<Model.Fudbaler>(fudbaler.FudbalerId, fudbaler);
         }
     }
 }

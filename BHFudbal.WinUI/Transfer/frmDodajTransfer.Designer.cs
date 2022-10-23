@@ -64,6 +64,7 @@ namespace BHFudbal.WinUI
             // 
             // cmbLiga
             // 
+            this.cmbLiga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(12, 130);
@@ -112,6 +113,7 @@ namespace BHFudbal.WinUI
             // 
             // cmbKlub
             // 
+            this.cmbKlub.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbKlub.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbKlub.FormattingEnabled = true;
             this.cmbKlub.Location = new System.Drawing.Point(12, 214);
@@ -132,6 +134,7 @@ namespace BHFudbal.WinUI
             // 
             // cmbFudbaler
             // 
+            this.cmbFudbaler.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFudbaler.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbFudbaler.FormattingEnabled = true;
             this.cmbFudbaler.Location = new System.Drawing.Point(12, 304);
@@ -187,6 +190,7 @@ namespace BHFudbal.WinUI
             // 
             // cmbKlubNovi
             // 
+            this.cmbKlubNovi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbKlubNovi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbKlubNovi.FormattingEnabled = true;
             this.cmbKlubNovi.Location = new System.Drawing.Point(613, 214);
@@ -206,6 +210,7 @@ namespace BHFudbal.WinUI
             // 
             // cmbLigaNovi
             // 
+            this.cmbLigaNovi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLigaNovi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbLigaNovi.FormattingEnabled = true;
             this.cmbLigaNovi.Location = new System.Drawing.Point(613, 130);
