@@ -24,6 +24,11 @@ namespace BHFudbal.Services.Implementations
                 entity = entity.Where(x => x.SezonaId == search.SezonaId);
             }
 
+            if(search?.FudbalerId != null)
+            {
+                entity = entity.Where(x => x.FudbalerId == search.FudbalerId);
+            }
+
             entity = entity.Include(x => x.Klub).Include(x => x.Sezona).Include(x => x.Fudbaler).Include(x => x.StariKlub);
 
             return _mapper.Map<List<Model.Transfer>>(entity);

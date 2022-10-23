@@ -58,7 +58,7 @@ namespace BHFudbal.WinUI
             var result = await _transferService.Post<Model.Transfer>(request);
 
             if (result != null)
-                MessageBox.Show("Uspjesno izvrsen transfer.");
+                MessageBox.Show("Uspješno izvršen transfer.");
         }
 
         private bool isRequestValid()
@@ -75,7 +75,7 @@ namespace BHFudbal.WinUI
         {
             if (request.StariKlubId == request.KlubId)
             {
-                return "Ne moze se izvrsiti transfer između istih klubova!";
+                return "Ne moze se izvršiti transfer između istih klubova!";
             }
 
             var searchObject = new TransferSearchObject()
@@ -87,7 +87,7 @@ namespace BHFudbal.WinUI
             var result = await _transferService.Get<List<Model.Transfer>>(searchObject);
             if(result.Count > 0)
             {
-                return "Igrač je već obavio jedan transfer za tekuću sezonu!";
+                return "Fudbaler je već obavio jedan transfer za tekuću sezonu!";
             }
 
             return null;
