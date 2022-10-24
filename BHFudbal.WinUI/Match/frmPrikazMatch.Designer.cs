@@ -34,20 +34,23 @@ namespace BHFudbal.WinUI.Match
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnPrikazi = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lbMatches = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // cmbSezona
             // 
+            this.cmbSezona.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSezona.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbSezona.FormattingEnabled = true;
             this.cmbSezona.Location = new System.Drawing.Point(12, 38);
             this.cmbSezona.Name = "cmbSezona";
             this.cmbSezona.Size = new System.Drawing.Size(163, 33);
             this.cmbSezona.TabIndex = 0;
+            this.cmbSezona.SelectedIndexChanged += new System.EventHandler(this.cmbSezona_SelectedIndexChanged);
             // 
             // cmbLiga
             // 
+            this.cmbLiga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(260, 38);
@@ -83,23 +86,24 @@ namespace BHFudbal.WinUI.Match
             this.btnPrikazi.TabIndex = 4;
             this.btnPrikazi.Text = "Prikaži";
             this.btnPrikazi.UseVisualStyleBackColor = true;
+            this.btnPrikazi.Click += new System.EventHandler(this.btnPrikazi_Click);
             // 
-            // listBox1
+            // lbMatches
             // 
-            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 29;
-            this.listBox1.Location = new System.Drawing.Point(12, 99);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(569, 265);
-            this.listBox1.TabIndex = 7;
+            this.lbMatches.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbMatches.FormattingEnabled = true;
+            this.lbMatches.ItemHeight = 29;
+            this.lbMatches.Location = new System.Drawing.Point(12, 99);
+            this.lbMatches.Name = "lbMatches";
+            this.lbMatches.Size = new System.Drawing.Size(569, 265);
+            this.lbMatches.TabIndex = 7;
             // 
             // frmPrikazMatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(598, 382);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.lbMatches);
             this.Controls.Add(this.btnPrikazi);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -108,6 +112,7 @@ namespace BHFudbal.WinUI.Match
             this.Name = "frmPrikazMatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmPrikazMatch";
+            this.Load += new System.EventHandler(this.frmPrikazMatch_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,6 +125,6 @@ namespace BHFudbal.WinUI.Match
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnPrikazi;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox lbMatches;
     }
 }

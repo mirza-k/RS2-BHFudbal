@@ -15,7 +15,8 @@ namespace BHFudbal.BHFudbalDatabase
 
         public int LigaId1 { get; set; }
         public string Naziv { get; set; }
-
+        public int SezonaId { get; set; }
+        public Sezona Sezona { get; set; }
         public virtual ICollection<LigaKlub> LigaKlubs { get; set; }
         public virtual ICollection<Match> Matches { get; set; }
     }

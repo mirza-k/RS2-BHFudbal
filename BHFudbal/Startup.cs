@@ -40,6 +40,7 @@ namespace BHFudbal
             services.AddScoped<ILigaService, LigaService>();
             services.AddScoped<ITransferService, TransferService>();
             services.AddScoped<ISezonaService, SezonaService>();
+            services.AddScoped<IMatchService, MatchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

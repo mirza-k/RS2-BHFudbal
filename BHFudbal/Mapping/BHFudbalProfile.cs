@@ -48,6 +48,9 @@ namespace BHFudbal.Mapping
 
             //Sezona
             CreateMap<Sezona, Model.Sezona>();
+
+            //Match
+            CreateMap<Match, Model.Match>();
         }
     }
 }

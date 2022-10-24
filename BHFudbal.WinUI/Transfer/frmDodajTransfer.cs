@@ -97,12 +97,6 @@ namespace BHFudbal.WinUI
                 return "Fudbaler je već obavio jedan transfer za tekuću sezonu!";
             }
 
-            //var fudbaler = await _fudbalerService.GetById<Model.Fudbaler>(request.FudbalerId);
-            //if(fudbaler.KlubId == request.KlubId)
-            //{
-            //    return "Nemoguće izvršiti transfer jer se fudbaler vec nalazi u tom klubu!";
-            //}
-
             return null;
         }
 
