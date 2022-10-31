@@ -18,7 +18,7 @@ namespace BHFudbal.Services.Implementations
         public IEnumerable<Model.Match> Get(MatchSearchObject search = null)
         {
             var entity = Context.Set<Match>().AsQueryable();
-            if(search?.LigaId != null)
+            if (search?.LigaId != null)
             {
                 entity = entity.Where(x => x.LigaId == search.LigaId).OrderBy(x => x.RedniBrojKola);
             }
@@ -32,7 +32,7 @@ namespace BHFudbal.Services.Implementations
                 GostId = x.GostId,
                 MatchId = x.MatchId,
                 RedniBrojKola = x.RedniBrojKola,
-                Prikaz = x.Domacin.Naziv + "    " + x.Rezultat + "    " + x.Gost.Naziv
+                Prikaz = x.RedniBrojKola + ".kolo" + "        " + x.Domacin.Naziv + "    " + x.Rezultat + "    " + x.Gost.Naziv
             });
 
             return _mapper.Map<List<Model.Match>>(models);
