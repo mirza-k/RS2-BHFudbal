@@ -70,6 +70,12 @@
     </Compile>
     <Compile Include="Helpers\MessageBoxHelper.cs" />
     <Compile Include="Helpers\ServiceHelper.cs" />
+    <Compile Include="Izvjestaj\frmIzvjestaj.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Izvjestaj\frmIzvjestaj.Designer.cs">
+      <DependentUpon>frmIzvjestaj.cs</DependentUpon>
+    </Compile>
     <Compile Include="Match\frmPrikazMatch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,9 @@
     <Compile Include="Transfer\frmPrikazTransfera.Designer.cs">
       <DependentUpon>frmPrikazTransfera.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Izvjestaj\frmIzvjestaj.resx">
+      <DependentUpon>frmIzvjestaj.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Match\frmPrikazMatch.resx">
       <DependentUpon>frmPrikazMatch.cs</DependentUpon>
     </EmbeddedResource>
@@ -183,5 +192,6 @@
       <Name>BHFudbal.Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

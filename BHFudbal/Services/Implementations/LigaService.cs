@@ -18,7 +18,7 @@ namespace BHFudbal.Services.Implementations
         public override IEnumerable<Liga> Get(LigaSearchObject search = null)
         {
             var entity = Context.Set<BHFudbal.BHFudbalDatabase.LigaId>().AsQueryable();
-            if (search?.SezonaId != null)
+            if (search?.SezonaId != 0)
             {
                 entity = entity.Where(x => x.SezonaId == search.SezonaId);
             }

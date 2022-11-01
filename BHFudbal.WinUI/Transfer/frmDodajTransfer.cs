@@ -38,7 +38,7 @@ namespace BHFudbal.WinUI
             {
                 FudbalerId = int.Parse(cmbFudbaler.SelectedValue.ToString()),
                 KlubId = int.Parse(cmbKlubNovi.SelectedValue.ToString()),
-                SezonaId = 1,
+                SezonaId = 4,
                 StariKlubId = int.Parse(cmbKlub.SelectedValue.ToString())
             };
 

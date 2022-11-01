@@ -1,6 +1,4 @@
-﻿using BHFudbal.WinUI.Korisnici;
-using BHFudbal.WinUI.Match;
-using BHFudbal.WinUI.Transfer;
+﻿using BHFudbal.WinUI.Izvjestaj;
 using System;
 using System.Windows.Forms;
 
@@ -16,7 +14,7 @@ namespace BHFudbal.WinUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmPrikazMatch());
+            Application.Run(new frmIzvjestaj());
         }
     }
 }
