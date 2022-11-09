@@ -15,16 +15,17 @@ namespace BHFudbal.Services.Implementations
         {
         }
 
-        public bool Login(KorisnikInsertRequest login)
+        public int Login(KorisnikInsertRequest login)
         {
             var query = Context.Set<Korisnik>().Include(x => x.KorisničkiRačun).AsQueryable();
 
             if (!string.IsNullOrEmpty(login?.Username) && !string.IsNullOrEmpty(login?.Password))
             {
-                return query.Any(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
+                var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
+                return korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
             }
 
-            return false;
+            return 0;
         }
 
         public override IEnumerable<Model.Korisnik> Get(KorisnikSearchObject search = null)
@@ -39,6 +40,17 @@ namespace BHFudbal.Services.Implementations
             entity = entity.Include(x => x.Grad).Include(x => x.KorisničkiRačun).Include(x => x.Uloga);
 
             return _mapper.Map<List<Model.Korisnik>>(entity);
+        }
+
+        public override Model.Korisnik GetById(int id)
+        {
+            var entity = Context.Set<Korisnik>().AsQueryable();
+
+            entity = entity.Where(x => x.KorisnikId == id);
+
+            entity = entity.Include(x => x.Grad).Include(x => x.KorisničkiRačun).Include(x => x.Uloga);
+
+            return _mapper.Map<Model.Korisnik>(entity.FirstOrDefault());
         }
     }
 }

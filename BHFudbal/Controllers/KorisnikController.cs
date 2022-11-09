@@ -14,7 +14,7 @@ namespace BHFudbal.Controllers
         }
 
         [HttpPost("login")]
-        public bool Login([FromBody] KorisnikInsertRequest login)
+        public int Login([FromBody] KorisnikInsertRequest login)
         {
             return _korisnikService.Login(login);
         }

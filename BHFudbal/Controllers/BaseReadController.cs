@@ -1,4 +1,5 @@
 ﻿using BHFudbal.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ namespace BHFudbal.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class BaseReadController<T, TSearch> : ControllerBase where T : class where TSearch : class
     {
         protected readonly IReadService<T, TSearch> _service;

@@ -5,6 +5,6 @@ namespace BHFudbal.Services.Interfaces
 {
     public interface IKorisnikService : ICRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
-        public bool Login(KorisnikInsertRequest login);
+        public int Login(KorisnikInsertRequest login);
     }
 }
