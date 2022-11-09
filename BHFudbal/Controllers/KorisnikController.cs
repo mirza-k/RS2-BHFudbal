@@ -1,6 +1,7 @@
 ﻿using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BHFudbal.Controllers
@@ -14,6 +15,7 @@ namespace BHFudbal.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public int Login([FromBody] KorisnikInsertRequest login)
         {
             return _korisnikService.Login(login);

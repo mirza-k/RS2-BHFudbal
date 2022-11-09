@@ -7,7 +7,7 @@ namespace BHFudbal.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[Authorize]
+    [Authorize]
     public class BaseReadController<T, TSearch> : ControllerBase where T : class where TSearch : class
     {
         protected readonly IReadService<T, TSearch> _service;
@@ -28,6 +28,5 @@ namespace BHFudbal.Controllers
         {
             return _service.GetById(id);
         }
-
     }
 }
