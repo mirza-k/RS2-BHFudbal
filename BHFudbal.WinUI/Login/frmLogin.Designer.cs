@@ -39,7 +39,7 @@ namespace BHFudbal.WinUI.Login
             // txt_Password
             // 
             this.txt_Password.Location = new System.Drawing.Point(92, 151);
-            this.txt_Password.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_Password.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Password.Name = "txt_Password";
             this.txt_Password.PasswordChar = '*';
             this.txt_Password.Size = new System.Drawing.Size(356, 22);
@@ -58,7 +58,7 @@ namespace BHFudbal.WinUI.Login
             // txt_Username
             // 
             this.txt_Username.Location = new System.Drawing.Point(92, 78);
-            this.txt_Username.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_Username.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Username.Name = "txt_Username";
             this.txt_Username.Size = new System.Drawing.Size(356, 22);
             this.txt_Username.TabIndex = 12;
@@ -66,7 +66,7 @@ namespace BHFudbal.WinUI.Login
             // btnLogin
             // 
             this.btnLogin.Location = new System.Drawing.Point(92, 242);
-            this.btnLogin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnLogin.Margin = new System.Windows.Forms.Padding(4);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(357, 43);
             this.btnLogin.TabIndex = 11;
@@ -94,8 +94,9 @@ namespace BHFudbal.WinUI.Login
             this.Controls.Add(this.txt_Username);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmLogin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login";
             this.ResumeLayout(false);
             this.PerformLayout();

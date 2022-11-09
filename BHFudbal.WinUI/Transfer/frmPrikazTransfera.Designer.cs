@@ -136,6 +136,7 @@ namespace BHFudbal.WinUI.Transfer
             this.Controls.Add(this.cmbSezona);
             this.Controls.Add(this.label1);
             this.Name = "frmPrikazTransfera";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmPrikazTransfera";
             this.Load += new System.EventHandler(this.frmPrikazTransfera_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransferi)).EndInit();

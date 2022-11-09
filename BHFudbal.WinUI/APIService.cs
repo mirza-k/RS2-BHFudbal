@@ -8,6 +8,10 @@ namespace BHFudbal.WinUI
     public class APIService
     {
         private string _route { get; set; }
+        public static string Username { get; set; }
+        public static string Password { get; set; }
+
+
         public APIService(string route)
         {
             _route = route;
@@ -21,7 +25,7 @@ namespace BHFudbal.WinUI
                 url += "?";
                 url += await search.ToQueryString();
             }
-            var result = await url.GetJsonAsync<T>();
+            var result = await url.WithBasicAuth(Username, Password).GetJsonAsync<T>();
             return result;
         }
 
@@ -29,7 +33,7 @@ namespace BHFudbal.WinUI
         {
             var url = $"{Properties.Settings.Default.APIUrl}/{_route}";
 
-            var result = await url.PostJsonAsync(request).ReceiveJson<T>();
+            var result = await url.WithBasicAuth(Username, Password).PostJsonAsync(request).ReceiveJson<T>();
 
             return result;
         }
@@ -37,7 +41,7 @@ namespace BHFudbal.WinUI
         public async Task<bool> Login(KorisnikInsertRequest request)
         {
             var url = $"{Properties.Settings.Default.APIUrl}/{_route}";
-            var result = await url.PostJsonAsync(request).ReceiveJson<bool>();
+            var result = await url.WithBasicAuth(Username, Password).PostJsonAsync(request).ReceiveJson<bool>();
 
             return result;
         }
@@ -50,14 +54,14 @@ namespace BHFudbal.WinUI
                 url += $"/{id}";
             }
 
-            var result = await url.GetJsonAsync<T>();
+            var result = await url.WithBasicAuth(Username, Password).GetJsonAsync<T>();
             return result;
         }
 
         public async Task<T> Update<T>(int id, object request)
         {
             var url = $"{Properties.Settings.Default.APIUrl}/{_route}/{id}";
-            var result = await url.PutJsonAsync(request).ReceiveJson<T>();
+            var result = await url.WithBasicAuth(Username, Password).PutJsonAsync(request).ReceiveJson<T>();
 
             return result;
         }

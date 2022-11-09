@@ -1,4 +1,5 @@
 ﻿using BHFudbal.Model.Requests;
+using BHFudbal.WinUI.MDIHome;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +25,10 @@ namespace BHFudbal.WinUI.Login
         {
             var username = txt_Username.Text;
             var password = txt_Password.Text;
+
+            APIService.Username = username;
+            APIService.Password = password;
+
             try
             {
                 var request = new KorisnikInsertRequest()
@@ -37,7 +42,10 @@ namespace BHFudbal.WinUI.Login
 
                 if (result)
                 {
-                    MessageBox.Show("Ulogovan");
+                    this.Hide();
+                    MDIHomeFrm frm = new MDIHomeFrm();
+                    frm.ShowDialog();
+                    this.Close();
                 }
                 else
                 {

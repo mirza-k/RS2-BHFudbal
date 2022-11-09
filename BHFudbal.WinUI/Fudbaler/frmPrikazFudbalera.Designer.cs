@@ -132,7 +132,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(12, 12);
             this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(139, 25);
+            this.cmbLiga.Size = new System.Drawing.Size(139, 30);
             this.cmbLiga.TabIndex = 1;
             this.cmbLiga.SelectedIndexChanged += new System.EventHandler(this.cmbLiga_SelectedIndexChanged);
             // 
@@ -142,7 +142,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.cmbKlub.FormattingEnabled = true;
             this.cmbKlub.Location = new System.Drawing.Point(203, 12);
             this.cmbKlub.Name = "cmbKlub";
-            this.cmbKlub.Size = new System.Drawing.Size(139, 25);
+            this.cmbKlub.Size = new System.Drawing.Size(139, 30);
             this.cmbKlub.TabIndex = 2;
             // 
             // cmbPrikazi
@@ -165,6 +165,7 @@ namespace BHFudbal.WinUI.Fudbaler
             this.Controls.Add(this.cmbLiga);
             this.Controls.Add(this.dgvFudbaleri);
             this.Name = "frmPrikazFudbalera";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PrikazFudbalera";
             this.Load += new System.EventHandler(this.PrikazFudbalera_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFudbaleri)).EndInit();

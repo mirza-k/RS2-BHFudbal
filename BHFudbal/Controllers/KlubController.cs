@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BHFudbal.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class KlubController : BaseCRUDController<Model.Klub, KlubSearchObject, KlubInsertRequest, KlubUpdateRequest>
     {
         public KlubController(IKlubService service) : base(service)

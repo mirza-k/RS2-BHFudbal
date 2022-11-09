@@ -1,4 +1,6 @@
 ﻿using BHFudbal.WinUI.Izvjestaj;
+using BHFudbal.WinUI.Login;
+using BHFudbal.WinUI.MDIHome;
 using System;
 using System.Windows.Forms;
 
@@ -14,7 +16,7 @@ namespace BHFudbal.WinUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmIzvjestaj());
+            Application.Run(new frmLogin());
         }
     }
 }

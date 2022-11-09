@@ -82,6 +82,12 @@
     <Compile Include="Match\frmPrikazMatch.Designer.cs">
       <DependentUpon>frmPrikazMatch.cs</DependentUpon>
     </Compile>
+    <Compile Include="MDIHome\MDIHomeFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MDIHome\MDIHomeFrm.Designer.cs">
+      <DependentUpon>MDIHomeFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Transfer\frmDodajTransfer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Match\frmPrikazMatch.resx">
       <DependentUpon>frmPrikazMatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MDIHome\MDIHomeFrm.resx">
+      <DependentUpon>MDIHomeFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transfer\frmDodajTransfer.resx">
       <DependentUpon>frmDodajTransfer.cs</DependentUpon>

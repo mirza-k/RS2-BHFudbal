@@ -264,6 +264,7 @@ namespace BHFudbal.WinUI
             this.Controls.Add(this.cmbLiga);
             this.Controls.Add(this.label1);
             this.Name = "frmDodajTransfer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmDodajTransfer";
             this.Load += new System.EventHandler(this.frmDodajTransfer_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

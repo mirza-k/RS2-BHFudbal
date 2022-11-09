@@ -31,13 +31,13 @@ namespace BHFudbal.WinUI.Korisnici
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dgvKorisnici = new System.Windows.Forms.DataGridView();
-            this.btnPrikazi = new System.Windows.Forms.Button();
-            this.txtPretraga = new System.Windows.Forms.TextBox();
             this.Ime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Prezime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Grad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Uloga = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnPrikazi = new System.Windows.Forms.Button();
+            this.txtPretraga = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKorisnici)).BeginInit();
             this.SuspendLayout();
@@ -70,6 +70,51 @@ namespace BHFudbal.WinUI.Korisnici
             this.dgvKorisnici.Size = new System.Drawing.Size(770, 351);
             this.dgvKorisnici.TabIndex = 0;
             // 
+            // Ime
+            // 
+            this.Ime.DataPropertyName = "Ime";
+            this.Ime.HeaderText = "Ime";
+            this.Ime.MinimumWidth = 6;
+            this.Ime.Name = "Ime";
+            this.Ime.ReadOnly = true;
+            this.Ime.Width = 125;
+            // 
+            // Prezime
+            // 
+            this.Prezime.DataPropertyName = "Prezime";
+            this.Prezime.HeaderText = "Prezime";
+            this.Prezime.MinimumWidth = 6;
+            this.Prezime.Name = "Prezime";
+            this.Prezime.ReadOnly = true;
+            this.Prezime.Width = 125;
+            // 
+            // Username
+            // 
+            this.Username.DataPropertyName = "Username";
+            this.Username.HeaderText = "Username";
+            this.Username.MinimumWidth = 6;
+            this.Username.Name = "Username";
+            this.Username.ReadOnly = true;
+            this.Username.Width = 125;
+            // 
+            // Grad
+            // 
+            this.Grad.DataPropertyName = "Grad";
+            this.Grad.HeaderText = "Grad";
+            this.Grad.MinimumWidth = 6;
+            this.Grad.Name = "Grad";
+            this.Grad.ReadOnly = true;
+            this.Grad.Width = 125;
+            // 
+            // Uloga
+            // 
+            this.Uloga.DataPropertyName = "Uloga";
+            this.Uloga.HeaderText = "Uloga";
+            this.Uloga.MinimumWidth = 6;
+            this.Uloga.Name = "Uloga";
+            this.Uloga.ReadOnly = true;
+            this.Uloga.Width = 125;
+            // 
             // btnPrikazi
             // 
             this.btnPrikazi.Location = new System.Drawing.Point(710, 37);
@@ -87,36 +132,6 @@ namespace BHFudbal.WinUI.Korisnici
             this.txtPretraga.Size = new System.Drawing.Size(584, 22);
             this.txtPretraga.TabIndex = 2;
             // 
-            // Ime
-            // 
-            this.Ime.DataPropertyName = "Ime";
-            this.Ime.HeaderText = "Ime";
-            this.Ime.Name = "Ime";
-            // 
-            // Prezime
-            // 
-            this.Prezime.DataPropertyName = "Prezime";
-            this.Prezime.HeaderText = "Prezime";
-            this.Prezime.Name = "Prezime";
-            // 
-            // Username
-            // 
-            this.Username.DataPropertyName = "Username";
-            this.Username.HeaderText = "Username";
-            this.Username.Name = "Username";
-            // 
-            // Grad
-            // 
-            this.Grad.DataPropertyName = "Grad";
-            this.Grad.HeaderText = "Grad";
-            this.Grad.Name = "Grad";
-            // 
-            // Uloga
-            // 
-            this.Uloga.DataPropertyName = "Uloga";
-            this.Uloga.HeaderText = "Uloga";
-            this.Uloga.Name = "Uloga";
-            // 
             // frmKorisnici
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -126,6 +141,7 @@ namespace BHFudbal.WinUI.Korisnici
             this.Controls.Add(this.btnPrikazi);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmKorisnici";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmKorisnici";
             this.Load += new System.EventHandler(this.frmKorisnici_Load);
             this.groupBox1.ResumeLayout(false);
