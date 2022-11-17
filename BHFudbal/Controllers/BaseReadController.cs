@@ -26,6 +26,7 @@ namespace BHFudbal.Controllers
         [HttpGet("{id}")]
         public virtual T GetById(int id)
         {
+            //return _service.GetById(id);
             return _service.GetById(id);
         }
     }
