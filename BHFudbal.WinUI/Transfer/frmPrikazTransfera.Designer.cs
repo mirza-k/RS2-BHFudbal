@@ -53,6 +53,7 @@ namespace BHFudbal.WinUI.Transfer
             // 
             // cmbSezona
             // 
+            this.cmbSezona.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSezona.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbSezona.FormattingEnabled = true;
             this.cmbSezona.Location = new System.Drawing.Point(12, 56);
@@ -81,6 +82,7 @@ namespace BHFudbal.WinUI.Transfer
             this.NoviKlub});
             this.dgvTransferi.Location = new System.Drawing.Point(12, 118);
             this.dgvTransferi.Name = "dgvTransferi";
+            this.dgvTransferi.ReadOnly = true;
             this.dgvTransferi.RowHeadersWidth = 51;
             this.dgvTransferi.RowTemplate.Height = 24;
             this.dgvTransferi.Size = new System.Drawing.Size(776, 320);
@@ -92,6 +94,7 @@ namespace BHFudbal.WinUI.Transfer
             this.Ime.HeaderText = "Ime fudbalera";
             this.Ime.MinimumWidth = 6;
             this.Ime.Name = "Ime";
+            this.Ime.ReadOnly = true;
             this.Ime.Width = 125;
             // 
             // Cijena
@@ -100,6 +103,7 @@ namespace BHFudbal.WinUI.Transfer
             this.Cijena.HeaderText = "Cijena";
             this.Cijena.MinimumWidth = 6;
             this.Cijena.Name = "Cijena";
+            this.Cijena.ReadOnly = true;
             this.Cijena.Width = 125;
             // 
             // GodineUgovora
@@ -108,6 +112,7 @@ namespace BHFudbal.WinUI.Transfer
             this.GodineUgovora.HeaderText = "Godine ugovora";
             this.GodineUgovora.MinimumWidth = 6;
             this.GodineUgovora.Name = "GodineUgovora";
+            this.GodineUgovora.ReadOnly = true;
             this.GodineUgovora.Width = 125;
             // 
             // StariKlub
@@ -116,6 +121,7 @@ namespace BHFudbal.WinUI.Transfer
             this.StariKlub.HeaderText = "Stari klub";
             this.StariKlub.MinimumWidth = 6;
             this.StariKlub.Name = "StariKlub";
+            this.StariKlub.ReadOnly = true;
             this.StariKlub.Width = 125;
             // 
             // NoviKlub
@@ -124,6 +130,7 @@ namespace BHFudbal.WinUI.Transfer
             this.NoviKlub.HeaderText = "Novi klub";
             this.NoviKlub.MinimumWidth = 6;
             this.NoviKlub.Name = "NoviKlub";
+            this.NoviKlub.ReadOnly = true;
             this.NoviKlub.Width = 125;
             // 
             // frmPrikazTransfera

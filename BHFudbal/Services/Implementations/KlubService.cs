@@ -28,5 +28,20 @@ namespace BHFudbal.Services.Implementations
             return _mapper.Map<List<Model.Klub>>(entity);
         }
 
+        public override Model.Klub Update(int id, KlubUpdateRequest request)
+        {
+            var set = Context.Set<Klub>();
+            var entity = set.Find(id);
+            _mapper.Map(request, entity);
+            Context.Entry(entity).State = EntityState.Modified;
+            Context.Entry(entity).Collection(x => x.Transfers).IsModified = false;
+            Context.Entry(entity).Collection(x => x.Fudbalers).IsModified = false;
+            Context.Entry(entity).Collection(x => x.LigaKlubs).IsModified = false;
+            Context.Entry(entity).Collection(x => x.MatchDomacins).IsModified = false;
+            Context.Entry(entity).Collection(x => x.MatchGosts).IsModified = false;
+            Context.SaveChanges();
+            return _mapper.Map<Model.Klub>(entity);
+        }
+
     }
 }

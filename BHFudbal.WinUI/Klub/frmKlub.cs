@@ -148,6 +148,7 @@ namespace BHFudbal.WinUI.Klub
             request.Naziv = txtNaziv.Text;
             request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
             request.Nadimak = txtNadimak.Text;
+            request.KlubId = this.KlubId;
 
             int godinaOsnivanja;
             if (int.TryParse(txtGodinaOsnivanja.Text, out godinaOsnivanja))

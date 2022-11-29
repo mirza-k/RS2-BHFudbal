@@ -51,6 +51,7 @@ namespace BHFudbal.WinUI.Klub
             this.Nadimak});
             this.dgvKlub.Location = new System.Drawing.Point(12, 51);
             this.dgvKlub.Name = "dgvKlub";
+            this.dgvKlub.ReadOnly = true;
             this.dgvKlub.RowHeadersWidth = 51;
             this.dgvKlub.RowTemplate.Height = 24;
             this.dgvKlub.Size = new System.Drawing.Size(776, 387);
@@ -63,6 +64,7 @@ namespace BHFudbal.WinUI.Klub
             this.Naziv.HeaderText = "Naziv";
             this.Naziv.MinimumWidth = 6;
             this.Naziv.Name = "Naziv";
+            this.Naziv.ReadOnly = true;
             this.Naziv.Width = 125;
             // 
             // Grad
@@ -71,6 +73,7 @@ namespace BHFudbal.WinUI.Klub
             this.Grad.HeaderText = "Grad";
             this.Grad.MinimumWidth = 6;
             this.Grad.Name = "Grad";
+            this.Grad.ReadOnly = true;
             this.Grad.Width = 125;
             // 
             // GodinaOsnivanja
@@ -79,6 +82,7 @@ namespace BHFudbal.WinUI.Klub
             this.GodinaOsnivanja.HeaderText = "GodinaOsnivanja";
             this.GodinaOsnivanja.MinimumWidth = 6;
             this.GodinaOsnivanja.Name = "GodinaOsnivanja";
+            this.GodinaOsnivanja.ReadOnly = true;
             this.GodinaOsnivanja.Width = 125;
             // 
             // Liga
@@ -87,6 +91,7 @@ namespace BHFudbal.WinUI.Klub
             this.Liga.HeaderText = "Liga";
             this.Liga.MinimumWidth = 6;
             this.Liga.Name = "Liga";
+            this.Liga.ReadOnly = true;
             this.Liga.Width = 125;
             // 
             // Nadimak
@@ -95,15 +100,17 @@ namespace BHFudbal.WinUI.Klub
             this.Nadimak.HeaderText = "Nadimak";
             this.Nadimak.MinimumWidth = 6;
             this.Nadimak.Name = "Nadimak";
+            this.Nadimak.ReadOnly = true;
             this.Nadimak.Width = 125;
             // 
             // cmbLiga
             // 
+            this.cmbLiga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLiga.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbLiga.FormattingEnabled = true;
             this.cmbLiga.Location = new System.Drawing.Point(12, 12);
             this.cmbLiga.Name = "cmbLiga";
-            this.cmbLiga.Size = new System.Drawing.Size(177, 28);
+            this.cmbLiga.Size = new System.Drawing.Size(177, 33);
             this.cmbLiga.TabIndex = 1;
             // 
             // btbPrikazi

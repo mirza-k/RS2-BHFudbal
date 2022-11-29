@@ -158,7 +158,6 @@ namespace BHFudbal.BHFudbalDatabase
                 entity.HasOne(d => d.Grad)
                     .WithMany(p => p.Klubs)
                     .HasForeignKey(d => d.GradId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Fk_Grad_Klub_GradId");
             });
 
