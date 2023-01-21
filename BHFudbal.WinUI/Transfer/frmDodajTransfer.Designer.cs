@@ -166,14 +166,14 @@ namespace BHFudbal.WinUI
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(214, 246);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(149, 25);
+            this.label8.Size = new System.Drawing.Size(233, 31);
             this.label8.TabIndex = 12;
-            this.label8.Text = "GodineUgovora";
+            this.label8.Text = "Broj godina ugovora";
             // 
             // txtGodineUgovora
             // 
             this.txtGodineUgovora.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGodineUgovora.Location = new System.Drawing.Point(219, 275);
+            this.txtGodineUgovora.Location = new System.Drawing.Point(219, 280);
             this.txtGodineUgovora.Name = "txtGodineUgovora";
             this.txtGodineUgovora.Size = new System.Drawing.Size(143, 28);
             this.txtGodineUgovora.TabIndex = 11;

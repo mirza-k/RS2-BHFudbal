@@ -90,13 +90,30 @@ namespace BHFudbal.WinUI.Fudbaler
             var request = new FudbalerInsertRequest();
             request.Ime = txtIme.Text;
             request.Prezime = txtPrezime.Text;
-            request.Visina = txtVisina.Text;
             request.Težina = txtTezina.Text;
             request.JačaNoga = txtJacaNoga.Text;
             request.KlubId = int.Parse(cmbKlub.SelectedValue.ToString());
             request.DrzavaId = int.Parse(cmbDrzava.SelectedValue.ToString());
             request.DatumRodjenja = dpDatumRodjenjanja.Value;
             request.Slika = ImageHelper.FromImageToByte(pbFudbaler.Image);
+
+            int visina;
+            if (int.TryParse(txtVisina.Text, out visina))
+                request.Visina = visina.ToString();
+            else
+            {
+                MessageBox.Show("Visina mora biti numericka vrijednost!");
+                return;
+            }
+            
+            int tezina;
+            if (int.TryParse(txtTezina.Text, out tezina))
+                request.Težina = tezina.ToString();
+            else
+            {
+                MessageBox.Show("Tezina mora biti numericka vrijednost!");
+                return;
+            }
 
             var result = await _fudbalerService.Post<Model.Fudbaler>(request);
 

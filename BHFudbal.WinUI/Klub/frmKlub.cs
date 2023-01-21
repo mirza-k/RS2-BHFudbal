@@ -119,11 +119,21 @@ namespace BHFudbal.WinUI.Klub
             }
 
             var request = new KlubInsertRequest();
-            request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
+            //request.GodinaOsnivanja = string.IsNullOrEmpty(txtNadimak.Text) || txtNadimak.Text is string ? 0 : Int32.Parse(txtNadimak.Text);
             request.GradId = int.Parse(cmbGrad.SelectedValue.ToString());
             request.LigaId = int.Parse(cmbLiga.SelectedValue.ToString());
             request.Naziv = txtNaziv.Text;
             request.Grb = ImageHelper.FromImageToByte(imgGrb.Image);
+            request.Nadimak = txtNadimak.Text;
+
+            int godinaOsnivanja;
+            if (int.TryParse(txtGodinaOsnivanja.Text, out godinaOsnivanja))
+                request.GodinaOsnivanja = godinaOsnivanja;
+            else
+            {
+                MessageBox.Show("Godine osnivanja mora biti numericka vrijednost!");
+                return;
+            }
 
             var result = await _klubService.Post<Model.Klub>(request);
 
@@ -153,6 +163,11 @@ namespace BHFudbal.WinUI.Klub
             int godinaOsnivanja;
             if (int.TryParse(txtGodinaOsnivanja.Text, out godinaOsnivanja))
                 request.GodinaOsnivanja = godinaOsnivanja;
+            else
+            {
+                MessageBox.Show("Godine osnivanja mora biti numericka vrijednost!");
+                return;
+            }
 
             var result = await _klubService.Update<Model.Klub>(this.KlubId, request);
             if (result != null)

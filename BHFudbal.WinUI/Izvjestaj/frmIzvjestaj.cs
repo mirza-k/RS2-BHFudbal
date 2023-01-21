@@ -54,7 +54,6 @@ namespace BHFudbal.WinUI.Izvjestaj
 
 
                     int current_Y_value = 310;
-                    //int current_Y_line = 320;
 
                     foreach (Model.Report r in report)
                     {
@@ -64,10 +63,10 @@ namespace BHFudbal.WinUI.Izvjestaj
                         gfx.DrawLine(new XPen(XColor.FromArgb(50, 30, 200)), new XPoint(100, current_Y_value + 15), new XPoint(530, current_Y_value + 15));
 
                         current_Y_value += 35;
-                        //current_Y_line += 20;
                     }
 
                     pdfDocument.Save(sfd.FileName);
+                    MessageBox.Show("Uspjesno generisan PDF!");
                 }
             }
         }

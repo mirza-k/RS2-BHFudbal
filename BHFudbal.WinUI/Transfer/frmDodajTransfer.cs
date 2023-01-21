@@ -11,8 +11,6 @@ namespace BHFudbal.WinUI
 {
     public partial class frmDodajTransfer : Form
     {
-        private readonly APIService _ligaService = new APIService("Liga");
-        private readonly APIService _klubService = new APIService("Klub");
         private readonly APIService _fudbalerService = new APIService("Fudbaler");
         private readonly APIService _transferService = new APIService("Transfer");
 
@@ -31,6 +29,7 @@ namespace BHFudbal.WinUI
         {
             if (!isRequestValid())
             {
+                MessageBox.Show("Potrebno popuniti sve podatke!");
                 return;
             }
 
@@ -45,10 +44,21 @@ namespace BHFudbal.WinUI
             int cijena;
             if (int.TryParse(txtCijena.Text, out cijena))
                 request.Cijena = cijena;
+            else
+            {
+                MessageBox.Show("Cijena mora biti numericka vrijednost!");
+                return;
+            }
 
             int brojGodinaUgovora;
             if (int.TryParse(txtGodineUgovora.Text, out brojGodinaUgovora))
                 request.BrojGodinaUgovora = brojGodinaUgovora;
+            else
+            {
+                MessageBox.Show("Broj godina ugovora mora biti numericka vrijednost!");
+                return;
+            }
+
 
             var validationResults = await IsTransferValid(request);
             if (validationResults != null)
@@ -75,7 +85,9 @@ namespace BHFudbal.WinUI
                 cmbKlub.SelectedValue != null &&
                 cmbKlubNovi.SelectedValue != null &&
                 cmbLiga.SelectedValue != null &&
-                cmbLigaNovi != null;
+                cmbLigaNovi != null &&
+                txtCijena.Text != "" &&
+                txtGodineUgovora.Text != "";
         }
 
         private async Task<string> IsTransferValid(TransferInsertRequest request)
