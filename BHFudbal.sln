@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BHFudbal", "BHFudbal\BHFudb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BHFudbal.Model", "BHFudbal.Model\BHFudbal.Model.csproj", "{76F6A8C3-9F49-4D3D-A760-EC5528AF8447}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{04210D88-D8B5-4226-8EB7-7AC136FCA683}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
