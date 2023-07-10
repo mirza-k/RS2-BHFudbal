@@ -1,0 +1,36 @@
+version: '3'
+services:
+#mssql docker
+  bhfudbal-sql:
+    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=QWElkj132!
+      - MSSQL_PID=Developer
+    ports:
+      - 1433:1433
+    # expose:
+      # - 1433
+    networks:
+      - bhfudbalnet2023
+
+  bhfudbal-api:
+    restart: unless-stopped
+    build:
+      context: .
+    # environment:
+      # - ConnectionStrings:BHFudbalDB=Server=bhfudbal-sql,1433;Database=BHFudbalTestTest;User=sa;Password=QWElkj132!;ConnectRetryCount=0
+      # - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 5001:5001
+    networks:
+      - bhfudbalnet2023
+    links:
+      - bhfudbal-sql
+    depends_on:
+      - bhfudbal-sql
+      
+networks:
+  bhfudbalnet2023:
+    driver: bridge   
