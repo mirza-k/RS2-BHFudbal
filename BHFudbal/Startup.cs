@@ -100,7 +100,6 @@ namespace BHFudbal
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dataContext = scope.ServiceProvider.GetRequiredService<BHFudbalDBContext>();
-                //dataContext.Database.EnsureCreated();
                 dataContext.Database.Migrate();
             }
         }
