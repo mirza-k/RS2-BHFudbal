@@ -1,7 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
-import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
-import 'package:bhfudbal_admin/pages/dodaj_transfer.dart';
 import 'package:bhfudbal_admin/pages/izvjestaji.dart';
 import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
@@ -9,6 +6,8 @@ import 'package:bhfudbal_admin/pages/prikaz_korisnika.dart';
 import 'package:bhfudbal_admin/pages/prikaz_transfera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_utakmica.dart';
 import 'package:flutter/material.dart';
+
+import 'package:bhfudbal_admin/pages/login.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,12 +18,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List pages = [
+    LoginWidget(),
     PrikazKlubovaWidget(),
-    PrikazFudbaleraWidget(),
-    PrikazUtakmicaWidget(),
-    PrikazTransferaWidget(),
-    PrikazKorisnikaWidget(),
-    IzvjestajWidget()
+    // PrikazFudbaleraWidget(),
+    // PrikazUtakmicaWidget(),
+    // PrikazTransferaWidget(),
+    // PrikazKorisnikaWidget(),
+    // IzvjestajWidget()
   ];
 
   int currentIndex = 0;

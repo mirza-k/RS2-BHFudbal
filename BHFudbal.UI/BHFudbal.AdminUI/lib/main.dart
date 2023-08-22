@@ -1,8 +1,13 @@
 import 'package:bhfudbal_admin/pages/home.dart';
+import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => DrzavaProvider())],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

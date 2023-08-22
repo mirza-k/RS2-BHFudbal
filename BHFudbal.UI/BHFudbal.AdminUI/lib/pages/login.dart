@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
+import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
+import 'package:bhfudbal_admin/providers/drzava_provider.dart';
+import 'package:bhfudbal_admin/utils/util.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/login_model.dart';
 
@@ -13,7 +17,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   late LoginModel _model;
-
+  late DrzavaProvider _drzavaProvider;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String? customEmailValidator(BuildContext context, String? value) {
@@ -56,6 +60,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _drzavaProvider = context.read<DrzavaProvider>();
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
       child: Scaffold(
@@ -287,8 +292,39 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0, 0, 0, 16),
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      print('Button pressed ...');
+                                    onPressed: () async {
+                                      var username =
+                                          _model.emailAddressController?.text;
+                                      var password =
+                                          _model.passwordController?.text;
+
+                                      Authorization.username = username;
+                                      Authorization.password = password;
+                                      print('$username -> $password');
+
+                                      try {
+                                        await _drzavaProvider.get();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PrikazKlubovaWidget()));
+                                      } on Exception catch (e) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  title: Text("Error"),
+                                                  content: Text(e.toString()),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: Text("OK"))
+                                                  ],
+                                                ));
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       primary: Color(0xFF4B39EF),
