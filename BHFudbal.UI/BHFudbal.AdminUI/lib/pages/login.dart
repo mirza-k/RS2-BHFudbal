@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, library_private_types_in_public_api, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
+import 'package:bhfudbal_admin/pages/home.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:bhfudbal_admin/utils/util.dart';
@@ -307,8 +308,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PrikazKlubovaWidget()));
+                                                builder: (context) => Home()));
                                       } on Exception catch (e) {
                                         showDialog(
                                             context: context,

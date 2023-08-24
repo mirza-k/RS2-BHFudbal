@@ -19,14 +19,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List pages = [
-    DodajKlubWidget()
-    // LoginWidget(),
-    // PrikazKlubovaWidget(),
-    // PrikazFudbaleraWidget(),
-    // PrikazUtakmicaWidget(),
-    // PrikazTransferaWidget(),
-    // PrikazKorisnikaWidget(),
-    // IzvjestajWidget()
+    PrikazKlubovaWidget(),
+    PrikazFudbaleraWidget(),
+    PrikazUtakmicaWidget(),
+    PrikazTransferaWidget(),
+    PrikazKorisnikaWidget(),
+    IzvjestajWidget()
   ];
 
   int currentIndex = 0;
