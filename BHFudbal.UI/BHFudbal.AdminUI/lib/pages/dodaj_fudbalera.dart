@@ -10,27 +10,85 @@ class DodajFudbaleraWidget extends StatefulWidget {
 
 class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
   late DodajFudbaleraModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late bool imeValid;
+  late bool prezimeValid;
+  late bool visinaValid;
+  late bool tezinaValid;
+  late bool jacaNogaValid;
+  String imeError = "";
+  String prezimeError = "";
+  String visinaError = "";
+  String tezinaError = "";
+  String jacaNogaError = "";
 
-  String? customValidator(BuildContext context, String? value) {
+  String? nameValidator(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter value';
+      return 'Unesite vrijednost!';
     }
 
-    return null; // Return null when the email is valid
+    if (value.length < 5) {
+      return 'Najmanje 5 slova!';
+    }
+
+    return null;
+  }
+
+  String? visinaValidator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Unesite vrijednost!';
+    }
+
+    if (value.length != 3) {
+      return 'Samo 3 cifre!';
+    }
+
+    if (int.tryParse(value) == null) {
+      return 'Samo brojevi!';
+    }
+
+    return null; // Return null when the value is valid
+  }
+
+  String? tezinaValidator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Unesite vrijednost!';
+    }
+
+    if (value.length < 2 || value.length > 3) {
+      return 'Izmedju 2-3 cifre!';
+    }
+
+    if (int.tryParse(value) == null) {
+      return 'Samo brojevi!';
+    }
+
+    return null; // Return null when the value is valid
   }
 
   @override
   void initState() {
     super.initState();
     _model = DodajFudbaleraModel();
-    _model.textController1 ??= TextEditingController();
-    _model.textController2 ??= TextEditingController();
-    _model.textController3 ??= TextEditingController();
-    _model.textController1Validator = customValidator;
-    _model.textController2Validator = customValidator;
-    _model.textController3Validator = customValidator;
+    _model.ime ??= TextEditingController();
+    _model.prezime ??= TextEditingController();
+    _model.visina ??= TextEditingController();
+    _model.tezina ??= TextEditingController();
+    _model.jacaNoga ??= TextEditingController();
+    _model.tezina ??= TextEditingController();
+    _model.imeValidator = nameValidator;
+    _model.prezimeValidator = nameValidator;
+    _model.visinaValidator = visinaValidator;
+    _model.tezinaValidator = tezinaValidator;
+    _model.jacaNogaValidator = nameValidator;
+
+    imeValid = _model.imeValidator!(context, _model.ime!.text) == null;
+    prezimeValid =
+        _model.prezimeValidator!(context, _model.prezime!.text) == null;
+    visinaValid = _model.visinaValidator!(context, _model.visina!.text) == null;
+    tezinaValid = _model.tezinaValidator!(context, _model.tezina!.text) == null;
+    jacaNogaValid =
+        _model.jacaNogaValidator!(context, _model.jacaNoga!.text) == null;
   }
 
   @override
@@ -94,7 +152,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                   children: [
                     Container(
                       width: 200,
-                      height: 500,
+                      height: 600,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -106,7 +164,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                             child: TextFormField(
-                              controller: _model.textController1,
+                              controller: _model.ime,
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -146,10 +204,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).cardColor,
+                                errorText: !imeValid ? imeError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
-                              validator: (value) => _model
-                                  .textController1Validator!(context, value),
+                              validator: (value) =>
+                                  _model.imeValidator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  imeError =
+                                      _model.imeValidator!(context, value) ??
+                                          '';
+                                  imeValid = imeError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                           Padding(
@@ -163,7 +230,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                             child: TextFormField(
-                              controller: _model.textController2,
+                              controller: _model.prezime,
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -203,10 +270,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).cardColor,
+                                errorText: !prezimeValid ? prezimeError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
-                              validator: (value) => _model
-                                  .textController2Validator!(context, value),
+                              validator: (value) =>
+                                  _model.prezimeValidator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  prezimeError = _model.prezimeValidator!(
+                                          context, value) ??
+                                      '';
+                                  prezimeValid = prezimeError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                           Padding(
@@ -277,7 +353,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                             child: TextFormField(
-                              controller: _model.textController3,
+                              controller: _model.visina,
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -317,10 +393,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).cardColor,
+                                errorText: !visinaValid ? visinaError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
-                              validator: (value) => _model
-                                  .textController3Validator!(context, value),
+                              validator: (value) =>
+                                  _model.visinaValidator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  visinaError =
+                                      _model.visinaValidator!(context, value) ??
+                                          '';
+                                  visinaValid = visinaError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -328,7 +413,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                     ),
                     Container(
                       width: 200,
-                      height: 500,
+                      height: 600,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -338,7 +423,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           TextFormField(
-                            controller: _model.textController1,
+                            controller: _model.tezina,
                             autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
@@ -378,10 +463,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                               ),
                               filled: true,
                               fillColor: Theme.of(context).cardColor,
+                              errorText: !tezinaValid ? tezinaError : null,
                             ),
                             style: Theme.of(context).textTheme.bodyText1,
-                            validator: (value) => _model
-                                .textController1Validator!(context, value),
+                            validator: (value) =>
+                                _model.tezinaValidator!(context, value),
+                            onChanged: (value) {
+                              setState(() {
+                                tezinaError =
+                                    _model.tezinaValidator!(context, value) ??
+                                        '';
+                                tezinaValid = tezinaError.isEmpty;
+                              });
+                            },
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 30.0),
@@ -392,7 +486,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                             ),
                           ),
                           TextFormField(
-                            controller: _model.textController1,
+                            controller: _model.jacaNoga,
                             autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
@@ -432,10 +526,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                               ),
                               filled: true,
                               fillColor: Theme.of(context).cardColor,
+                              errorText: !jacaNogaValid ? jacaNogaError : null,
                             ),
                             style: Theme.of(context).textTheme.bodyText1,
-                            validator: (value) => _model
-                                .textController1Validator!(context, value),
+                            validator: (value) =>
+                                _model.jacaNogaValidator!(context, value),
+                            onChanged: (value) {
+                              setState(() {
+                                jacaNogaError =
+                                    _model.jacaNogaValidator!(context, value) ??
+                                        '';
+                                jacaNogaValid = jacaNogaError.isEmpty;
+                              });
+                            },
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 20),
@@ -479,9 +582,9 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue2,
+                              value: _model.klubId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue2 = val!),
+                                  setState(() => _model.klubId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -504,7 +607,14 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                             child: ElevatedButton(
                               onPressed: () {
-                                print('Button pressed ...');
+                                !_model.areTextFieldsValid(
+                                        imeValid,
+                                        prezimeValid,
+                                        visinaValid,
+                                        tezinaValid,
+                                        jacaNogaValid)
+                                    ? null
+                                    : print('Button pressed ...');
                               },
                               child: Text(
                                 'Dodaj',
@@ -514,7 +624,14 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
+                                backgroundColor: !_model.areTextFieldsValid(
+                                        imeValid,
+                                        prezimeValid,
+                                        visinaValid,
+                                        tezinaValid,
+                                        jacaNogaValid)
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColor,
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     24, 0, 24, 0),
                                 elevation: 3,

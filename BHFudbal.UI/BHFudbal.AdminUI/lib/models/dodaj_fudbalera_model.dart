@@ -3,37 +3,44 @@ import 'package:flutter/material.dart';
 class DodajFudbaleraModel {
   final unfocusNode = FocusNode();
   // State field(s) for TextField widget.
-  TextEditingController? textController1;
-  String? Function(BuildContext, String?)? textController1Validator;
+  TextEditingController? ime;
+  String? Function(BuildContext, String?)? imeValidator;
   // State field(s) for TextField widget.
-  TextEditingController? textController2;
-  String? Function(BuildContext, String?)? textController2Validator;
+  TextEditingController? prezime;
+  String? Function(BuildContext, String?)? prezimeValidator;
   DateTime? datePicked;
   // State field(s) for TextField widget.
-  TextEditingController? textController3;
-  String? Function(BuildContext, String?)? textController3Validator;
+  TextEditingController? visina;
+  String? Function(BuildContext, String?)? visinaValidator;
+  // State field(s) for TextField widget.
+  TextEditingController? tezina;
+  String? Function(BuildContext, String?)? tezinaValidator;
   // State field(s) for DropDown widget.
-  String? dropDownValue1;
-  TextEditingController? dropDownValueController1;
+  TextEditingController? jacaNoga;
+  String? Function(BuildContext, String?)? jacaNogaValidator;
   // State field(s) for DropDown widget.
-  String? dropDownValue2;
-  TextEditingController? dropDownValueController2;
+  String? klubId;
+  TextEditingController? klubIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue3;
-  TextEditingController? dropDownValueController3;
-
-  /// Initialization and disposal methods.
-
   void initState(BuildContext context) {}
+
+  bool areTextFieldsValid(bool imeValid, bool prezimeValid, bool visinaValid,
+      bool tezinaValid, bool jacaNogaValid) {
+    return imeValid &&
+        prezimeValid &&
+        visinaValid &&
+        tezinaValid &&
+        jacaNogaValid &&
+        klubId != null &&
+        klubId!.isNotEmpty;
+  }
 
   void dispose() {
     unfocusNode.dispose();
-    textController1?.dispose();
-    textController2?.dispose();
-    textController3?.dispose();
+    ime?.dispose();
+    prezime?.dispose();
+    visina?.dispose();
+    tezina?.dispose();
+    jacaNoga?.dispose();
   }
-
-  /// Action blocks are added here.
-
-  /// Additional helper methods are added here.
 }
