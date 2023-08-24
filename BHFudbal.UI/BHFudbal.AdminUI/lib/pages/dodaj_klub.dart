@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import '../models/dodaj_klub_model.dart';
 
@@ -10,15 +12,66 @@ class DodajKlubWidget extends StatefulWidget {
 
 class _DodajKlubWidgetState extends State<DodajKlubWidget> {
   late DodajKlubModel _model;
-
+  late bool nazivKlubaValid;
+  late bool nadimakKlubaValid;
+  late bool osnivanjeKlubaValid;
+  String nazivKlubaError = "";
+  String nadimakKlubaError = "";
+  String osnivanjeKlubaError = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String? customValidator(BuildContext context, String? value) {
+  void _openImageUploadDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Upload Grb"),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Upload your image here."),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: const Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String? nameValidator(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter value';
+      return 'Unesite vrijednost!';
     }
 
-    return null; // Return null when the email is valid
+    if (value.length < 5) {
+      return 'Najmanje 5 slova!';
+    }
+
+    return null;
+  }
+
+  String? fourDigitValidator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Unesite vrijednost!';
+    }
+
+    if (value.length != 4) {
+      return 'Samo 4 cifre!';
+    }
+
+    if (int.tryParse(value) == null) {
+      return 'Samo brojevi!';
+    }
+
+    return null; // Return null when the value is valid
   }
 
   @override
@@ -30,9 +83,19 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textController3 ??= TextEditingController();
 
-    _model.textController1Validator = customValidator;
-    _model.textController2Validator = customValidator;
-    _model.textController3Validator = customValidator;
+    _model.textController1Validator = nameValidator;
+    _model.textController2Validator = fourDigitValidator;
+    _model.textController3Validator = nameValidator;
+
+    nazivKlubaValid = _model.textController1Validator!(
+            context, _model.textController1!.text) ==
+        null;
+    nadimakKlubaValid = _model.textController3Validator!(
+            context, _model.textController3!.text) ==
+        null;
+    osnivanjeKlubaValid = _model.textController2Validator!(
+            context, _model.textController2!.text) ==
+        null;
   }
 
   @override
@@ -63,13 +126,13 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                 onTap: () async {
                   Navigator.of(context).pop();
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.chevron_left,
                   color: Colors.white,
                   size: 40,
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(30, 0, 0, 0),
                 child: Text(
                   'Dodaj klub',
@@ -89,7 +152,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -99,16 +162,17 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                   children: [
                     Container(
                       width: 200,
-                      height: 300,
+                      height: 400,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text(
-                            'Naziv kluba',
+                          const Text(
+                            'Naziv kluba *',
                             textAlign: TextAlign.start,
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                8, 0, 8, 0),
                             child: TextFormField(
                               controller: _model.textController1,
                               autofocus: true,
@@ -150,22 +214,34 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).backgroundColor,
+                                errorText:
+                                    !nazivKlubaValid ? nazivKlubaError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
                               validator: (value) => _model
                                   .textController1Validator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  nazivKlubaError =
+                                      _model.textController1Validator!(
+                                              context, value) ??
+                                          '';
+                                  nazivKlubaValid = nazivKlubaError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                           Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 30, 0, 0),
                             child: Text(
-                              'Nadimak',
+                              'Nadimak *',
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                8, 0, 8, 0),
                             child: TextFormField(
                               controller: _model.textController2,
                               autofocus: true,
@@ -207,22 +283,35 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).backgroundColor,
+                                errorText: !nadimakKlubaValid
+                                    ? nadimakKlubaError
+                                    : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
                               validator: (value) => _model
-                                  .textController2Validator!(context, value),
+                                  .textController3Validator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  nadimakKlubaError =
+                                      _model.textController3Validator!(
+                                              context, value) ??
+                                          '';
+                                  nadimakKlubaValid = nadimakKlubaError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                           Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 30, 0, 0),
                             child: Text(
-                              'Godina osnivanja',
+                              'Godina osnivanja *',
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                8, 0, 8, 0),
                             child: TextFormField(
                               controller: _model.textController3,
                               autofocus: true,
@@ -264,10 +353,23 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                 ),
                                 filled: true,
                                 fillColor: Theme.of(context).backgroundColor,
+                                errorText: !osnivanjeKlubaValid
+                                    ? osnivanjeKlubaError
+                                    : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
                               validator: (value) => _model
-                                  .textController3Validator!(context, value),
+                                  .textController2Validator!(context, value),
+                              onChanged: (value) {
+                                setState(() {
+                                  osnivanjeKlubaError =
+                                      _model.textController2Validator!(
+                                              context, value) ??
+                                          '';
+                                  osnivanjeKlubaValid =
+                                      osnivanjeKlubaError.isEmpty;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -280,7 +382,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            'Naziv grada',
+                            'Grad *',
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
@@ -295,34 +397,34 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                 width: 2,
                               ),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue2,
+                              value: _model.dropDownValue1,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue2 = val!),
+                                  setState(() => _model.dropDownValue1 = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
                                   .toList(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: Colors.grey,
                                 size: 24,
                               ),
-                              underline: SizedBox(),
+                              underline: const SizedBox(),
                             ),
                           ),
                           Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 30, 0, 0),
                             child: Text(
-                              'Liga',
+                              'Liga *',
                               style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ),
@@ -337,7 +439,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                 width: 2,
                               ),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
                               value: _model.dropDownValue2,
@@ -347,34 +449,37 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
                                   .toList(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: Colors.grey,
                                 size: 24,
                               ),
-                              underline: SizedBox(),
+                              underline: const SizedBox(),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 20),
-                            child: Container(
-                              width: 200,
-                              height: 100,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text("Dodaj grb"),
-                                  Icon(
-                                    Icons.image_outlined,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 80,
-                                  ),
-                                ],
+                            child: GestureDetector(
+                              onTap: _openImageUploadDialog,
+                              child: Container(
+                                width: 200,
+                                height: 100,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    const Text("Grb *"),
+                                    Icon(
+                                      Icons.image_outlined,
+                                      color: Theme.of(context).primaryColor,
+                                      size: 80,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -384,12 +489,15 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                   child: ElevatedButton(
                     onPressed: () {
-                      print('Button pressed ...');
+                      !_model.areTextFieldsValid(nazivKlubaValid,
+                              nadimakKlubaValid, osnivanjeKlubaValid)
+                          ? null
+                          : print('Button pressed ...');
                     },
-                    child: Text(
+                    child: const Text(
                       'Dodaj',
                       style: TextStyle(
                         fontFamily: 'Readex Pro',
@@ -397,8 +505,14 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                      backgroundColor: !_model.areTextFieldsValid(
+                              nazivKlubaValid,
+                              nadimakKlubaValid,
+                              osnivanjeKlubaValid)
+                          ? Colors.grey
+                          : Theme.of(context).primaryColor,
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
                       elevation: 3,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

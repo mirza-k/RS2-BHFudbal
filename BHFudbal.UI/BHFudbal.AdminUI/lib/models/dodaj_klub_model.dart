@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DodajKlubModel{
+class DodajKlubModel {
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
@@ -19,6 +19,17 @@ class DodajKlubModel{
   // State field(s) for DropDown widget.
   String? dropDownValue2;
   TextEditingController? dropDownValueController2;
+
+  bool areTextFieldsValid(
+      bool nazivKlubaValid, bool nadimakKlubaValid, bool osnivanjeKlubaValid) {
+    return nazivKlubaValid &&
+        nadimakKlubaValid &&
+        osnivanjeKlubaValid &&
+        dropDownValue1 != null &&
+        dropDownValue1!.isNotEmpty &&
+        dropDownValue2 != null &&
+        dropDownValue2!.isNotEmpty;
+  }
 
   /// Initialization and disposal methods.
 

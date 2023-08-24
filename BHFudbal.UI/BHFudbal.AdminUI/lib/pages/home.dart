@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
 import 'package:bhfudbal_admin/pages/izvjestaji.dart';
 import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
@@ -18,8 +19,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List pages = [
-    LoginWidget(),
-    PrikazKlubovaWidget(),
+    DodajKlubWidget()
+    // LoginWidget(),
+    // PrikazKlubovaWidget(),
     // PrikazFudbaleraWidget(),
     // PrikazUtakmicaWidget(),
     // PrikazTransferaWidget(),
