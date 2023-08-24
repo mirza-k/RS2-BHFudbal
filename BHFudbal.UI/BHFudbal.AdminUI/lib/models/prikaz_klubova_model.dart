@@ -1,3 +1,4 @@
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ class PrikazKlubovaModel {
 
   final unfocusNode = FocusNode();
   // State field(s) for DropDown widget.
-  String? dropDownValue;
+  LigaResponse? dropDownValue;
   TextEditingController? dropDownValueController;
 
   /// Initialization and disposal methods.

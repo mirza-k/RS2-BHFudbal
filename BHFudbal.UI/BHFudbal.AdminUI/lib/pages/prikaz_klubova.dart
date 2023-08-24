@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
+import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/prikaz_klubova_model.dart';
 
 class PrikazKlubovaWidget extends StatefulWidget {
@@ -12,19 +15,28 @@ class PrikazKlubovaWidget extends StatefulWidget {
 
 class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
   late PrikazKlubovaModel _model;
-
+  late LigaProvider _ligaProvider;
+  List<LigaResponse> ligaResults = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _model = PrikazKlubovaModel();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    _ligaProvider = context.read<LigaProvider>();
+    var result = await _ligaProvider.get();
+    setState(() {
+      ligaResults = result.result;
+    });
   }
 
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
@@ -103,7 +115,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                           ),
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: DropdownButton<String>(
+                        child: DropdownButton<LigaResponse>(
                           isExpanded: true,
                           value: _model.dropDownValue,
                           hint: const Text(
@@ -116,9 +128,9 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                           ),
                           onChanged: (val) =>
                               setState(() => _model.dropDownValue = val!),
-                          items: ['Option 1']
-                              .map((val) => DropdownMenuItem(
-                                  value: val, child: Text(val)))
+                          items: ligaResults!
+                              .map((val) => DropdownMenuItem<LigaResponse>(
+                                  value: val, child: Text(val.naziv ?? "")))
                               .toList(),
                           style: TextStyle(
                             fontSize: 16,
@@ -135,8 +147,8 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        print('Button pressed ...');
+                      onPressed: () async {
+                        print('Prikaz pressed ...');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,

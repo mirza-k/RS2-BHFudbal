@@ -2,13 +2,16 @@ import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/dodaj_transfer.dart';
 import 'package:bhfudbal_admin/pages/home.dart';
 import 'package:bhfudbal_admin/pages/login.dart';
+import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
+import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
+import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => DrzavaProvider())],
+    providers: [ChangeNotifierProvider(create: (_) => DrzavaProvider()), ChangeNotifierProvider(create: (_) => LigaProvider())],
     child: MyApp(),
   ));
 }
@@ -41,7 +44,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(100, 75, 57, 239)),
         useMaterial3: true,
       ),
-      home: const DodajTransferWidget(),
+      home: const PrikazKlubovaWidget(),
     );
   }
 }
