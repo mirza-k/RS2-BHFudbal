@@ -299,7 +299,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
 
                                 if (_datePickedDate != null) {
                                   setState(() {
-                                    _model.datePicked = DateTime(
+                                    _model.datumRodjenja = DateTime(
                                       _datePickedDate.year,
                                       _datePickedDate.month,
                                       _datePickedDate.day,
@@ -335,7 +335,8 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                             child: Text(
-                              _model.datePicked?.toString() ?? 'Date Time',
+                              _model.datumRodjenja?.toString() ??
+                                  'Izaberi datum',
                               style: TextStyle(
                                 fontFamily: 'Readex Pro',
                                 fontSize: 24,

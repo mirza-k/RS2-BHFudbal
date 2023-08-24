@@ -8,7 +8,7 @@ class DodajFudbaleraModel {
   // State field(s) for TextField widget.
   TextEditingController? prezime;
   String? Function(BuildContext, String?)? prezimeValidator;
-  DateTime? datePicked;
+  DateTime? datumRodjenja;
   // State field(s) for TextField widget.
   TextEditingController? visina;
   String? Function(BuildContext, String?)? visinaValidator;
@@ -32,7 +32,8 @@ class DodajFudbaleraModel {
         tezinaValid &&
         jacaNogaValid &&
         klubId != null &&
-        klubId!.isNotEmpty;
+        klubId!.isNotEmpty &&
+        datumRodjenja != null;
   }
 
   void dispose() {
