@@ -10,13 +10,44 @@ class DodajTransferWidget extends StatefulWidget {
 
 class _DodajTransferWidgetState extends State<DodajTransferWidget> {
   late DodajTransferModel _model;
-
+  late bool cijenaValid;
+  late bool godineUgovoraValid;
+  String cijenaError = "";
+  String godineUgovoraError = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String? fourDigitValidator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Unesite vrijednost!';
+    }
+
+    if (value.length != 4) {
+      return 'Samo 4 cifre!';
+    }
+
+    if (int.tryParse(value) == null) {
+      return 'Samo brojevi!';
+    }
+
+    return null; // Return null when the value is valid
+  }
 
   @override
   void initState() {
     super.initState();
     _model = DodajTransferModel();
+    _model.cijenaController = new TextEditingController();
+    _model.godineUgovoraController = new TextEditingController();
+
+    _model.cijenaControllerValidator = fourDigitValidator;
+    cijenaValid = _model.cijenaControllerValidator!(
+            context, _model.cijenaController!.text) ==
+        null;
+
+    _model.godineUgovoraControllerValidator = fourDigitValidator;
+    godineUgovoraValid = _model.godineUgovoraControllerValidator!(
+            context, _model.godineUgovoraController!.text) ==
+        null;
   }
 
   @override
@@ -107,9 +138,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue1,
+                              value: _model.ligaId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                                  setState(() => _model.ligaId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -153,9 +184,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue1,
+                              value: _model.klubId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                                  setState(() => _model.klubId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -199,9 +230,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue1,
+                              value: _model.fudbalerId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                                  setState(() => _model.fudbalerId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -236,39 +267,60 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.black,
                             ),
                           ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 2,
+                          TextFormField(
+                            controller: _model.cijenaController,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelStyle: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .labelStyle,
+                              hintStyle: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .hintStyle,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
                               ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).errorColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).errorColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              filled: true,
+                              fillColor: Theme.of(context).backgroundColor,
+                              errorText: !cijenaValid ? cijenaError : null,
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
-                              isExpanded: true,
-                              value: _model.dropDownValue1,
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
-                              items: ['Option 1']
-                                  .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
-                                  .toList(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                                size: 24,
-                              ),
-                              underline: SizedBox(),
-                            ),
+                            style: Theme.of(context).textTheme.bodyText1,
+                            validator: (value) => _model
+                                .cijenaControllerValidator!(context, value),
+                            onChanged: (value) {
+                              setState(() {
+                                cijenaError = _model.cijenaControllerValidator!(
+                                        context, value) ??
+                                    '';
+                                cijenaValid = cijenaError.isEmpty;
+                              });
+                            },
                           ),
                           Padding(
                             padding:
@@ -282,39 +334,64 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 2,
+                          TextFormField(
+                            controller: _model.godineUgovoraController,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelStyle: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .labelStyle,
+                              hintStyle: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .hintStyle,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
                               ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).errorColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).errorColor,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              filled: true,
+                              fillColor: Theme.of(context).backgroundColor,
+                              errorText: !godineUgovoraValid
+                                  ? godineUgovoraError
+                                  : null,
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
-                              isExpanded: true,
-                              value: _model.dropDownValue1,
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
-                              items: ['Option 1']
-                                  .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
-                                  .toList(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                                size: 24,
-                              ),
-                              underline: SizedBox(),
-                            ),
+                            style: Theme.of(context).textTheme.bodyText1,
+                            validator: (value) =>
+                                _model.godineUgovoraControllerValidator!(
+                                    context, value),
+                            onChanged: (value) {
+                              setState(() {
+                                godineUgovoraError =
+                                    _model.godineUgovoraControllerValidator!(
+                                            context, value) ??
+                                        '';
+                                godineUgovoraValid = godineUgovoraError.isEmpty;
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -356,9 +433,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue1,
+                              value: _model.ligaTargetId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                                  setState(() => _model.ligaTargetId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -402,9 +479,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: DropdownButton<String>(
                               isExpanded: true,
-                              value: _model.dropDownValue1,
+                              value: _model.klubTargetId,
                               onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                                  setState(() => _model.klubTargetId = val!),
                               items: ['Option 1']
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val)))
@@ -427,7 +504,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                 EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
                             child: ElevatedButton(
                               onPressed: () {
-                                print('Button pressed ...');
+                                !_model.areTextFieldsValid(
+                                        cijenaValid, godineUgovoraValid)
+                                    ? null
+                                    : print('Button pressed ...');
                               },
                               child: Text(
                                 'Završi',
@@ -442,7 +522,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                primary: Theme.of(context).primaryColor,
+                                backgroundColor: !_model.areTextFieldsValid(
+                                        cijenaValid, godineUgovoraValid)
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColor,
                                 textStyle: TextStyle(
                                   fontFamily: 'Readex Pro',
                                   color: Colors.white,

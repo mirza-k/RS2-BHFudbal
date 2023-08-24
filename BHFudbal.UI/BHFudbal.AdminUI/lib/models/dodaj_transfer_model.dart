@@ -5,30 +5,38 @@ class DodajTransferModel {
 
   final unfocusNode = FocusNode();
   // State field(s) for DropDown widget.
-  String? dropDownValue1;
-  TextEditingController? dropDownValueController1;
+  String? ligaId;
+  TextEditingController? ligaIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue2;
-  TextEditingController? dropDownValueController2;
+  String? klubId;
+  TextEditingController? klubIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue3;
-  TextEditingController? dropDownValueController3;
+  String? fudbalerId;
+  TextEditingController? fudbalerIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue4;
-  TextEditingController? dropDownValueController4;
+  String? ligaTargetId;
+  TextEditingController? ligaTargetIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue5;
-  TextEditingController? dropDownValueController5;
+  String? klubTargetId;
+  TextEditingController? klubTargetIdController;
   // State field(s) for DropDown widget.
-  String? dropDownValue6;
-  TextEditingController? dropDownValueController6;
-  // State field(s) for DropDown widget.
-  String? dropDownValue7;
-  TextEditingController? dropDownValueController7;
+  TextEditingController? cijenaController;
+  String? Function(BuildContext, String?)? cijenaControllerValidator;
 
-  /// Initialization and disposal methods.
+  TextEditingController? godineUgovoraController;
+  String? Function(BuildContext, String?)? godineUgovoraControllerValidator;
 
   void initState(BuildContext context) {}
+
+  bool areTextFieldsValid(cijenaValid, godineUgovoraValid) {
+    return cijenaValid &&
+        godineUgovoraValid &&
+        (ligaId != null && ligaId!.isNotEmpty) &&
+        (klubId != null && klubId!.isNotEmpty) &&
+        (fudbalerId != null && fudbalerId!.isNotEmpty) &&
+        (ligaTargetId != null && ligaTargetId!.isNotEmpty) &&
+        (klubTargetId != null && klubTargetId!.isNotEmpty);
+  }
 
   void dispose() {
     unfocusNode.dispose();
