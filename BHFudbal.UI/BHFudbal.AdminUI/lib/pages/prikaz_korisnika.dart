@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:bhfudbal_admin/providers/korisnik_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/prikaz_korisnika_model.dart';
+import '../models/response/korisnik_response.dart';
 
 class PrikazKorisnikaWidget extends StatefulWidget {
   const PrikazKorisnikaWidget({Key? key}) : super(key: key);
@@ -11,6 +14,8 @@ class PrikazKorisnikaWidget extends StatefulWidget {
 
 class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
   late PrikazKorisnikaModel _model;
+  late KorisnikProvider _korisnikProvider;
+  List<KorisnikResponse> korisnikResults = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -27,6 +32,19 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _fetchKorisnici() async {
+    _korisnikProvider = context.read<KorisnikProvider>();
+    String? ime;
+    if (_model.textController != null &&
+        _model.textController!.text.isNotEmpty) {
+      ime = _model.textController!.text;
+    }
+    var result = await _korisnikProvider.get(ime);
+    setState(() {
+      korisnikResults = result.result;
+    });
   }
 
   // Mock data for yourDataList
@@ -148,7 +166,7 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print('Button pressed ...');
+                        _fetchKorisnici();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
@@ -205,12 +223,12 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
                             ),
                           ),
                         ],
-                        rows: yourDataList.map((data) {
+                        rows: korisnikResults.map((data) {
                           return DataRow(cells: [
-                            DataCell(Text(data.column1)),
-                            DataCell(Text(data.column2)),
-                            DataCell(Text(data.column3)),
-                            DataCell(Text(data.column4)),
+                            DataCell(Text(data.ime ?? "")),
+                            DataCell(Text(data.prezime ?? "")),
+                            DataCell(Text(data.username ?? "")),
+                            DataCell(Text(data.grad ?? "")),
                           ]);
                         }).toList(),
                         headingRowColor: MaterialStateProperty.all(

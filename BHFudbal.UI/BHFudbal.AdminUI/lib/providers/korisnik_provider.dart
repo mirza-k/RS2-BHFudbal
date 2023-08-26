@@ -1,30 +1,32 @@
 // ignore_for_file: unused_local_variable
 import 'dart:convert';
+import 'package:bhfudbal_admin/models/response/korisnik_response.dart';
 import 'package:bhfudbal_admin/models/search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-import '../models/response/fudbaler_response.dart';
-
-class FudbalerProvider with ChangeNotifier {
+class KorisnikProvider with ChangeNotifier {
   static String? _baseUrl;
-  static String endpoint = "Fudbaler";
-  FudbalerProvider() {
+  static String endpoint = "Korisnik";
+  KorisnikProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "https://localhost:44344/");
   }
 
-  Future<SearchResult<FudbalerResponse>> get(int? klubId) async {
-    var url = "$_baseUrl$endpoint?KlubId=$klubId";
+  Future<SearchResult<KorisnikResponse>> get(String? ime) async {
+    var url = "$_baseUrl$endpoint";
+    if (ime != null && ime.isNotEmpty) {
+      url += "/?Ime=$ime";
+    }
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      var result = SearchResult<FudbalerResponse>();
+      var result = SearchResult<KorisnikResponse>();
       for (var item in data) {
-        result.result.add(FudbalerResponse.fromJson(item));
+        result.result.add(KorisnikResponse.fromJson(item));
       }
       return result;
     } else {

@@ -1,5 +1,3 @@
-import 'package:bhfudbal_admin/models/response/klub_response.dart';
-
 class FudbalerResponse {
   int? fudbalerId;
   String? ime;
