@@ -1,13 +1,17 @@
+import 'package:bhfudbal_admin/models/response/sezona_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/dodaj_transfer.dart';
 import 'package:bhfudbal_admin/pages/home.dart';
 import 'package:bhfudbal_admin/pages/login.dart';
 import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
+import 'package:bhfudbal_admin/pages/prikaz_utakmica.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
+import 'package:bhfudbal_admin/providers/sezona_provider.dart';
+import 'package:bhfudbal_admin/providers/utakmice_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +21,9 @@ void main() {
       ChangeNotifierProvider(create: (_) => DrzavaProvider()),
       ChangeNotifierProvider(create: (_) => LigaProvider()),
       ChangeNotifierProvider(create: (_) => KlubProvider()),
-      ChangeNotifierProvider(create: (_) => FudbalerProvider())
+      ChangeNotifierProvider(create: (_) => FudbalerProvider()),
+      ChangeNotifierProvider(create: (_) => SezonaProvider()),
+      ChangeNotifierProvider(create: (_) => UtakmiceProvider())
     ],
     child: MyApp(),
   ));
@@ -51,7 +57,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(100, 75, 57, 239)),
         useMaterial3: true,
       ),
-      home: const PrikazFudbaleraWidget(),
+      home: const PrikazUtakmicaWidget(),
     );
   }
 }

@@ -33,6 +33,24 @@ class LigaProvider with ChangeNotifier {
     }
   }
 
+  
+  Future<SearchResult<LigaResponse>> getBySezonaId(int? sezonaId) async {
+    var url = "$_baseUrl$endpoint?SezonaId=$sezonaId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = SearchResult<LigaResponse>();
+      for (var item in data) {
+        result.result.add(LigaResponse.fromJson(item));
+      }
+      return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
   bool isValidResponse(Response response) {
     if (response.statusCode < 299) {
       return true;

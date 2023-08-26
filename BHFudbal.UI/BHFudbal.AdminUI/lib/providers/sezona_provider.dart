@@ -1,25 +1,33 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:convert';
-import 'package:bhfudbal_admin/utils/util.dart';
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
+import 'package:bhfudbal_admin/models/response/sezona_response.dart';
+import 'package:bhfudbal_admin/models/search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-class DrzavaProvider with ChangeNotifier {
+class SezonaProvider with ChangeNotifier {
   static String? _baseUrl;
-  static String endpoint = "Drzava";
-  DrzavaProvider() {
+  static String endpoint = "Sezona";
+  SezonaProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "https://localhost:44344/");
   }
 
-  Future<List<dynamic>> get() async {
+  Future<SearchResult<SezonaResponse>> get() async {
     var url = "$_baseUrl$endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      return data;
+      var result = SearchResult<SezonaResponse>();
+      for (var item in data) {
+        result.result.add(SezonaResponse.fromJson(item));
+      }
+      return result;
     } else {
       throw new Exception("Unexpected error");
     }
@@ -36,8 +44,11 @@ class DrzavaProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    String username = Authorization.username ?? "";
-    String pass = Authorization.password ?? "";
+    // String username = Authorization.username ?? "";
+    // String pass = Authorization.password ?? "";
+    String username = "mirza";
+    String pass = "mirza";
+    print(username);
     String basicAuth = "Basic ${base64Encode(utf8.encode('$username:$pass'))}";
 
     var headers = {

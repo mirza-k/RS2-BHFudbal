@@ -1,6 +1,13 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last, library_private_types_in_public_api
+import 'package:bhfudbal_admin/models/response/sezona_response.dart';
+import 'package:bhfudbal_admin/models/response/utakmice_response.dart';
+import 'package:bhfudbal_admin/providers/sezona_provider.dart';
+import 'package:bhfudbal_admin/providers/utakmice_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/prikaz_utamica_model.dart';
+import '../models/response/liga_response.dart';
+import '../providers/liga_provider.dart';
 
 class PrikazUtakmicaWidget extends StatefulWidget {
   const PrikazUtakmicaWidget({Key? key}) : super(key: key);
@@ -11,6 +18,13 @@ class PrikazUtakmicaWidget extends StatefulWidget {
 
 class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
   late PrikazUtakmicaModel _model;
+  late LigaProvider _ligaProvider;
+  late SezonaProvider _sezonaProvider;
+  late UtakmiceProvider _utakmiceProvider;
+
+  List<LigaResponse> ligaResults = [];
+  List<SezonaResponse> sezonaResults = [];
+  List<UtakmiceResponse> utakmiceResults = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -18,6 +32,7 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
   void initState() {
     super.initState();
     _model = PrikazUtakmicaModel();
+    _fetchSezone();
   }
 
   @override
@@ -27,21 +42,40 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
     super.dispose();
   }
 
-  List<DataTableRecord> yourDataList = [
-    DataTableRecord(
-        column1: 'Sarajevo', column2: '2 - 2', column3: 'Zeljeznicar'),
-    DataTableRecord(
-        column1: 'Barcelona', column2: '3 - 1', column3: 'Real Madrid'),
-    DataTableRecord(
-        column1: 'Manchester City',
-        column2: '0 - 0',
-        column3: 'Manchester United'),
-    DataTableRecord(
-        column1: 'Bayern Munich',
-        column2: '4 - 0',
-        column3: 'Borussia Dortmund'),
-    DataTableRecord(column1: 'Liverpool', column2: '1 - 2', column3: 'Chelsea'),
-  ];
+  Future<void> _fetchLige() async {
+    _ligaProvider = context.read<LigaProvider>();
+    if (_model.sezonaId != null) {
+      var sezonaId = _model.sezonaId!.sezonaId;
+      if (sezonaId != null && sezonaId != 0) {
+        var result =
+            await _ligaProvider.getBySezonaId(_model.sezonaId!.sezonaId);
+        setState(() {
+          ligaResults = result.result;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchSezone() async {
+    _sezonaProvider = context.read<SezonaProvider>();
+    var result = await _sezonaProvider.get();
+    setState(() {
+      sezonaResults = result.result;
+    });
+  }
+
+  Future<void> _fetchUtakmice() async {
+    _utakmiceProvider = context.read<UtakmiceProvider>();
+    if (_model.ligaId != null) {
+      var ligaId = _model.ligaId!.ligaId1;
+      if (ligaId != null && ligaId != 0) {
+        var result = await _utakmiceProvider.get(ligaId);
+        setState(() {
+          utakmiceResults = result.result;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,32 +125,35 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                             ),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
-                            value: _model.dropDownValue1,
+                          child: DropdownButton<SezonaResponse>(
                             isExpanded: true,
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey,
-                              size: 24,
+                            value: _model.sezonaId,
+                            onChanged: (val) {
+                              setState(() => _model.sezonaId = val!);
+                              _model.ligaId = null;
+                              _fetchLige();
+                            },
+                            items: sezonaResults
+                                .map((val) => DropdownMenuItem(
+                                    value: val, child: Text(val.naziv ?? "")))
+                                .toList(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
-                            hint: const Text(
-                              "Izaberi ligu",
+                            hint: Text(
+                              'Izaberi sezonu',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors
                                     .black, // Replace with your desired text color
                               ),
                             ),
-                            onChanged: (val) =>
-                                setState(() => _model.dropDownValue1 = val!),
-                            items: ['Option 1']
-                                .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val)))
-                                .toList(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.grey,
+                              size: 24,
                             ),
                             underline: SizedBox(),
                           ),
@@ -134,32 +171,32 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                             ),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
+                          child: DropdownButton<LigaResponse>(
+                            value: _model.ligaId,
                             isExpanded: true,
-                            value: _model.dropDownValue2,
-                            onChanged: (val) =>
-                                setState(() => _model.dropDownValue2 = val!),
-                            items: ['Option 1']
-                                .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val)))
-                                .toList(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.grey,
+                              size: 24,
                             ),
-                            hint: Text(
-                              'Izaberi kolo',
+                            hint: const Text(
+                              "Izaberi ligu",
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors
                                     .black, // Replace with your desired text color
                               ),
                             ),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey,
-                              size: 24,
+                            onChanged: (val) =>
+                                setState(() => _model.ligaId = val!),
+                            items: ligaResults
+                                .map((val) => DropdownMenuItem(
+                                    value: val, child: Text(val.naziv ?? "")))
+                                .toList(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                             underline: SizedBox(),
                           ),
@@ -168,7 +205,7 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print('Button pressed ...');
+                        _fetchUtakmice();
                       },
                       child: Text(
                         'Prikazi',
@@ -191,55 +228,58 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                     ),
                   ],
                 ),
-                Expanded(
-                  child: DataTable(
-                    columns: [
-                      DataColumn(
-                        label: Text(
-                          'Domacin',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DataTable(
+                      columns: [
+                        DataColumn(
+                          label: Text(
+                            'Rezultati',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                         ),
+                        // DataColumn(
+                        //   label: Text(
+                        //     'Rezultat',
+                        //     style: TextStyle(
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.bold,
+                        //         color: Colors.white),
+                        //   ),
+                        // ),
+                        // DataColumn(
+                        //   label: Text(
+                        //     'Gost',
+                        //     style: TextStyle(
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.bold,
+                        //         color: Colors.white),
+                        //   ),
+                        // ),
+                      ],
+                      rows: utakmiceResults.map((data) {
+                        return DataRow(cells: [
+                          DataCell(Text(data.prikaz ?? "")),
+                          // DataCell(Text(data.column2)),
+                          // DataCell(Text(data.column3)),
+                        ]);
+                      }).toList(),
+                      headingRowColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor,
                       ),
-                      DataColumn(
-                        label: Text(
-                          'Rezultat',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
+                      headingRowHeight: 56,
+                      dataRowColor: MaterialStateProperty.all(
+                        Colors.white,
                       ),
-                      DataColumn(
-                        label: Text(
-                          'Gost',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
+                      dataRowHeight: 56,
+                      border: TableBorder(
+                        borderRadius: BorderRadius.circular(0),
                       ),
-                    ],
-                    rows: yourDataList.map((data) {
-                      return DataRow(cells: [
-                        DataCell(Text(data.column1)),
-                        DataCell(Text(data.column2)),
-                        DataCell(Text(data.column3)),
-                      ]);
-                    }).toList(),
-                    headingRowColor: MaterialStateProperty.all(
-                      Theme.of(context).primaryColor,
-                    ),
-                    headingRowHeight: 56,
-                    dataRowColor: MaterialStateProperty.all(
-                      Colors.white,
-                    ),
-                    dataRowHeight: 56,
-                    border: TableBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    dividerThickness: 1,
-                    showBottomBorder: true,
-                  ),
+                      dividerThickness: 1,
+                      showBottomBorder: true,
+                    )
+                  ],
                 ),
               ],
             ),
