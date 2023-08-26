@@ -48,7 +48,6 @@ class KlubProvider with ChangeNotifier {
     // String pass = Authorization.password ?? "";
     String username = "mirza";
     String pass = "mirza";
-    print(username);
     String basicAuth = "Basic ${base64Encode(utf8.encode('$username:$pass'))}";
 
     var headers = {
