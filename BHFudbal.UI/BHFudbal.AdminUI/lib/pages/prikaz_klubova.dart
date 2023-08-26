@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:bhfudbal_admin/models/response/fudbaler_response.dart';
 import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
+import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +21,16 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
   late PrikazKlubovaModel _model;
   late LigaProvider _ligaProvider;
   late KlubProvider _klubProvider;
+
   List<LigaResponse> ligaResults = [];
   List<KlubResponse> klubResults = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _model = PrikazKlubovaModel();
-    // _model.dropDownValue = new LigaResponse();
     _fetchLige();
   }
 
@@ -146,7 +149,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                           ),
                           onChanged: (val) =>
                               setState(() => _model.dropDownValue = val!),
-                          items: ligaResults!
+                          items: ligaResults
                               .map((val) => DropdownMenuItem<LigaResponse>(
                                   value: val, child: Text(val.naziv ?? "")))
                               .toList(),

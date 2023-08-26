@@ -7,24 +7,26 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-class KlubProvider with ChangeNotifier {
+import '../models/response/fudbaler_response.dart';
+
+class FudbalerProvider with ChangeNotifier {
   static String? _baseUrl;
-  static String endpoint = "Klub";
-  KlubProvider() {
+  static String endpoint = "Fudbaler";
+  FudbalerProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "https://localhost:44344/");
   }
 
-  Future<SearchResult<KlubResponse>> get(int? ligaId) async {
-    var url = "$_baseUrl$endpoint?LigaId=$ligaId";
+  Future<SearchResult<FudbalerResponse>> get(int? klubId) async {
+    var url = "$_baseUrl$endpoint?KlubId=$klubId";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      var result = SearchResult<KlubResponse>();
+      var result = SearchResult<FudbalerResponse>();
       for (var item in data) {
-        result.result.add(KlubResponse.fromJson(item));
+        result.result.add(FudbalerResponse.fromJson(item));
       }
       return result;
     } else {

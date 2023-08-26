@@ -1,8 +1,15 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/prikaz_fudbalera_model.dart';
+import '../models/response/fudbaler_response.dart';
+import '../models/response/klub_response.dart';
+import '../providers/fudbaler_provider.dart';
+import '../providers/klub_provider.dart';
+import '../providers/liga_provider.dart';
 
 class PrikazFudbaleraWidget extends StatefulWidget {
   const PrikazFudbaleraWidget({Key? key}) : super(key: key);
@@ -13,6 +20,12 @@ class PrikazFudbaleraWidget extends StatefulWidget {
 
 class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
   late PrikazFudbaleraModel _model;
+  late LigaProvider _ligaProvider;
+  late KlubProvider _klubProvider;
+  late FudbalerProvider _fudbalerProvider;
+  List<KlubResponse> klubResults = [];
+  List<LigaResponse> ligaResults = [];
+  List<FudbalerResponse> fudbalerResults = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -20,6 +33,7 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
   void initState() {
     super.initState();
     _model = PrikazFudbaleraModel();
+    _fetchLige();
   }
 
   @override
@@ -27,6 +41,41 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _fetchLige() async {
+    _ligaProvider = context.read<LigaProvider>();
+    var result = await _ligaProvider.get();
+    setState(() {
+      ligaResults = result.result;
+    });
+  }
+
+  Future<void> _fetchKlubovi() async {
+    _klubProvider = context.read<KlubProvider>();
+    if (_model.ligaId != null) {
+      var ligaId = _model.ligaId!.ligaId1;
+      if (ligaId != null && ligaId > 0) {
+        var result = await _klubProvider.get(ligaId);
+        setState(() {
+          _model.klubId = null;
+          klubResults = result.result;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchFudbaleri() async {
+    _fudbalerProvider = context.read<FudbalerProvider>();
+    if (_model.klubId != null) {
+      var klubId = _model.klubId!.klubId;
+      if (klubId != null && klubId != 0) {
+        var result = await _fudbalerProvider.get(klubId);
+        setState(() {
+          fudbalerResults = result.result;
+        });
+      }
+    }
   }
 
   List<DataTableRecord> dataTableRecordList = [
@@ -108,8 +157,8 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                             ),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
-                            value: _model.dropDownValue1,
+                          child: DropdownButton<LigaResponse>(
+                            value: _model.ligaId,
                             isExpanded: true,
                             icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
@@ -124,11 +173,13 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                                     .black, // Replace with your desired text color
                               ),
                             ),
-                            onChanged: (val) =>
-                                setState(() => _model.dropDownValue1 = val!),
-                            items: ['Option 1']
+                            onChanged: (val) {
+                              setState(() => _model.ligaId = val!);
+                              _fetchKlubovi();
+                            },
+                            items: ligaResults
                                 .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val)))
+                                    value: val, child: Text(val.naziv ?? "")))
                                 .toList(),
                             style: TextStyle(
                               fontSize: 16,
@@ -151,9 +202,9 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                             ),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
+                          child: DropdownButton<KlubResponse>(
                             isExpanded: true,
-                            value: _model.dropDownValue2,
+                            value: _model.klubId,
                             hint: const Text(
                               "Izaberi klub",
                               style: TextStyle(
@@ -163,10 +214,10 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                               ),
                             ),
                             onChanged: (val) =>
-                                setState(() => _model.dropDownValue2 = val!),
-                            items: ['Option 1']
+                                setState(() => _model.klubId = val!),
+                            items: klubResults
                                 .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val)))
+                                    value: val, child: Text(val.naziv ?? "")))
                                 .toList(),
                             style: TextStyle(
                               fontSize: 16,
@@ -185,7 +236,7 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print('Button pressed ...');
+                        _fetchFudbaleri();
                       },
                       child: Text(
                         'Prikazi',
@@ -273,21 +324,21 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                                   color: Colors.white),
                             )),
                           ],
-                          rows: dataTableRecordList.map((dataTableRecord) {
+                          rows: fudbalerResults.map((item) {
                             return DataRow(cells: [
-                              DataCell(Text('Edit Column 1',
+                              DataCell(Text(item.ime ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 2',
+                              DataCell(Text(item.prezime ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 3',
+                              DataCell(Text(item.visina ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 4',
+                              DataCell(Text(item.tezina ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 5',
+                              DataCell(Text(item.klub ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 6',
+                              DataCell(Text(item.datumRodjenja ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text('Edit Column 7',
+                              DataCell(Text(item.jacaNoga ?? "",
                                   style: TextStyle(fontSize: 14))),
                             ]);
                           }).toList(),
