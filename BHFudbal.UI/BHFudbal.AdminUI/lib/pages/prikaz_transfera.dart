@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
+import 'package:bhfudbal_admin/models/response/transfer_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_transfer.dart';
+import 'package:bhfudbal_admin/providers/transfer_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/prikaz_transfera_model.dart';
+import '../models/response/sezona_response.dart';
+import '../providers/sezona_provider.dart';
 
 class PrikazTransferaWidget extends StatefulWidget {
   const PrikazTransferaWidget({Key? key}) : super(key: key);
@@ -12,13 +17,17 @@ class PrikazTransferaWidget extends StatefulWidget {
 
 class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
   late PrikazTransferaModel _model;
-
+  late TransferProvider _transferProvider;
+  late SezonaProvider _sezonaProvider;
+  List<SezonaResponse> sezonaResults = [];
+  List<TransferResponse> transferResults = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _model = PrikazTransferaModel();
+    _fetchSezone();
   }
 
   @override
@@ -26,6 +35,27 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  Future<void> _fetchSezone() async {
+    _sezonaProvider = context.read<SezonaProvider>();
+    var result = await _sezonaProvider.get();
+    setState(() {
+      sezonaResults = result.result;
+    });
+  }
+
+  Future<void> _fetchTransferi() async {
+    if (_model.dropDownValue != null) {
+      var sezonaId = _model.dropDownValue!.sezonaId;
+      if (sezonaId != null && sezonaId > 0) {
+        _transferProvider = context.read<TransferProvider>();
+        var result = await _transferProvider.get(sezonaId);
+        setState(() {
+          transferResults = result.result;
+        });
+      }
+    }
   }
 
   List<DataItem> yourDataList = [
@@ -103,14 +133,14 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
                             ),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<String>(
+                          child: DropdownButton<SezonaResponse>(
                             isExpanded: true,
                             value: _model.dropDownValue,
                             onChanged: (val) =>
                                 setState(() => _model.dropDownValue = val!),
-                            items: ['Option 1']
+                            items: sezonaResults
                                 .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val)))
+                                    value: val, child: Text(val.naziv ?? "")))
                                 .toList(),
                             style: TextStyle(
                               fontSize: 16,
@@ -138,7 +168,7 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
                     SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: () {
-                        print('Button pressed ...');
+                        _fetchTransferi();
                       },
                       child: Text('Prikazi',
                           style: TextStyle(
@@ -237,13 +267,13 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
                         ),
                       ),
                     ],
-                    rows: yourDataList.map((data) {
+                    rows: transferResults.map((data) {
                       return DataRow(cells: [
-                        DataCell(Text(data.column1)),
-                        DataCell(Text(data.column2)),
-                        DataCell(Text(data.column3)),
-                        DataCell(Text(data.column4)),
-                        DataCell(Text(data.column5)),
+                        DataCell(Text(data.imeFudbalera ?? "")),
+                        DataCell(Text(data.cijena.toString())),
+                        DataCell(Text(data.brojGodinaUgovora.toString())),
+                        DataCell(Text(data.stariKlub ?? "")),
+                        DataCell(Text(data.nazivKluba ?? "")),
                       ]);
                     }).toList(),
                     headingRowColor: MaterialStateProperty.all(

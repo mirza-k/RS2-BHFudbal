@@ -1,10 +1,12 @@
 import 'package:bhfudbal_admin/pages/prikaz_korisnika.dart';
+import 'package:bhfudbal_admin/pages/prikaz_transfera.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/korisnik_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:bhfudbal_admin/providers/sezona_provider.dart';
+import 'package:bhfudbal_admin/providers/transfer_provider.dart';
 import 'package:bhfudbal_admin/providers/utakmice_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => KlubProvider()),
       ChangeNotifierProvider(create: (_) => FudbalerProvider()),
       ChangeNotifierProvider(create: (_) => SezonaProvider()),
+      ChangeNotifierProvider(create: (_) => TransferProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikProvider()),
       ChangeNotifierProvider(create: (_) => UtakmiceProvider())
     ],
@@ -52,7 +55,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(100, 75, 57, 239)),
         useMaterial3: true,
       ),
-      home: const PrikazKorisnikaWidget(),
+      home: const PrikazTransferaWidget(),
     );
   }
 }
