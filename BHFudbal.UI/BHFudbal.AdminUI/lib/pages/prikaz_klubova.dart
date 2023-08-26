@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
+import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,22 +18,38 @@ class PrikazKlubovaWidget extends StatefulWidget {
 class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
   late PrikazKlubovaModel _model;
   late LigaProvider _ligaProvider;
+  late KlubProvider _klubProvider;
   List<LigaResponse> ligaResults = [];
+  List<KlubResponse> klubResults = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     _model = PrikazKlubovaModel();
-    _fetchData();
+    // _model.dropDownValue = new LigaResponse();
+    _fetchLige();
   }
 
-  Future<void> _fetchData() async {
+  Future<void> _fetchLige() async {
     _ligaProvider = context.read<LigaProvider>();
     var result = await _ligaProvider.get();
     setState(() {
       ligaResults = result.result;
     });
+  }
+
+  Future<void> _fetchKlubovi() async {
+    _klubProvider = context.read<KlubProvider>();
+    if (_model.dropDownValue != null) {
+      var ligaId = _model.dropDownValue!.ligaId1;
+      if (ligaId != null && ligaId > 0) {
+        var result = await _klubProvider.get(ligaId);
+        setState(() {
+          klubResults = result.result;
+        });
+      }
+    }
   }
 
   @override
@@ -148,6 +166,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
+                        await _fetchKlubovi();
                         print('Prikaz pressed ...');
                       },
                       style: ElevatedButton.styleFrom(
@@ -214,13 +233,15 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                             ),
                           ),
                         ],
-                        rows: yourDataList.map((data) {
+                        rows: klubResults.map((data) {
                           return DataRow(cells: [
-                            DataCell(Text(data.column1)),
-                            DataCell(Text(data.column2)),
-                            DataCell(Text(data.column3)),
-                            DataCell(Text(data.column4)),
-                            DataCell(Text(data.column5)),
+                            DataCell(Text(data.naziv ?? "")),
+                            DataCell(Text(data.grad ?? "")),
+                            DataCell(Text(data.godinaOsnivanja != null
+                                ? data.godinaOsnivanja.toString()
+                                : "")),
+                            DataCell(Text(data.liga ?? "")),
+                            DataCell(Text(data.nadimak ?? "")),
                           ]);
                         }).toList(),
                         headingRowColor: MaterialStateProperty.all(

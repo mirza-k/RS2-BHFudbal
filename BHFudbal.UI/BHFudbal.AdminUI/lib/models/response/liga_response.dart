@@ -7,7 +7,7 @@ class LigaResponse {
     required this.naziv,
   });
 
-    factory LigaResponse.fromJson(Map<String, dynamic> json) {
+  factory LigaResponse.fromJson(Map<String, dynamic> json) {
     return LigaResponse(
       ligaId1: json['ligaId1'] as int,
       naziv: json['naziv'] as String,

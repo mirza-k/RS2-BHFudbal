@@ -5,13 +5,18 @@ import 'package:bhfudbal_admin/pages/login.dart';
 import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
+import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => DrzavaProvider()), ChangeNotifierProvider(create: (_) => LigaProvider())],
+    providers: [
+      ChangeNotifierProvider(create: (_) => DrzavaProvider()),
+      ChangeNotifierProvider(create: (_) => LigaProvider()),
+      ChangeNotifierProvider(create: (_) => KlubProvider())
+    ],
     child: MyApp(),
   ));
 }
