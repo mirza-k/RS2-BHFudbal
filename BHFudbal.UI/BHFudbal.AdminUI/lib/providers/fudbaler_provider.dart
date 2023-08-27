@@ -42,6 +42,19 @@ class FudbalerProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> post(dynamic request) async {
+    var url = "$_baseUrl$endpoint";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (isValidResponse(response)) {
+      return true;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
   Map<String, String> createHeaders() {
     // String username = Authorization.username ?? "";
     // String pass = Authorization.password ?? "";

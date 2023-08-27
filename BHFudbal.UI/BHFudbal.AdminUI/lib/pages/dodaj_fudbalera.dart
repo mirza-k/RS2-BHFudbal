@@ -1,5 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bhfudbal_admin/models/request/fudbaler_request.dart';
+import 'package:bhfudbal_admin/models/response/fudbaler_response.dart';
+import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import "../models/dodaj_fudbalera_model.dart";
+import '../models/response/klub_response.dart';
+import '../providers/klub_provider.dart';
 
 class DodajFudbaleraWidget extends StatefulWidget {
   const DodajFudbaleraWidget({Key? key}) : super(key: key);
@@ -21,6 +33,19 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
   String visinaError = "";
   String tezinaError = "";
   String jacaNogaError = "";
+
+  late KlubProvider _klubProvider;
+  List<KlubResponse> klubResults = [];
+
+  late FudbalerProvider _fudbalerProvider;
+
+  Future<void> _fetchKlubovi() async {
+    _klubProvider = context.read<KlubProvider>();
+    var result = await _klubProvider.getAll();
+    setState(() {
+      klubResults = result.result;
+    });
+  }
 
   String? nameValidator(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
@@ -66,6 +91,33 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     return null; // Return null when the value is valid
   }
 
+  void saveData() async {
+    _fudbalerProvider = context.read<FudbalerProvider>();
+    var klub = FudbalerRequest(
+        ime: _model.ime!.text,
+        prezime: _model.prezime!.text,
+        visina: _model.visina!.text,
+        tezina: _model.tezina!.text,
+        datumRodjenja: _model.datumRodjenja,
+        klubId: _model.klub!.klubId,
+        jacaNoga: _model.jacaNoga!.text,
+        slika: _base64Image);
+    var request = FudbalerRequest().toJson(klub);
+    var response = await _fudbalerProvider.post(request);
+    if (response) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text("Uspjesno dodan fudbaler!"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("OK"))
+                ],
+              ));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +133,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     _model.visinaValidator = visinaValidator;
     _model.tezinaValidator = tezinaValidator;
     _model.jacaNogaValidator = nameValidator;
+    _fetchKlubovi();
 
     imeValid = _model.imeValidator!(context, _model.ime!.text) == null;
     prezimeValid =
@@ -96,6 +149,44 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  File? _image;
+  String? _base64Image;
+
+  void _openImageUploadDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Upload Grb"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                  onPressed: () async {
+                    var result = await FilePicker.platform
+                        .pickFiles(type: FileType.image);
+                    if (result != null && result.files.single.path != null) {
+                      _image = File(result.files.single.path!);
+                      _base64Image = base64Encode(_image!.readAsBytesSync());
+                    }
+                  },
+                  child: const Text("Upload")),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: const Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -549,13 +640,16 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Icon(
-                                    Icons.image_outlined,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 80,
+                                  InkWell(
+                                    onTap: _openImageUploadDialog,
+                                    child: Icon(
+                                      Icons.image_outlined,
+                                      color: Theme.of(context).primaryColor,
+                                      size: 80,
+                                    ),
                                   ),
                                   Text(
-                                    'Upload sliku fudbalera',
+                                    'Dodaj sliku fudbalera',
                                   ),
                                 ],
                               ),
@@ -581,14 +675,14 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<KlubResponse>(
                               isExpanded: true,
-                              value: _model.klubId,
+                              value: _model.klub,
                               onChanged: (val) =>
-                                  setState(() => _model.klubId = val!),
-                              items: ['Option 1']
+                                  setState(() => _model.klub = val!),
+                              items: klubResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: TextStyle(
                                 fontSize: 16,
@@ -613,9 +707,10 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                         prezimeValid,
                                         visinaValid,
                                         tezinaValid,
-                                        jacaNogaValid)
+                                        jacaNogaValid,
+                                        _base64Image)
                                     ? null
-                                    : print('Button pressed ...');
+                                    : saveData();
                               },
                               child: Text(
                                 'Dodaj',
@@ -630,7 +725,8 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                         prezimeValid,
                                         visinaValid,
                                         tezinaValid,
-                                        jacaNogaValid)
+                                        jacaNogaValid,
+                                        _base64Image)
                                     ? Colors.grey
                                     : Theme.of(context).primaryColor,
                                 padding: EdgeInsetsDirectional.fromSTEB(

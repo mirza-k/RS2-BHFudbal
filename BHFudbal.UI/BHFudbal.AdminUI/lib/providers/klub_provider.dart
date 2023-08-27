@@ -33,6 +33,23 @@ class KlubProvider with ChangeNotifier {
     }
   }
 
+  Future<SearchResult<KlubResponse>> getAll() async {
+    var url = "$_baseUrl$endpoint";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = SearchResult<KlubResponse>();
+      for (var item in data) {
+        result.result.add(KlubResponse.fromJson(item));
+      }
+      return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
   bool isValidResponse(Response response) {
     if (response.statusCode < 299) {
       return true;

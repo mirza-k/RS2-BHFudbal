@@ -1,3 +1,4 @@
+import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
 import 'package:bhfudbal_admin/pages/prikaz_korisnika.dart';
 import 'package:bhfudbal_admin/pages/prikaz_transfera.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(100, 75, 57, 239)),
         useMaterial3: true,
       ),
-      home: const DodajKlubWidget(),
+      home: const DodajFudbaleraWidget(),
     );
   }
 }
