@@ -1,7 +1,18 @@
-// ignore_for_file: sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, use_build_context_synchronously
+// ignore: use_build_context_synchronously
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:bhfudbal_admin/models/request/klub_request.dart';
+import 'package:bhfudbal_admin/models/response/grad_response.dart';
+import 'package:bhfudbal_admin/providers/grad_provider.dart';
+import 'package:bhfudbal_admin/providers/klub_provider.dart';
+import 'package:bhfudbal_admin/providers/liga_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/dodaj_klub_model.dart';
+import '../models/response/liga_response.dart';
 
 class DodajKlubWidget extends StatefulWidget {
   const DodajKlubWidget({Key? key}) : super(key: key);
@@ -15,10 +26,34 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
   late bool nazivKlubaValid;
   late bool nadimakKlubaValid;
   late bool osnivanjeKlubaValid;
+  late KlubProvider _klubProvider;
+  late LigaProvider _ligaProvider;
+  late GradProvider _gradProvider;
   String nazivKlubaError = "";
   String nadimakKlubaError = "";
   String osnivanjeKlubaError = "";
+  List<LigaResponse> ligaResults = [];
+  List<GradResponse> gradResults = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Future<void> _fetchLige() async {
+    _ligaProvider = context.read<LigaProvider>();
+    var result = await _ligaProvider.get();
+    setState(() {
+      ligaResults = result.result;
+    });
+  }
+
+  Future<void> _fetchGradovi() async {
+    _gradProvider = context.read<GradProvider>();
+    var result = await _gradProvider.get();
+    setState(() {
+      gradResults = result.result;
+    });
+  }
+
+  File? _image;
+  String? _base64Image;
 
   void _openImageUploadDialog() {
     showDialog(
@@ -26,10 +61,19 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Upload Grb"),
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Upload your image here."),
+              TextButton(
+                  onPressed: () async {
+                    var result = await FilePicker.platform
+                        .pickFiles(type: FileType.image);
+                    if (result != null && result.files.single.path != null) {
+                      _image = File(result.files.single.path!);
+                      _base64Image = base64Encode(_image!.readAsBytesSync());
+                    }
+                  },
+                  child: const Text("Upload")),
             ],
           ),
           actions: <Widget>[
@@ -78,6 +122,8 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
   void initState() {
     super.initState();
     _model = DodajKlubModel();
+    _fetchLige();
+    _fetchGradovi();
 
     _model.textController1 ??= TextEditingController();
     _model.textController2 ??= TextEditingController();
@@ -103,6 +149,31 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  void saveData() async {
+    _klubProvider = context.read<KlubProvider>();
+    var klub = KlubRequest(
+        naziv: _model.textController1!.text,
+        nadimak: _model.textController2!.text,
+        godinaOsnivanja: int.parse(_model.textController3!.text),
+        gradId: _model.dropDownValue1!.gradId,
+        ligaId: _model.dropDownValue2!.ligaId1,
+        grb: _base64Image);
+    var request = KlubRequest().toJson(klub);
+    var response = await _klubProvider.post(request);
+    if (response) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text("Uspjesno dodan Klub!"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("OK"))
+                ],
+              ));
+    }
   }
 
   @override
@@ -398,14 +469,14 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<GradResponse>(
                               isExpanded: true,
                               value: _model.dropDownValue1,
                               onChanged: (val) =>
                                   setState(() => _model.dropDownValue1 = val!),
-                              items: ['Option 1']
+                              items: gradResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -440,14 +511,14 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<LigaResponse>(
                               isExpanded: true,
                               value: _model.dropDownValue2,
                               onChanged: (val) =>
                                   setState(() => _model.dropDownValue2 = val!),
-                              items: ['Option 1']
+                              items: ligaResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -492,10 +563,13 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                   padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                   child: ElevatedButton(
                     onPressed: () {
-                      !_model.areTextFieldsValid(nazivKlubaValid,
-                              nadimakKlubaValid, osnivanjeKlubaValid)
+                      !_model.areTextFieldsValid(
+                              nazivKlubaValid,
+                              nadimakKlubaValid,
+                              osnivanjeKlubaValid,
+                              _base64Image)
                           ? null
-                          : print('Button pressed ...');
+                          : saveData();
                     },
                     child: const Text(
                       'Dodaj',
@@ -508,7 +582,8 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                       backgroundColor: !_model.areTextFieldsValid(
                               nazivKlubaValid,
                               nadimakKlubaValid,
-                              osnivanjeKlubaValid)
+                              osnivanjeKlubaValid,
+                              _base64Image)
                           ? Colors.grey
                           : Theme.of(context).primaryColor,
                       padding:

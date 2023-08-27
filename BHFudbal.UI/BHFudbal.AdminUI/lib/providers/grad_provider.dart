@@ -1,31 +1,29 @@
 // ignore_for_file: unused_local_variable
-
 import 'dart:convert';
-import 'package:bhfudbal_admin/models/request/klub_request.dart';
-import 'package:bhfudbal_admin/models/response/klub_response.dart';
+import 'package:bhfudbal_admin/models/response/grad_response.dart';
 import 'package:bhfudbal_admin/models/search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-class KlubProvider with ChangeNotifier {
+class GradProvider with ChangeNotifier {
   static String? _baseUrl;
-  static String endpoint = "Klub";
-  KlubProvider() {
+  static String endpoint = "Grad";
+  GradProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "https://localhost:44344/");
   }
 
-  Future<SearchResult<KlubResponse>> get(int? ligaId) async {
-    var url = "$_baseUrl$endpoint?LigaId=$ligaId";
+  Future<SearchResult<GradResponse>> get() async {
+    var url = "$_baseUrl$endpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      var result = SearchResult<KlubResponse>();
+      var result = SearchResult<GradResponse>();
       for (var item in data) {
-        result.result.add(KlubResponse.fromJson(item));
+        result.result.add(GradResponse.fromJson(item));
       }
       return result;
     } else {
@@ -40,19 +38,6 @@ class KlubProvider with ChangeNotifier {
       throw new Exception("Unauthorized");
     } else {
       throw new Exception("Something bad happened please try again");
-    }
-  }
-
-  Future<bool> post(dynamic request) async {
-    var url = "$_baseUrl$endpoint";
-    var uri = Uri.parse(url);
-    var headers = createHeaders();
-    var jsonRequest = jsonEncode(request);
-    var response = await http.post(uri, headers: headers, body: jsonRequest);
-    if (isValidResponse(response)) {
-      return true;
-    } else {
-      throw new Exception("Unexpected error");
     }
   }
 

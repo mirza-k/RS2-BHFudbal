@@ -33,6 +33,5 @@ class KlubResponse {
         liga: json['liga'] as String,
         ligaId: json['ligaId'] as int,
         grb: json['grb'] as String);
-    // stadion: json['stadion'] as String);
   }
 }

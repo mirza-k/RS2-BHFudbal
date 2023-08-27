@@ -1,3 +1,5 @@
+import 'package:bhfudbal_admin/models/response/grad_response.dart';
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:flutter/material.dart';
 
 class DodajKlubModel {
@@ -14,21 +16,22 @@ class DodajKlubModel {
   TextEditingController? textController3;
   String? Function(BuildContext, String?)? textController3Validator;
   // State field(s) for DropDown widget.
-  String? dropDownValue1;
+  GradResponse? dropDownValue1;
   TextEditingController? dropDownValueController1;
   // State field(s) for DropDown widget.
-  String? dropDownValue2;
+  LigaResponse? dropDownValue2;
   TextEditingController? dropDownValueController2;
 
   bool areTextFieldsValid(
-      bool nazivKlubaValid, bool nadimakKlubaValid, bool osnivanjeKlubaValid) {
+      bool nazivKlubaValid, bool nadimakKlubaValid, bool osnivanjeKlubaValid, String? base64Image) {
     return nazivKlubaValid &&
         nadimakKlubaValid &&
         osnivanjeKlubaValid &&
         dropDownValue1 != null &&
-        dropDownValue1!.isNotEmpty &&
+        dropDownValue1!.naziv!.isNotEmpty &&
         dropDownValue2 != null &&
-        dropDownValue2!.isNotEmpty;
+        dropDownValue2!.naziv!.isNotEmpty &&
+        base64Image != null;
   }
 
   /// Initialization and disposal methods.
