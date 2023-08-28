@@ -1,7 +1,6 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:convert';
-import 'package:bhfudbal_admin/models/request/klub_request.dart';
 import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/models/search_results.dart';
 import 'package:flutter/material.dart';
