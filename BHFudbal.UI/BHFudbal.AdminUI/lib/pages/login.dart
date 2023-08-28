@@ -300,8 +300,6 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                                       Authorization.username = username;
                                       Authorization.password = password;
-                                      print('$username -> $password');
-
                                       try {
                                         await _drzavaProvider.get();
                                         Navigator.push(

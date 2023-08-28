@@ -1,5 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:bhfudbal_admin/models/request/transfer_request.dart';
+import 'package:bhfudbal_admin/models/response/transfer_response.dart';
+import 'package:bhfudbal_admin/providers/sezona_provider.dart';
+import 'package:bhfudbal_admin/providers/transfer_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/dodaj_transfer_model.dart';
+import '../models/response/fudbaler_response.dart';
+import '../models/response/klub_response.dart';
+import '../models/response/liga_response.dart';
+import '../providers/fudbaler_provider.dart';
+import '../providers/klub_provider.dart';
+import '../providers/liga_provider.dart';
 
 class DodajTransferWidget extends StatefulWidget {
   const DodajTransferWidget({Key? key}) : super(key: key);
@@ -15,6 +28,136 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
   String cijenaError = "";
   String godineUgovoraError = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late LigaProvider _ligaProvider;
+  late KlubProvider _klubProvider;
+  late FudbalerProvider _fudbalerProvider;
+  late TransferProvider _transferProvider;
+  late SezonaProvider _sezonaProvider;
+  List<LigaResponse> ligaResults = [];
+  List<FudbalerResponse> fudbalerResults = [];
+  List<KlubResponse> klubResults = [];
+  List<KlubResponse> klubTargetResults = [];
+  List<LigaResponse> ligaTargetResults = [];
+
+  Future<void> _fetchLige() async {
+    _ligaProvider = context.read<LigaProvider>();
+    var result = await _ligaProvider.get();
+    setState(() {
+      ligaResults = result.result;
+      ligaTargetResults = result.result;
+    });
+  }
+
+  Future<void> _fetchKlubovi(bool klubTarget) async {
+    _klubProvider = context.read<KlubProvider>();
+    int? ligaId;
+    if (klubTarget) {
+      if (_model.ligaTarget != null && _model.ligaTarget!.ligaId1 != 0) {
+        ligaId = _model.ligaTarget!.ligaId1;
+      }
+    } else {
+      if (_model.liga != null && _model.liga!.ligaId1 != 0) {
+        ligaId = _model.liga!.ligaId1;
+      }
+    }
+
+    if (ligaId == null || ligaId == 0) return;
+
+    var result = await _klubProvider.get(ligaId);
+    setState(() {
+      if (klubTarget) {
+        _model.klubTarget = null;
+        klubTargetResults = result.result;
+      } else {
+        _model.klub = null;
+        klubResults = result.result;
+      }
+    });
+  }
+
+  Future<void> _fetchFudbaleri() async {
+    _fudbalerProvider = context.read<FudbalerProvider>();
+    if (_model.klub != null) {
+      var klubId = _model.klub!.klubId;
+      if (klubId != null && klubId != 0) {
+        var result = await _fudbalerProvider.get(klubId);
+        setState(() {
+          _model.fudbaler = null;
+          fudbalerResults = result.result;
+        });
+      }
+    }
+  }
+
+  void saveData() async {
+    _transferProvider = context.read<TransferProvider>();
+    var transfer = TransferRequest(
+        cijena: int.tryParse(_model.cijenaController!.text),
+        klubId: _model.klubTarget!.klubId,
+        stariKlubId: _model.klub!.klubId,
+        brojGodinaUgovora: int.tryParse(_model.godineUgovoraController!.text),
+        fudbalerId: _model.fudbaler!.fudbalerId);
+    var request = TransferRequest().toJson(transfer);
+    var errorMessage = await isTransferRequestValid(transfer);
+    if (errorMessage.isEmpty) {
+      var response = await _transferProvider.post(request);
+      if (response) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Uspjesno izvrsen transfer!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Error"),
+                content: Text(errorMessage),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"))
+                ],
+              ));
+    }
+  }
+
+  Future<String> isTransferRequestValid(TransferRequest transfer) async {
+    if (transfer.brojGodinaUgovora == 0)
+      return "Broj godina ugovora mora biti veći od 0!";
+
+    if (transfer.cijena == 0) return "Cijena mora biti veća od 0!";
+
+    if (transfer.klubId == transfer.stariKlubId)
+      return "Nemoguće napraviti transfer između dva ista kluba!";
+
+    _sezonaProvider = context.read<SezonaProvider>();
+    var sezone = await _sezonaProvider.get();
+    var aktivnaSezona = sezone.result.firstWhere((x) => x.aktivna != null
+        ? x.aktivna == true
+            ? true
+            : false
+        : false);
+    var transferi = await _transferProvider.get(aktivnaSezona.sezonaId);
+    var alreadyTrasferedThisSeason = transferi.result.firstWhere(
+        (x) => x.fudbalerId == transfer.fudbalerId,
+        orElse: () => TransferResponse(
+            imeFudbalera: "",
+            cijena: 0,
+            stariKlub: "",
+            brojGodinaUgovora: 0,
+            nazivKluba: ""));
+    if (alreadyTrasferedThisSeason.imeFudbalera!.isNotEmpty)
+      return "Fudbaler vec izvrsio transfer ove sezone!";
+
+    return "";
+  }
 
   String? fourDigitValidator(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
@@ -48,6 +191,8 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     godineUgovoraValid = _model.godineUgovoraControllerValidator!(
             context, _model.godineUgovoraController!.text) ==
         null;
+
+    _fetchLige();
   }
 
   @override
@@ -136,14 +281,17 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<LigaResponse>(
                               isExpanded: true,
-                              value: _model.ligaId,
-                              onChanged: (val) =>
-                                  setState(() => _model.ligaId = val!),
-                              items: ['Option 1']
+                              value: _model.liga,
+                              onChanged: (val) {
+                                setState(() => _model.liga = val!);
+                                _model.fudbaler = null;
+                                _fetchKlubovi(false);
+                              },
+                              items: ligaResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -182,14 +330,16 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<KlubResponse>(
                               isExpanded: true,
-                              value: _model.klubId,
-                              onChanged: (val) =>
-                                  setState(() => _model.klubId = val!),
-                              items: ['Option 1']
+                              value: _model.klub,
+                              onChanged: (val) {
+                                setState(() => _model.klub = val!);
+                                _fetchFudbaleri();
+                              },
+                              items: klubResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -228,14 +378,16 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<FudbalerResponse>(
                               isExpanded: true,
-                              value: _model.fudbalerId,
+                              value: _model.fudbaler,
                               onChanged: (val) =>
-                                  setState(() => _model.fudbalerId = val!),
-                              items: ['Option 1']
+                                  setState(() => _model.fudbaler = val!),
+                              items: fudbalerResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val,
+                                      child: Text(
+                                          '${val.ime ?? ""} ${val.prezime ?? ""}')))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -431,14 +583,16 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<LigaResponse>(
                               isExpanded: true,
-                              value: _model.ligaTargetId,
-                              onChanged: (val) =>
-                                  setState(() => _model.ligaTargetId = val!),
-                              items: ['Option 1']
+                              value: _model.ligaTarget,
+                              onChanged: (val) {
+                                setState(() => _model.ligaTarget = val!);
+                                _fetchKlubovi(true);
+                              },
+                              items: ligaTargetResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -477,14 +631,14 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<String>(
+                            child: DropdownButton<KlubResponse>(
                               isExpanded: true,
-                              value: _model.klubTargetId,
+                              value: _model.klubTarget,
                               onChanged: (val) =>
-                                  setState(() => _model.klubTargetId = val!),
-                              items: ['Option 1']
+                                  setState(() => _model.klubTarget = val!),
+                              items: klubTargetResults
                                   .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val)))
+                                      value: val, child: Text(val.naziv ?? "")))
                                   .toList(),
                               style: const TextStyle(
                                 fontSize: 16,
@@ -507,7 +661,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                 !_model.areTextFieldsValid(
                                         cijenaValid, godineUgovoraValid)
                                     ? null
-                                    : print('Button pressed ...');
+                                    : saveData();
                               },
                               child: Text(
                                 'Završi',

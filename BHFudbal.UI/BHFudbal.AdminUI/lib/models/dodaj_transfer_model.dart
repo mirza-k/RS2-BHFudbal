@@ -1,3 +1,6 @@
+import 'package:bhfudbal_admin/models/response/fudbaler_response.dart';
+import 'package:bhfudbal_admin/models/response/klub_response.dart';
+import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:flutter/material.dart';
 
 class DodajTransferModel {
@@ -5,19 +8,19 @@ class DodajTransferModel {
 
   final unfocusNode = FocusNode();
   // State field(s) for DropDown widget.
-  String? ligaId;
+  LigaResponse? liga;
   TextEditingController? ligaIdController;
   // State field(s) for DropDown widget.
-  String? klubId;
+  KlubResponse? klub;
   TextEditingController? klubIdController;
   // State field(s) for DropDown widget.
-  String? fudbalerId;
+  FudbalerResponse? fudbaler;
   TextEditingController? fudbalerIdController;
   // State field(s) for DropDown widget.
-  String? ligaTargetId;
+  LigaResponse? ligaTarget;
   TextEditingController? ligaTargetIdController;
   // State field(s) for DropDown widget.
-  String? klubTargetId;
+  KlubResponse? klubTarget;
   TextEditingController? klubTargetIdController;
   // State field(s) for DropDown widget.
   TextEditingController? cijenaController;
@@ -31,11 +34,11 @@ class DodajTransferModel {
   bool areTextFieldsValid(cijenaValid, godineUgovoraValid) {
     return cijenaValid &&
         godineUgovoraValid &&
-        (ligaId != null && ligaId!.isNotEmpty) &&
-        (klubId != null && klubId!.isNotEmpty) &&
-        (fudbalerId != null && fudbalerId!.isNotEmpty) &&
-        (ligaTargetId != null && ligaTargetId!.isNotEmpty) &&
-        (klubTargetId != null && klubTargetId!.isNotEmpty);
+        (liga != null && liga!.naziv!.isNotEmpty) &&
+        (klub != null && klub!.klubId != 0) &&
+        (fudbaler != null && fudbaler!.fudbalerId != 0) &&
+        (ligaTarget != null && ligaTarget!.ligaId1 != 0) &&
+        (klubTarget != null && klubTarget!.klubId != 0);
   }
 
   void dispose() {
