@@ -41,7 +41,7 @@ class FudbalerResponse {
         klub: json["klub"] as String,
         jacaNoga: json["jačaNoga"] as String,
         drzavaId: json["drzavaId"] as int,
-        drzava: json["drzava"] as String,
+        // drzava: json["drzava"] as String,
         slika: json["slika"] as String);
   }
 }

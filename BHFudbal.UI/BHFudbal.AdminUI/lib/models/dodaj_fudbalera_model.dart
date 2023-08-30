@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:flutter/material.dart';
 
@@ -22,20 +24,21 @@ class DodajFudbaleraModel {
   // State field(s) for DropDown widget.
   KlubResponse? klub;
   TextEditingController? klubIdController;
+
+  Uint8List? slika;
   // State field(s) for DropDown widget.
   void initState(BuildContext context) {}
 
   bool areTextFieldsValid(bool imeValid, bool prezimeValid, bool visinaValid,
-      bool tezinaValid, bool jacaNogaValid, base64Image) {
+      bool tezinaValid, bool jacaNogaValid, base64Image, bool uredi) {
     return imeValid &&
         prezimeValid &&
         visinaValid &&
         tezinaValid &&
         jacaNogaValid &&
-        klub != null &&
-        klub!.klubId != 0 &&
         datumRodjenja != null &&
-        base64Image != null;
+        base64Image != null &&
+        (uredi == true || (klub != null && klub!.naziv!.isNotEmpty));
   }
 
   void dispose() {

@@ -26,5 +26,21 @@ namespace BHFudbal.Services.Implementations
 
             return _mapper.Map<List<Model.Fudbaler>>(entity);
         }
+
+        public override Model.Fudbaler Update(int id, FudbalerUpdateRequest request)
+        {
+            var set = Context.Set<Fudbaler>();
+            var entity = set.Find(id);
+            entity.Ime = request.Ime;
+            entity.Prezime = request.Prezime;
+            entity.Visina = request.Visina;
+            entity.Težina = request.Težina;
+            entity.JačaNoga = request.JačaNoga;
+            entity.Slika = request.Slika;
+            entity.DatumRodjenja = request.DatumRodjenja;
+            //_mapper.Map(request, entity);
+            Context.SaveChanges();
+            return _mapper.Map<Model.Fudbaler>(entity);
+        }
     }
 }

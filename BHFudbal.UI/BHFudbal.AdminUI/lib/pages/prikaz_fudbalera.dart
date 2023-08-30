@@ -3,6 +3,7 @@
 import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_fudbalera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/prikaz_fudbalera_model.dart';
 import '../models/response/fudbaler_response.dart';
@@ -78,36 +79,19 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
     }
   }
 
-  List<DataTableRecord> dataTableRecordList = [
-    DataTableRecord(
-      column1: 'Value 1 Row 1',
-      column2: 'Value 2 Row 1',
-      column3: 'Value 3 Row 1',
-      column4: 'Value 4 Row 1',
-      column5: 'Value 5 Row 1',
-      column6: 'Value 6 Row 1',
-      column7: 'Value 7 Row 1',
-    ),
-    DataTableRecord(
-      column1: 'Value 1 Row 2',
-      column2: 'Value 2 Row 2',
-      column3: 'Value 3 Row 2',
-      column4: 'Value 4 Row 2',
-      column5: 'Value 5 Row 2',
-      column6: 'Value 6 Row 2',
-      column7: 'Value 7 Row 2',
-    ),
-    DataTableRecord(
-      column1: 'Value 1 Row 3',
-      column2: 'Value 2 Row 3',
-      column3: 'Value 3 Row 3',
-      column4: 'Value 4 Row 3',
-      column5: 'Value 5 Row 3',
-      column6: 'Value 6 Row 3',
-      column7: 'Value 7 Row 3',
-    ),
-    // Add more rows as needed
-  ];
+  Future<void> _navigateToChildPage(int? fudbalerId) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => fudbalerId != null
+              ? DodajFudbaleraWidget(fudbalerId)
+              : DodajFudbaleraWidget(null)),
+    );
+
+    if (result == true) {
+      _fetchFudbaleri();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -323,6 +307,15 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             )),
+                            DataColumn(
+                              label: Text(
+                                '',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ),
                           ],
                           rows: fudbalerResults.map((item) {
                             return DataRow(cells: [
@@ -336,10 +329,20 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                                   style: TextStyle(fontSize: 14))),
                               DataCell(Text(item.klub ?? "",
                                   style: TextStyle(fontSize: 14))),
-                              DataCell(Text(item.datumRodjenja ?? "",
+                              DataCell(Text(
+                                  DateFormat('yyyy-MM-dd').format(
+                                      DateTime.parse(item.datumRodjenja ?? "")),
                                   style: TextStyle(fontSize: 14))),
                               DataCell(Text(item.jacaNoga ?? "",
                                   style: TextStyle(fontSize: 14))),
+                              DataCell(TextButton(
+                                onPressed: () {
+                                  // Call the update function with the ID of the clicked row
+                                  // _updateRow(data.id);
+                                  _navigateToChildPage(item.fudbalerId);
+                                },
+                                child: Text('Uredi'),
+                              )),
                             ]);
                           }).toList(),
                           headingRowColor: MaterialStateProperty.all(
@@ -369,12 +372,8 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                          onPressed: () async {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        DodajFudbaleraWidget()));
+                          onPressed: () {
+                            _navigateToChildPage(null);
                           },
                           child: Text(
                             'Dodaj fudbalera',
@@ -406,24 +405,4 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
       ),
     );
   }
-}
-
-class DataTableRecord {
-  String column1;
-  String column2;
-  String column3;
-  String column4;
-  String column5;
-  String column6;
-  String column7;
-
-  DataTableRecord({
-    required this.column1,
-    required this.column2,
-    required this.column3,
-    required this.column4,
-    required this.column5,
-    required this.column6,
-    required this.column7,
-  });
 }

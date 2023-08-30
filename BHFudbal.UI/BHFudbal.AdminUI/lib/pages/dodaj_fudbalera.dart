@@ -1,18 +1,21 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:bhfudbal_admin/models/request/fudbaler_request.dart';
 import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import "../models/dodaj_fudbalera_model.dart";
+import '../models/response/fudbaler_response.dart';
 import '../models/response/klub_response.dart';
 import '../providers/klub_provider.dart';
 
 class DodajFudbaleraWidget extends StatefulWidget {
-  const DodajFudbaleraWidget({Key? key}) : super(key: key);
-
+  DodajFudbaleraWidget(this.fudbalerId, {Key? key}) : super(key: key);
+  int? fudbalerId;
   @override
   _DodajFudbaleraWidgetState createState() => _DodajFudbaleraWidgetState();
 }
@@ -96,28 +99,44 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
         visina: _model.visina!.text,
         tezina: _model.tezina!.text,
         datumRodjenja: _model.datumRodjenja,
-        klubId: _model.klub!.klubId,
+        klubId: _model.klub != null ? _model.klub!.klubId : null,
         jacaNoga: _model.jacaNoga!.text,
         slika: _base64Image);
-    var request = FudbalerRequest().toJson(klub);
-    var response = await _fudbalerProvider.post(request);
-    if (response) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: const Text("Uspjesno dodan fudbaler!"),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("OK"))
-                ],
-              ));
+    if (widget.fudbalerId == null) {
+      var request = FudbalerRequest().toJson(klub);
+      var response = await _fudbalerProvider.post(request);
+      if (response) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Uspjesno dodan fudbaler!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
+    } else {
+      klub.klubId = 0;
+      var request = FudbalerRequest().toJson(klub);
+      var response = await _fudbalerProvider.put(request, widget.fudbalerId);
+      if (response) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Uspjesno uredjen fudbaler!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> _initialize() async {
     _model = DodajFudbaleraModel();
     _model.ime ??= TextEditingController();
     _model.prezime ??= TextEditingController();
@@ -130,8 +149,13 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     _model.visinaValidator = visinaValidator;
     _model.tezinaValidator = tezinaValidator;
     _model.jacaNogaValidator = nameValidator;
-    _fetchKlubovi();
 
+    await Future.wait([_fetchKlubovi()]);
+
+    appendValidation();
+  }
+
+  void appendValidation() {
     imeValid = _model.imeValidator!(context, _model.ime!.text) == null;
     prezimeValid =
         _model.prezimeValidator!(context, _model.prezime!.text) == null;
@@ -139,6 +163,43 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     tezinaValid = _model.tezinaValidator!(context, _model.tezina!.text) == null;
     jacaNogaValid =
         _model.jacaNogaValidator!(context, _model.jacaNoga!.text) == null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+    appendValidation();
+    if (widget.fudbalerId != null && widget.fudbalerId != 0) {
+      _loadData(widget.fudbalerId);
+    }
+  }
+
+  Future<void> _loadData(int? fudbalerId) async {
+    _fudbalerProvider = context.read<FudbalerProvider>();
+    var response = await _fudbalerProvider.getById(fudbalerId);
+    var fudbaler = response;
+    _loadModel(fudbaler);
+  }
+
+  void _loadModel(FudbalerResponse model) {
+    _model.ime!.text = model.ime ?? "";
+    _model.prezime!.text = model.prezime ?? "";
+    _model.visina!.text = model.visina ?? "";
+    _model.tezina!.text = model.tezina ?? "";
+    _model.jacaNoga!.text = model.jacaNoga ?? "";
+    _model.datumRodjenja = DateTime.parse(model.datumRodjenja ?? "");
+    if (model.slika != null && model.slika!.isNotEmpty) {
+      _model.slika = Uint8List.fromList(base64.decode(model.slika ?? ""));
+      _base64Image = model.slika;
+    }
+    if (klubResults.isNotEmpty) {
+      var klub = klubResults.firstWhere((x) => x.klubId == model.klubId);
+      setState(() {
+        _model.klub = klub;
+      });
+    }
+    appendValidation();
   }
 
   @override
@@ -167,6 +228,11 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                     if (result != null && result.files.single.path != null) {
                       _image = File(result.files.single.path!);
                       _base64Image = base64Encode(_image!.readAsBytesSync());
+                      setState(() {
+                        _model.slika = Uint8List.fromList(
+                            base64.decode(_base64Image ?? ""));
+                      });
+                      appendValidation();
                     }
                   },
                   child: const Text("Upload")),
@@ -205,7 +271,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(context, true);
                 },
                 child: Icon(
                   Icons.chevron_left,
@@ -214,7 +280,9 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                 ),
               ),
               Text(
-                'Dodaj fudbalera',
+                widget.fudbalerId == null
+                    ? 'Dodaj fudbalera'
+                    : 'Uredi fudbalera',
                 style: Theme.of(context).textTheme.headline6!.copyWith(
                       fontFamily: 'Outfit',
                       color: Colors.white,
@@ -423,7 +491,8 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                             child: Text(
-                              _model.datumRodjenja?.toString() ??
+                              DateFormat('yyyy-MM-dd').format(
+                                      _model.datumRodjenja ?? DateTime.now()) ??
                                   'Izaberi datum',
                               style: TextStyle(
                                 fontFamily: 'Readex Pro',
@@ -639,61 +708,74 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 children: [
                                   InkWell(
                                     onTap: _openImageUploadDialog,
-                                    child: Icon(
-                                      Icons.image_outlined,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 80,
+                                    child: _model.slika == null
+                                        ? Icon(
+                                            Icons.image_outlined,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            size: 80,
+                                          )
+                                        : Image.memory(
+                                            _model.slika ??
+                                                Uint8List.fromList(
+                                                    [10, 20, 30]),
+                                            width: 150,
+                                            height: 100,
+                                          ),
+                                  ),
+                                  if (_model.slika == null)
+                                    Text(
+                                      'Dodaj sliku fudbalera',
                                     ),
-                                  ),
-                                  Text(
-                                    'Dodaj sliku fudbalera',
-                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                            child: Text(
-                              'Klub',
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 2,
+                          if (widget.fudbalerId == null)
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                              child: Text(
+                                'Klub',
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<KlubResponse>(
-                              isExpanded: true,
-                              value: _model.klub,
-                              onChanged: (val) =>
-                                  setState(() => _model.klub = val!),
-                              items: klubResults
-                                  .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val.naziv ?? "")))
-                                  .toList(),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                          if (widget.fudbalerId == null)
+                            Container(
+                              width: 300,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 2,
+                                ),
                               ),
-                              icon: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                                size: 24,
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: DropdownButton<KlubResponse>(
+                                isExpanded: true,
+                                value: _model.klub,
+                                onChanged: (val) =>
+                                    setState(() => _model.klub = val!),
+                                items: klubResults
+                                    .map((val) => DropdownMenuItem(
+                                        value: val,
+                                        child: Text(val.naziv ?? "")))
+                                    .toList(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.grey,
+                                  size: 24,
+                                ),
+                                underline: SizedBox(),
                               ),
-                              underline: SizedBox(),
                             ),
-                          ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
@@ -705,12 +787,13 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                         visinaValid,
                                         tezinaValid,
                                         jacaNogaValid,
-                                        _base64Image)
+                                        _base64Image,
+                                        widget.fudbalerId != null)
                                     ? null
                                     : saveData();
                               },
                               child: Text(
-                                'Dodaj',
+                                widget.fudbalerId == null ? 'Dodaj' : 'Uredi',
                                 style: TextStyle(
                                   fontFamily: 'Readex Pro',
                                   color: Colors.white,
@@ -723,7 +806,8 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                         visinaValid,
                                         tezinaValid,
                                         jacaNogaValid,
-                                        _base64Image)
+                                        _base64Image,
+                                        widget.fudbalerId != null)
                                     ? Colors.grey
                                     : Theme.of(context).primaryColor,
                                 padding: EdgeInsetsDirectional.fromSTEB(

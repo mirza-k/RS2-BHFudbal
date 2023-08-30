@@ -32,6 +32,19 @@ class FudbalerProvider with ChangeNotifier {
     }
   }
 
+  Future<FudbalerResponse> getById(int? fudbalerId) async {
+    var url = "$_baseUrl$endpoint/$fudbalerId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return FudbalerResponse.fromJson(data);
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
   bool isValidResponse(Response response) {
     if (response.statusCode < 299) {
       return true;
@@ -48,6 +61,19 @@ class FudbalerProvider with ChangeNotifier {
     var headers = createHeaders();
     var jsonRequest = jsonEncode(request);
     var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (isValidResponse(response)) {
+      return true;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+    Future<bool> put(dynamic request, int? fudbalerId) async {
+    var url = "$_baseUrl$endpoint/$fudbalerId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
     if (isValidResponse(response)) {
       return true;
     } else {
