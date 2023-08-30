@@ -23,3 +23,22 @@ class KlubRequest {
         'grb': instance.grb
       };
 }
+
+class KlubUpdateRequest {
+  String? naziv;
+  int? godinaOsnivanja;
+  String? nadimak;
+  int? gradId;
+  String? grb;
+
+  KlubUpdateRequest(
+      {this.naziv, this.nadimak, this.godinaOsnivanja, this.gradId, this.grb});
+
+  Map<String, dynamic> toJson(KlubUpdateRequest instance) => <String, dynamic>{
+        'naziv': instance.naziv,
+        'godinaOsnivanja': instance.godinaOsnivanja,
+        'nadimak': instance.nadimak,
+        'gradId': instance.gradId,
+        'grb': instance.grb
+      };
+}

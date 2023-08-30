@@ -1,8 +1,10 @@
-// ignore_for_file: sort_child_properties_last, use_build_context_synchronously
+// ignore_for_file: sort_child_properties_last, use_build_context_synchronously, prefer_const_constructors
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:bhfudbal_admin/models/request/klub_request.dart';
 import 'package:bhfudbal_admin/models/response/grad_response.dart';
+import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/providers/grad_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
@@ -13,41 +15,52 @@ import '../models/dodaj_klub_model.dart';
 import '../models/response/liga_response.dart';
 
 class DodajKlubWidget extends StatefulWidget {
-  const DodajKlubWidget({Key? key}) : super(key: key);
-
+  const DodajKlubWidget(this.klubId, this.ligeParam, this.gradParam, {Key? key})
+      : super(key: key);
+  final int? klubId;
+  final List<LigaResponse>? ligeParam;
+  final List<GradResponse>? gradParam;
   @override
   _DodajKlubWidgetState createState() => _DodajKlubWidgetState();
 }
 
 class _DodajKlubWidgetState extends State<DodajKlubWidget> {
   late DodajKlubModel _model;
-  late bool nazivKlubaValid;
-  late bool nadimakKlubaValid;
-  late bool osnivanjeKlubaValid;
+  late bool nazivKlubaValid = false;
+  late bool nadimakKlubaValid = false;
+  late bool osnivanjeKlubaValid = false;
   late KlubProvider _klubProvider;
   late LigaProvider _ligaProvider;
   late GradProvider _gradProvider;
-  String nazivKlubaError = "";
-  String nadimakKlubaError = "";
-  String osnivanjeKlubaError = "";
+  String? nazivKlubaError;
+  String? nadimakKlubaError;
+  String? osnivanjeKlubaError;
   List<LigaResponse> ligaResults = [];
   List<GradResponse> gradResults = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> _fetchLige() async {
-    _ligaProvider = context.read<LigaProvider>();
-    var result = await _ligaProvider.get();
-    setState(() {
-      ligaResults = result.result;
-    });
+    if (widget.ligeParam != null) {
+      ligaResults = widget.ligeParam ?? [];
+    } else {
+      _ligaProvider = context.read<LigaProvider>();
+      var result = await _ligaProvider.get();
+      setState(() {
+        ligaResults = result.result;
+      });
+    }
   }
 
   Future<void> _fetchGradovi() async {
-    _gradProvider = context.read<GradProvider>();
-    var result = await _gradProvider.get();
-    setState(() {
-      gradResults = result.result;
-    });
+    if (widget.gradParam != null) {
+      gradResults = widget.gradParam ?? [];
+    } else {
+      _gradProvider = context.read<GradProvider>();
+      var result = await _gradProvider.get();
+      setState(() {
+        gradResults = result.result;
+      });
+    }
   }
 
   File? _image;
@@ -69,6 +82,11 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                     if (result != null && result.files.single.path != null) {
                       _image = File(result.files.single.path!);
                       _base64Image = base64Encode(_image!.readAsBytesSync());
+                      setState(() {
+                        _model.grb = Uint8List.fromList(
+                            base64.decode(_base64Image ?? ""));
+                      });
+                      _appendValidation();
                     }
                   },
                   child: const Text("Upload")),
@@ -116,29 +134,66 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
     return null; // Return null when the value is valid
   }
 
+  void _loadModel(KlubResponse model) {
+    _model.textController1!.text = model.naziv ?? "";
+    _model.textController2!.text = model.nadimak ?? "";
+    _model.textController3!.text = model.godinaOsnivanja.toString();
+    if (model.grb != null && model.grb!.isNotEmpty) {
+      _model.grb = Uint8List.fromList(base64.decode(model.grb ?? ""));
+      _base64Image = model.grb;
+    }
+    if (widget.gradParam != null && widget.gradParam!.isNotEmpty) {
+      var grad = widget.gradParam!.firstWhere((x) => x.gradId == model.gradId);
+      setState(() {
+        _model.dropDownValue1 = grad;
+      });
+    }
+    if (widget.ligeParam != null && widget.ligeParam!.isNotEmpty) {
+      setState(() {
+        _model.dropDownValue2 = null;
+        _model.dropDownValue2 =
+            widget.ligeParam!.firstWhere((x) => x.ligaId1 == model.ligaId);
+      });
+    }
+    _appendValidation();
+  }
+
+  Future<void> _loadData(int? klubId) async {
+    _klubProvider = context.read<KlubProvider>();
+    var response = await _klubProvider.getById(klubId);
+    var klub = response;
+    _loadModel(klub);
+  }
+
   @override
   void initState() {
     super.initState();
     _model = DodajKlubModel();
-    _fetchLige();
-    _fetchGradovi();
-
     _model.textController1 ??= TextEditingController();
     _model.textController2 ??= TextEditingController();
     _model.textController3 ??= TextEditingController();
+    _fetchGradovi();
+    _fetchLige();
 
+    if (widget.klubId != null && widget.klubId != 0) {
+      _loadData(widget.klubId);
+    }
+
+    _appendValidation();
+  }
+
+  void _appendValidation() {
     _model.textController1Validator = nameValidator;
-    _model.textController2Validator = fourDigitValidator;
-    _model.textController3Validator = nameValidator;
-
+    _model.textController2Validator = nameValidator;
+    _model.textController3Validator = fourDigitValidator;
     nazivKlubaValid = _model.textController1Validator!(
             context, _model.textController1!.text) ==
         null;
-    nadimakKlubaValid = _model.textController3Validator!(
-            context, _model.textController3!.text) ==
-        null;
-    osnivanjeKlubaValid = _model.textController2Validator!(
+    nadimakKlubaValid = _model.textController2Validator!(
             context, _model.textController2!.text) ==
+        null;
+    osnivanjeKlubaValid = _model.textController3Validator!(
+            context, _model.textController3!.text) ==
         null;
   }
 
@@ -159,18 +214,44 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
         ligaId: _model.dropDownValue2!.ligaId1,
         grb: _base64Image);
     var request = KlubRequest().toJson(klub);
-    var response = await _klubProvider.post(request);
-    if (response) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: const Text("Uspjesno dodan Klub!"),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("OK"))
-                ],
-              ));
+
+    if (widget.klubId == null) {
+      var response = await _klubProvider.post(request);
+      if (response) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Uspjesno dodan klub!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
+    } else {
+      var klubUpdateRequest = KlubUpdateRequest(
+          naziv: _model.textController1!.text,
+          nadimak: _model.textController2!.text,
+          godinaOsnivanja: int.parse(_model.textController3!.text),
+          gradId: _model.dropDownValue1!.gradId,
+          grb: _base64Image);
+      var request = klubUpdateRequest.toJson(klubUpdateRequest);
+      var response = await _klubProvider.put(request, widget.klubId);
+      if (response) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Uspjesno ste uredili klub!"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("OK"))
+                  ],
+                ));
+      }
     }
   }
 
@@ -193,7 +274,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () async {
-                  Navigator.of(context).pop();
+                  Navigator.pop(context, true);
                 },
                 child: const Icon(
                   Icons.chevron_left,
@@ -201,10 +282,10 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                   size: 40,
                 ),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(30, 0, 0, 0),
                 child: Text(
-                  'Dodaj klub',
+                  widget.klubId != null ? 'Uredi klub' : "Dodaj klub",
                   style: TextStyle(
                     fontFamily: 'Outfit',
                     color: Colors.white,
@@ -287,15 +368,15 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                                     !nazivKlubaValid ? nazivKlubaError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
-                              validator: (value) => _model
-                                  .textController1Validator!(context, value),
+                              // validator: (value) => _model
+                              //     .textController1Validator!(context, value),
                               onChanged: (value) {
                                 setState(() {
                                   nazivKlubaError =
                                       _model.textController1Validator!(
                                               context, value) ??
                                           '';
-                                  nazivKlubaValid = nazivKlubaError.isEmpty;
+                                  nazivKlubaValid = nazivKlubaError!.isEmpty;
                                 });
                               },
                             ),
@@ -358,14 +439,15 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
                               validator: (value) => _model
-                                  .textController3Validator!(context, value),
+                                  .textController2Validator!(context, value),
                               onChanged: (value) {
                                 setState(() {
                                   nadimakKlubaError =
-                                      _model.textController3Validator!(
+                                      _model.textController2Validator!(
                                               context, value) ??
                                           '';
-                                  nadimakKlubaValid = nadimakKlubaError.isEmpty;
+                                  nadimakKlubaValid =
+                                      nadimakKlubaError!.isEmpty;
                                 });
                               },
                             ),
@@ -428,15 +510,15 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
                               validator: (value) => _model
-                                  .textController2Validator!(context, value),
+                                  .textController3Validator!(context, value),
                               onChanged: (value) {
                                 setState(() {
                                   osnivanjeKlubaError =
-                                      _model.textController2Validator!(
+                                      _model.textController3Validator!(
                                               context, value) ??
                                           '';
                                   osnivanjeKlubaValid =
-                                      osnivanjeKlubaError.isEmpty;
+                                      osnivanjeKlubaError!.isEmpty;
                                 });
                               },
                             ),
@@ -446,7 +528,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                     ),
                     Container(
                       width: 200,
-                      height: 300,
+                      height: 400,
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -470,8 +552,9 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                             child: DropdownButton<GradResponse>(
                               isExpanded: true,
                               value: _model.dropDownValue1,
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue1 = val!),
+                              onChanged: (val) {
+                                setState(() => _model.dropDownValue1 = val!);
+                              },
                               items: gradResults
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val.naziv ?? "")))
@@ -489,64 +572,76 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               underline: const SizedBox(),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0, 30, 0, 0),
-                            child: Text(
-                              'Liga *',
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.grey,
-                                width: 2,
+                          if (widget.klubId == null)
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 30, 0, 0),
+                              child: Text(
+                                'Liga *',
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: DropdownButton<LigaResponse>(
-                              isExpanded: true,
-                              value: _model.dropDownValue2,
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue2 = val!),
-                              items: ligaResults
-                                  .map((val) => DropdownMenuItem(
-                                      value: val, child: Text(val.naziv ?? "")))
-                                  .toList(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                          if (widget.klubId == null)
+                            Container(
+                              width: 300,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 2,
+                                ),
                               ),
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Colors.grey,
-                                size: 24,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: DropdownButton<LigaResponse>(
+                                isExpanded: true,
+                                value: _model.dropDownValue2,
+                                onChanged: (val) => setState(
+                                    () => _model.dropDownValue2 = val!),
+                                items: ligaResults
+                                    .map((val) => DropdownMenuItem(
+                                        value: val,
+                                        child: Text(val.naziv ?? "")))
+                                    .toList(),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.grey,
+                                  size: 24,
+                                ),
+                                underline: const SizedBox(),
                               ),
-                              underline: const SizedBox(),
                             ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: GestureDetector(
                               onTap: _openImageUploadDialog,
                               child: Container(
                                 width: 200,
-                                height: 100,
+                                height: 200,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     const Text("Grb *"),
-                                    Icon(
-                                      Icons.image_outlined,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 80,
-                                    ),
+                                    if (_model.grb == null)
+                                      Icon(
+                                        Icons.image_outlined,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 80,
+                                      ),
+                                    if (_model.grb != null)
+                                      Image.memory(
+                                        _model.grb ??
+                                            Uint8List.fromList([10, 20, 30]),
+                                        width: 150,
+                                        height: 150,
+                                      )
                                   ],
                                 ),
                               ),
@@ -565,12 +660,13 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               nazivKlubaValid,
                               nadimakKlubaValid,
                               osnivanjeKlubaValid,
-                              _base64Image)
+                              _base64Image,
+                              widget.klubId != null)
                           ? null
                           : saveData();
                     },
-                    child: const Text(
-                      'Dodaj',
+                    child: Text(
+                      widget.klubId != null ? 'Uredi' : 'Dodaj',
                       style: TextStyle(
                         fontFamily: 'Readex Pro',
                         color: Colors.white,
@@ -581,7 +677,8 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                               nazivKlubaValid,
                               nadimakKlubaValid,
                               osnivanjeKlubaValid,
-                              _base64Image)
+                              _base64Image,
+                              widget.klubId != null)
                           ? Colors.grey
                           : Theme.of(context).primaryColor,
                       padding:

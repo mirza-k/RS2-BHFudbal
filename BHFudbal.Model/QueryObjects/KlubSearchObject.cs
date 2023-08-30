@@ -4,5 +4,6 @@
     {
         public string Naziv { get; set; }
         public int LigaId { get; set; }
+        public int KlubId { get; set; }
     }
 }

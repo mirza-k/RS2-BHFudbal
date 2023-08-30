@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:bhfudbal_admin/models/response/grad_response.dart';
 import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
+import 'package:bhfudbal_admin/providers/grad_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +21,11 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
   late PrikazKlubovaModel _model;
   late LigaProvider _ligaProvider;
   late KlubProvider _klubProvider;
+  late GradProvider _gradProvider;
 
   List<LigaResponse> ligaResults = [];
   List<KlubResponse> klubResults = [];
+  List<GradResponse> gradResults = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -30,6 +34,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
     super.initState();
     _model = PrikazKlubovaModel();
     _fetchLige();
+    _fetchGradovi();
   }
 
   Future<void> _fetchLige() async {
@@ -37,6 +42,14 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
     var result = await _ligaProvider.get();
     setState(() {
       ligaResults = result.result;
+    });
+  }
+
+  Future<void> _fetchGradovi() async {
+    _gradProvider = context.read<GradProvider>();
+    var result = await _gradProvider.get();
+    setState(() {
+      gradResults = result.result;
     });
   }
 
@@ -59,31 +72,19 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
     super.dispose();
   }
 
-  // Mock data for yourDataList
-  List<DataTableRecord> yourDataList = [
-    DataTableRecord(
-      column1: 'Club 1',
-      column2: 'City 1',
-      column3: '1990',
-      column4: 'League 1',
-      column5: 'Nickname 1',
-    ),
-    DataTableRecord(
-      column1: 'Club 2',
-      column2: 'City 2',
-      column3: '1985',
-      column4: 'League 2',
-      column5: 'Nickname 2',
-    ),
-    DataTableRecord(
-      column1: 'Club 3',
-      column2: 'City 3',
-      column3: '2000',
-      column4: 'League 3',
-      column5: 'Nickname 3',
-    ),
-    // Add more mock data as needed
-  ];
+  Future<void> _navigateToChildPage(int? klubId) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => klubId != null
+              ? DodajKlubWidget(klubId, ligaResults, gradResults)
+              : DodajKlubWidget(null, null, null)),
+    );
+
+    if (result == true) {
+      _fetchKlubovi();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,6 +234,15 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                                   color: Colors.white),
                             ),
                           ),
+                          DataColumn(
+                            label: Text(
+                              '',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ),
                         ],
                         rows: klubResults.map((data) {
                           return DataRow(cells: [
@@ -243,6 +253,14 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                                 : "")),
                             DataCell(Text(data.liga ?? "")),
                             DataCell(Text(data.nadimak ?? "")),
+                            DataCell(TextButton(
+                              onPressed: () {
+                                // Call the update function with the ID of the clicked row
+                                // _updateRow(data.id);
+                                _navigateToChildPage(data.klubId);
+                              },
+                              child: Text('Update'),
+                            )),
                           ]);
                         }).toList(),
                         headingRowColor: MaterialStateProperty.all(
@@ -270,12 +288,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ElevatedButton(
-                          onPressed: () async {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DodajKlubWidget()));
-                          },
+                          onPressed: () => _navigateToChildPage(null),
                           style: ElevatedButton.styleFrom(
                             primary: Theme.of(context).primaryColor,
                           ),

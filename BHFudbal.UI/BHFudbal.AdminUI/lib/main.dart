@@ -1,4 +1,5 @@
 import 'package:bhfudbal_admin/pages/dodaj_transfer.dart';
+import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
 import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:bhfudbal_admin/providers/fudbaler_provider.dart';
 import 'package:bhfudbal_admin/providers/grad_provider.dart';
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(100, 75, 57, 239)),
         useMaterial3: true,
       ),
-      home: const DodajTransferWidget(),
+      home: const PrikazKlubovaWidget(),
     );
   }
 }

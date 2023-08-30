@@ -49,6 +49,20 @@ class KlubProvider with ChangeNotifier {
     }
   }
 
+  Future<KlubResponse> getById(int? klubId) async {
+    var url = "$_baseUrl$endpoint?KlubId=$klubId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = KlubResponse.fromJson(data[0]);
+      return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
   bool isValidResponse(Response response) {
     if (response.statusCode < 299) {
       return true;
@@ -65,6 +79,19 @@ class KlubProvider with ChangeNotifier {
     var headers = createHeaders();
     var jsonRequest = jsonEncode(request);
     var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (isValidResponse(response)) {
+      return true;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+    Future<bool> put(dynamic request, int? klubId) async {
+    var url = "$_baseUrl$endpoint/$klubId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
     if (isValidResponse(response)) {
       return true;
     } else {
