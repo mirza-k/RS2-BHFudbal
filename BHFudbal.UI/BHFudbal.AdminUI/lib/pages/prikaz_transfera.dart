@@ -37,6 +37,15 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
     super.dispose();
   }
 
+  Future<void> _navigateToChildPage() async {
+    final result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => DodajTransferWidget()));
+
+    if (result == true) {
+      _fetchTransferi();
+    }
+  }
+
   Future<void> _fetchSezone() async {
     _sezonaProvider = context.read<SezonaProvider>();
     var result = await _sezonaProvider.get();
@@ -167,12 +176,7 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DodajTransferWidget()));
-                        },
+                        onPressed: () => _navigateToChildPage(),
                         child: Text(
                           'Dodaj transfer',
                           style: TextStyle(

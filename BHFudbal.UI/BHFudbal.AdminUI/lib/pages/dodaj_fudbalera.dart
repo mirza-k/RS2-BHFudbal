@@ -202,13 +202,6 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     appendValidation();
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   File? _image;
   String? _base64Image;
 
@@ -491,9 +484,10 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                             child: Text(
-                              DateFormat('yyyy-MM-dd').format(
-                                      _model.datumRodjenja ?? DateTime.now()) ??
-                                  'Izaberi datum',
+                              _model.datumRodjenja != null
+                                  ? DateFormat('yyyy-MM-dd').format(
+                                      _model.datumRodjenja ?? DateTime.now())
+                                  : 'Izaberi datum',
                               style: TextStyle(
                                 fontFamily: 'Readex Pro',
                                 fontSize: 24,

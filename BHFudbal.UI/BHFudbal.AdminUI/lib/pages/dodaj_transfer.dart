@@ -233,7 +233,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(context, true);
                 },
                 child: Icon(
                   Icons.chevron_left,

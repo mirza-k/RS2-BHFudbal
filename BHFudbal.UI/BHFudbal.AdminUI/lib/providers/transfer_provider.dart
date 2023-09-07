@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../models/response/report_response.dart';
+import '../utils/util.dart';
 
 class TransferProvider with ChangeNotifier {
   static String? _baseUrl;
@@ -80,10 +81,8 @@ class TransferProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    // String username = Authorization.username ?? "";
-    // String pass = Authorization.password ?? "";
-    String username = "mirza";
-    String pass = "mirza";
+    String username = Authorization.username ?? "";
+    String pass = Authorization.password ?? "";
     String basicAuth = "Basic ${base64Encode(utf8.encode('$username:$pass'))}";
 
     var headers = {

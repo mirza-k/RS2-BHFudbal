@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../models/response/fudbaler_response.dart';
+import '../utils/util.dart';
 
 class FudbalerProvider with ChangeNotifier {
   static String? _baseUrl;
@@ -82,10 +83,8 @@ class FudbalerProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    // String username = Authorization.username ?? "";
-    // String pass = Authorization.password ?? "";
-    String username = "mirza";
-    String pass = "mirza";
+    String username = Authorization.username ?? "";
+    String pass = Authorization.password ?? "";
     String basicAuth = "Basic ${base64Encode(utf8.encode('$username:$pass'))}";
 
     var headers = {

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
+import '../utils/util.dart';
+
 class KlubProvider with ChangeNotifier {
   static String? _baseUrl;
   static String endpoint = "Klub";
@@ -100,10 +102,8 @@ class KlubProvider with ChangeNotifier {
   }
 
   Map<String, String> createHeaders() {
-    // String username = Authorization.username ?? "";
-    // String pass = Authorization.password ?? "";
-    String username = "mirza";
-    String pass = "mirza";
+    String username = Authorization.username ?? "";
+    String pass = Authorization.password ?? "";
     String basicAuth = "Basic ${base64Encode(utf8.encode('$username:$pass'))}";
 
     var headers = {
