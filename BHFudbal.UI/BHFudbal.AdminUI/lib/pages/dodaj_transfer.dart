@@ -175,6 +175,18 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     return null; // Return null when the value is valid
   }
 
+  String? onlyNumbers(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Unesite vrijednost!';
+    }
+
+    if (int.tryParse(value) == null) {
+      return 'Samo brojevi!';
+    }
+
+    return null; // Return null when the value is valid
+  }
+
   @override
   void initState() {
     super.initState();
@@ -182,12 +194,12 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     _model.cijenaController = new TextEditingController();
     _model.godineUgovoraController = new TextEditingController();
 
-    _model.cijenaControllerValidator = fourDigitValidator;
+    _model.cijenaControllerValidator = onlyNumbers;
     cijenaValid = _model.cijenaControllerValidator!(
             context, _model.cijenaController!.text) ==
         null;
 
-    _model.godineUgovoraControllerValidator = fourDigitValidator;
+    _model.godineUgovoraControllerValidator = onlyNumbers;
     godineUgovoraValid = _model.godineUgovoraControllerValidator!(
             context, _model.godineUgovoraController!.text) ==
         null;

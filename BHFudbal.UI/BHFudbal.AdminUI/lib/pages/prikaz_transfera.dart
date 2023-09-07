@@ -58,31 +58,6 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
     }
   }
 
-  List<DataItem> yourDataList = [
-    DataItem(
-      column1: 'Fudbaler 1',
-      column2: '1000',
-      column3: '2 godine',
-      column4: 'Stari klub 1',
-      column5: 'Novi klub 1',
-    ),
-    DataItem(
-      column1: 'Fudbaler 2',
-      column2: '1500',
-      column3: '3 godine',
-      column4: 'Stari klub 2',
-      column5: 'Novi klub 2',
-    ),
-    DataItem(
-      column1: 'Fudbaler 3',
-      column2: '800',
-      column3: '1 godina',
-      column4: 'Stari klub 3',
-      column5: 'Novi klub 3',
-    ),
-    // Add more data items as needed
-  ];
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -219,76 +194,78 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
                 ),
                 SizedBox(height: 20),
                 Expanded(
-                  child: DataTable(
-                    columns: [
-                      DataColumn(
-                        label: Text(
-                          'Fudbaler',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                  child: SingleChildScrollView(
+                    child: DataTable(
+                      columns: [
+                        DataColumn(
+                          label: Text(
+                            'Fudbaler',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Cijena',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        DataColumn(
+                          label: Text(
+                            'Cijena',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Godine ugovora',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        DataColumn(
+                          label: Text(
+                            'Godine ugovora',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Stari klub',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        DataColumn(
+                          label: Text(
+                            'Stari klub',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Novi klub',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        DataColumn(
+                          label: Text(
+                            'Novi klub',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
+                      ],
+                      rows: transferResults.map((data) {
+                        return DataRow(cells: [
+                          DataCell(Text(data.imeFudbalera ?? "")),
+                          DataCell(Text(data.cijena.toString())),
+                          DataCell(Text(data.brojGodinaUgovora.toString())),
+                          DataCell(Text(data.stariKlub ?? "")),
+                          DataCell(Text(data.nazivKluba ?? "")),
+                        ]);
+                      }).toList(),
+                      headingRowColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor,
                       ),
-                    ],
-                    rows: transferResults.map((data) {
-                      return DataRow(cells: [
-                        DataCell(Text(data.imeFudbalera ?? "")),
-                        DataCell(Text(data.cijena.toString())),
-                        DataCell(Text(data.brojGodinaUgovora.toString())),
-                        DataCell(Text(data.stariKlub ?? "")),
-                        DataCell(Text(data.nazivKluba ?? "")),
-                      ]);
-                    }).toList(),
-                    headingRowColor: MaterialStateProperty.all(
-                      Theme.of(context).primaryColor,
+                      headingRowHeight: 56,
+                      dataRowColor: MaterialStateProperty.all(
+                        Colors.white,
+                      ),
+                      dataRowHeight: 56,
+                      border: TableBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      dividerThickness: 1,
+                      showBottomBorder: true,
                     ),
-                    headingRowHeight: 56,
-                    dataRowColor: MaterialStateProperty.all(
-                      Colors.white,
-                    ),
-                    dataRowHeight: 56,
-                    border: TableBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    dividerThickness: 1,
-                    showBottomBorder: true,
                   ),
                 ),
                 SizedBox(height: 20),

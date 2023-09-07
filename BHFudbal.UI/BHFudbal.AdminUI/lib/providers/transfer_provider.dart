@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
+import '../models/response/report_response.dart';
+
 class TransferProvider with ChangeNotifier {
   static String? _baseUrl;
   static String endpoint = "Transfer";
@@ -42,6 +44,26 @@ class TransferProvider with ChangeNotifier {
     var response = await http.post(uri, headers: headers, body: jsonRequest);
     if (isValidResponse(response)) {
       return true;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+    Future<SearchResult<ReportResponse>> getReport(int? sezonaId) async {
+    var url = "$_baseUrl$endpoint/Report";
+    if (sezonaId != null && sezonaId > 0) {
+      url += "?SezonaId=$sezonaId";
+    }
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      var result = SearchResult<ReportResponse>();
+      for (var item in data) {
+        result.result.add(ReportResponse.fromJson(item));
+      }
+      return result;
     } else {
       throw new Exception("Unexpected error");
     }

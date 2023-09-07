@@ -117,139 +117,141 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
         ),
         body: SafeArea(
           top: true,
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<LigaResponse>(
-                            value: _model.ligaId,
-                            isExpanded: true,
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey,
-                              size: 24,
-                            ),
-                            hint: const Text(
-                              "Izaberi ligu",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors
-                                    .black, // Replace with your desired text color
-                              ),
-                            ),
-                            onChanged: (val) {
-                              setState(() => _model.ligaId = val!);
-                              _fetchKlubovi();
-                            },
-                            items: ligaResults
-                                .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val.naziv ?? "")))
-                                .toList(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            underline: SizedBox(),
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: DropdownButton<KlubResponse>(
-                            isExpanded: true,
-                            value: _model.klubId,
-                            hint: const Text(
-                              "Izaberi klub",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors
-                                    .black, // Replace with your desired text color
-                              ),
-                            ),
-                            onChanged: (val) =>
-                                setState(() => _model.klubId = val!),
-                            items: klubResults
-                                .map((val) => DropdownMenuItem(
-                                    value: val, child: Text(val.naziv ?? "")))
-                                .toList(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.grey,
-                              size: 24,
-                            ),
-                            underline: SizedBox(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _fetchFudbaleri();
-                      },
-                      child: Text(
-                        'Prikazi',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Readex Pro',
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        textStyle: TextStyle(
-                          fontFamily: 'Readex Pro',
-                          color: Colors.white,
-                        ),
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Row(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: DataTable(
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: 300,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 2,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: DropdownButton<LigaResponse>(
+                              value: _model.ligaId,
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Colors.grey,
+                                size: 24,
+                              ),
+                              hint: const Text(
+                                "Izaberi ligu",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors
+                                      .black, // Replace with your desired text color
+                                ),
+                              ),
+                              onChanged: (val) {
+                                setState(() => _model.ligaId = val!);
+                                _fetchKlubovi();
+                              },
+                              items: ligaResults
+                                  .map((val) => DropdownMenuItem(
+                                      value: val, child: Text(val.naziv ?? "")))
+                                  .toList(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              underline: SizedBox(),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Container(
+                            width: 300,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 2,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: DropdownButton<KlubResponse>(
+                              isExpanded: true,
+                              value: _model.klubId,
+                              hint: const Text(
+                                "Izaberi klub",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors
+                                      .black, // Replace with your desired text color
+                                ),
+                              ),
+                              onChanged: (val) =>
+                                  setState(() => _model.klubId = val!),
+                              items: klubResults
+                                  .map((val) => DropdownMenuItem(
+                                      value: val, child: Text(val.naziv ?? "")))
+                                  .toList(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Colors.grey,
+                                size: 24,
+                              ),
+                              underline: SizedBox(),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _fetchFudbaleri();
+                        },
+                        child: Text(
+                          'Prikazi',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Readex Pro',
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          textStyle: TextStyle(
+                            fontFamily: 'Readex Pro',
+                            color: Colors.white,
+                          ),
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DataTable(
                           columns: [
                             DataColumn(
                                 label: Text(
@@ -359,46 +361,46 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
                           dividerThickness: 1,
                           showBottomBorder: true,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _navigateToChildPage(null);
-                          },
-                          child: Text(
-                            'Dodaj fudbalera',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Readex Pro',
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            textStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _navigateToChildPage(null);
+                            },
+                            child: Text(
+                              'Dodaj fudbalera',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Readex Pro',
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
