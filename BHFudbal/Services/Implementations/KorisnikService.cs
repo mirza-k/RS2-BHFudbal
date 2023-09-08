@@ -28,11 +28,39 @@ namespace BHFudbal.Services.Implementations
             return 0;
         }
 
+        public bool Registracija(RegistracijaRequest registracijaRequest)
+        {
+            KorisničkiRačun korisničkiRačun = new KorisničkiRačun { Username = registracijaRequest.Username, Password = registracijaRequest.Password };
+            try
+            {
+                var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
+                var racun = setKorisnickiRacun.Add(korisničkiRačun);
+                Context.SaveChanges();
+
+                registracijaRequest.KorisničkiRačunId = racun.Entity.KorisničkiRačunId;
+                var newObj = _mapper.Map<Korisnik>(registracijaRequest);
+                var setKorisnik = Context.Set<Korisnik>();
+                setKorisnik.Add(newObj);
+                Context.SaveChanges();
+
+                return true;
+            }
+            catch (System.Exception)
+            {
+                //obrisi KorisnickiRacun u slucaju da se desi exception
+                var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
+                setKorisnickiRacun.Remove(korisničkiRačun);
+                Context.SaveChanges();
+                return false;
+            }
+
+        }
+
         public override IEnumerable<Model.Korisnik> Get(KorisnikSearchObject search = null)
         {
             var entity = Context.Set<Korisnik>().AsQueryable();
 
-            if(search?.Ime != null)
+            if (search?.Ime != null)
             {
                 entity = entity.Where(x => x.Ime.Contains(search.Ime));
             }

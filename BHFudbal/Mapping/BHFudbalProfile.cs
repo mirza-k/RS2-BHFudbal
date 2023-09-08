@@ -45,6 +45,7 @@ namespace BHFudbal.Mapping
                 .ForMember(m => m.Grad, db => db.MapFrom(x => x.Grad.Naziv))
                 .ForMember(m => m.Uloga, db => db.MapFrom(x => x.Uloga.Naziv))
                 .ForMember(m => m.Username, db => db.MapFrom(x => x.KorisničkiRačun.Username));
+            CreateMap<RegistracijaRequest, Korisnik>();
 
             //Sezona
             CreateMap<Sezona, Model.Sezona>();

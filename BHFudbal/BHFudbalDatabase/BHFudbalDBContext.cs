@@ -190,7 +190,7 @@ namespace BHFudbal.BHFudbalDatabase
                 entity.HasOne(d => d.KorisničkiRačun)
                     .WithMany(p => p.Korisniks)
                     .HasForeignKey(d => d.KorisničkiRačunId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("Fk_KorisničkiRačun_Korisnik_KorisničkiRačunId");
 
                 entity.HasOne(d => d.Uloga)

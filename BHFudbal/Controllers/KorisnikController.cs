@@ -20,5 +20,12 @@ namespace BHFudbal.Controllers
         {
             return _korisnikService.Login(login);
         }
+
+        [HttpPost("Registracija")]
+        [AllowAnonymous]
+        public bool Registracija([FromBody] RegistracijaRequest registracijaRequest)
+        {
+            return _korisnikService.Registracija(registracijaRequest);
+        }
     }
 }

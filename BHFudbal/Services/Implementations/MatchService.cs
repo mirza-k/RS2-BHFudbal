@@ -22,6 +22,10 @@ namespace BHFudbal.Services.Implementations
             {
                 entity = entity.Where(x => x.LigaId == search.LigaId).OrderBy(x => x.RedniBrojKola);
             }
+            if(search?.RedniBrojKola != null)
+            {
+                entity = entity.Where(x => x.RedniBrojKola == search.RedniBrojKola);
+            }
 
             entity = entity.Include(x => x.Gost).Include(x => x.Domacin);
 
