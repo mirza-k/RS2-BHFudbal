@@ -10,6 +10,8 @@ namespace BHFudbal.Model
         public string Rezultat { get; set; }
         public List<GolDetails> GolDetails { get; set; }
         public List<ZutiKartonDetails> ZutiKartonDetails { get; set; }
-
+        public List<CrveniKartonDetails> CrveniKartonDetails { get; set; }
+        public List<string> PostaveDomaci { get; set; }
+        public List<string> PostaveGosti { get; set; }
     }
 }

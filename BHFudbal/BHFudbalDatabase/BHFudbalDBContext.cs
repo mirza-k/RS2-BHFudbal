@@ -34,6 +34,7 @@ namespace BHFudbal.BHFudbalDatabase
         public virtual DbSet<Uloga> Ulogas { get; set; }
         public virtual DbSet<Gol> Gols{ get; set; }
         public virtual DbSet<ZutiKarton> ZutiKartons{ get; set; }
+        public virtual DbSet<CrveniKarton> CrveniKartons{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

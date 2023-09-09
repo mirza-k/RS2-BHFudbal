@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Linq;
+using Klub = BHFudbal.BHFudbalDatabase.Klub;
 using Match = BHFudbal.BHFudbalDatabase.Match;
 
 namespace BHFudbal.Services.Implementations
@@ -73,7 +74,21 @@ namespace BHFudbal.Services.Implementations
             }).ToList();
             matchDetails.ZutiKartonDetails = zutiKartonDetails;
 
+            var crveniKartonEntity = Context.Set<CrveniKarton>();
+            var crveniKartonObjects = crveniKartonEntity.Where(x => x.MatchId == matchId).Include(x => x.Fudbaler).OrderBy(x => x.MinutaKartona).ToList();
+            List<CrveniKartonDetails> crveniKartonDetails = crveniKartonObjects.Select(x => new CrveniKartonDetails
+            {
+                ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
+                KlubId = x.Fudbaler.KlubId,
+                MinutaKartona = x.MinutaKartona
+            }).ToList();
+            matchDetails.CrveniKartonDetails = crveniKartonDetails;
 
+            var klubEntity = Context.Set<Klub>();
+            var domaci = klubEntity.Include(x => x.Fudbalers).FirstOrDefault(x => x.KlubId == matchObject.DomacinId);
+            var gosti = klubEntity.Include(x => x.Fudbalers).FirstOrDefault(x => x.KlubId == matchObject.GostId);
+            matchDetails.PostaveDomaci = domaci.Fudbalers.Select(x => x.Ime + " " + x.Prezime).ToList();
+            matchDetails.PostaveGosti = gosti.Fudbalers.Select(x => x.Ime + " " + x.Prezime).ToList();
             return matchDetails;
         }
     }
