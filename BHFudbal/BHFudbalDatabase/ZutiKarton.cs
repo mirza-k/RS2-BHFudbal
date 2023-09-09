@@ -7,6 +7,6 @@
         public Match Match { get; set; }
         public int FudbalerId { get; set; }
         public Fudbaler Fudbaler { get; set; }
-        public int MinutaGola { get; set; }
+        public int MinutaKartona { get; set; }
     }
 }
