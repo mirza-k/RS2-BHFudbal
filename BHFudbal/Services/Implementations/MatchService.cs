@@ -47,24 +47,32 @@ namespace BHFudbal.Services.Implementations
 
         public MatchDetails GetDetails(int matchId)
         {
+            MatchDetails matchDetails = new MatchDetails();
             var matchEntity = Context.Set<Match>();
             var matchObject = matchEntity.FirstOrDefault(x => x.MatchId == matchId);
-
-            MatchDetails matchDetails = new MatchDetails();
             matchDetails.MatchId = matchObject.MatchId;
             matchDetails.Rezultat = matchObject.Rezultat;
 
             var golEntity = Context.Set<Gol>();
             var golObjects = golEntity.Where(x => x.MatchId == matchId).Include(x => x.Fudbaler).OrderBy(x => x.MinutaGola).ToList();
-
             List<GolDetails> golDetails = golObjects.Select(x => new GolDetails
             {
                 ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
                 KlubId = x.Fudbaler.KlubId,
                 MinutaGola = x.MinutaGola
             }).ToList();
-
             matchDetails.GolDetails = golDetails;
+
+            var zutiKartonEntity = Context.Set<ZutiKarton>();
+            var zutiKartonObjects = zutiKartonEntity.Where(x => x.MatchId == matchId).Include(x => x.Fudbaler).OrderBy(x => x.MinutaKartona).ToList();
+            List<ZutiKartonDetails> zutiKartonDetails = zutiKartonObjects.Select(x => new ZutiKartonDetails
+            {
+                ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
+                KlubId = x.Fudbaler.KlubId,
+                MinutaKartona = x.MinutaKartona
+            }).ToList();
+            matchDetails.ZutiKartonDetails = zutiKartonDetails;
+
 
             return matchDetails;
         }

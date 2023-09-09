@@ -9,5 +9,7 @@ namespace BHFudbal.Model
         public int MatchId { get; set; }
         public string Rezultat { get; set; }
         public List<GolDetails> GolDetails { get; set; }
+        public List<ZutiKartonDetails> ZutiKartonDetails { get; set; }
+
     }
 }
