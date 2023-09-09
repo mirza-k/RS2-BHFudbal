@@ -4,14 +4,16 @@ using BHFudbal.BHFudbalDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BHFudbal.Migrations
 {
     [DbContext(typeof(BHFudbalDBContext))]
-    partial class BHFudbalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230909085319_Add_ZutiKarton_Table")]
+    partial class Add_ZutiKarton_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
