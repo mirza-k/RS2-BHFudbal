@@ -32,6 +32,7 @@ namespace BHFudbal.BHFudbalDatabase
         public virtual DbSet<Statistika> Statistikas { get; set; }
         public virtual DbSet<Transfer> Transfers { get; set; }
         public virtual DbSet<Uloga> Ulogas { get; set; }
+        public virtual DbSet<Gol> Gols{ get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
