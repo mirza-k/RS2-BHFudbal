@@ -170,5 +170,32 @@ namespace BHFudbal.Services.Implementations
             MatchesByKlubId matchesByKlubId = new MatchesByKlubId() { BrojDatihGolova = brojDatihGolova, BrojPrimljenihGolova = brojPrimljenihGolova, Rezultati = rezultati };
             return matchesByKlubId;
         }
+
+        public List<PrikazStrijelaca> GetStrijelciByLigaId(int ligaId)
+        {
+            var fudbalerEntity = Context.Set<Gol>();
+            var fudbalerGoalCounts = fudbalerEntity.Include(x => x.Fudbaler).GroupBy(g => g.Fudbaler.Ime + " " + g.Fudbaler.Prezime).Select(g => new { Fudbaler = g.Key, GolCount = g.Count() }).OrderByDescending(x => x.GolCount).ToList();
+
+            var result = fudbalerGoalCounts.Select(x => new PrikazStrijelaca() { BrojGolova = x.GolCount, NazivFudbalera = x.Fudbaler }).ToList();
+            return result;
+        }
+
+        public List<FormaView> GetForma(int ligaId)
+        {
+            var matchEntity = Context.Set<Match>();
+            var klubEntity = Context.Set<Klub>();
+
+            var klubovi = klubEntity.Where(x => x.LigaId == ligaId).ToList();
+            var matches = matchEntity.Where(x => x.LigaId == ligaId);
+            List<FormaView> formaView = new List<FormaView>();
+            foreach (var klub in klubovi)
+            {
+                var forma = matches.Where(x => x.DomacinId == klub.KlubId || x.GostId == klub.KlubId).OrderByDescending(x => x.RedniBrojKola)
+                    .Select(x => x.Pobjednik == klub.KlubId ? "P" : x.Pobjednik == null ? "N" : "I").Take(4).ToList();
+                formaView.Add(new FormaView() { Klub = klub.Naziv, Forma = forma });
+            }
+
+            return formaView;
+        }
     }
 }

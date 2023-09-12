@@ -42,5 +42,17 @@ namespace BHFudbal.Controllers
         {
             return _matchService.GetMatchesByKlubIds(klubId, sezonaId);
         }
+
+        [HttpGet("Strijelci/{ligaId}")]
+        public List<PrikazStrijelaca> GetStrijelciByLigaId(int ligaId)
+        {
+            return _matchService.GetStrijelciByLigaId(ligaId);
+        }
+
+        [HttpGet("Forma/{ligaId}")]
+        public List<FormaView> GetForma(int ligaId)
+        {
+            return _matchService.GetForma(ligaId);
+        }
     }
 }
