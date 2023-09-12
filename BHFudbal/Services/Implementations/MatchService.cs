@@ -91,5 +91,31 @@ namespace BHFudbal.Services.Implementations
             matchDetails.PostaveGosti = gosti.Fudbalers.Select(x => x.Ime + " " + x.Prezime).ToList();
             return matchDetails;
         }
+
+        public List<Tabela> GetTabelaByLigaId(int ligaId)
+        {
+            var matchContext = Context.Set<Match>();
+            var matchesByLigaId = matchContext.Where(x => x.LigaId == ligaId).ToList();
+
+            var klubContext = Context.Set<Klub>();
+            var klubByLigaId = klubContext.Where(x => x.LigaId == ligaId).Select(x => new { klubId = x.KlubId, nazivKluba = x.Naziv }).ToList();
+
+            List<Tabela> tabela = new List<Tabela>();
+
+            foreach (var klub in klubByLigaId)
+            {
+                int brojUtakmica = matchesByLigaId.Where(x => x.DomacinId == klub.klubId || x.GostId == klub.klubId).Count();
+                int brojPobjeda = matchesByLigaId.Where(x => x.Pobjednik == klub.klubId).Count();
+                int brojNerjesenih = matchesByLigaId.Where(x => x.Pobjednik == null && (x.DomacinId == klub.klubId || x.GostId == klub.klubId)).Count();
+                int brojPoraza = brojUtakmica - (brojPobjeda + brojNerjesenih);
+
+                int brojBodova = (brojPobjeda * 3) + brojNerjesenih;
+                tabela.Add(new Tabela(klub.nazivKluba, brojBodova));
+            }
+
+            tabela = tabela.OrderByDescending(x => x.BrojBodova).ToList();
+
+            return tabela;
+        }
     }
 }

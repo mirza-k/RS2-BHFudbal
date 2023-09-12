@@ -8,5 +8,6 @@ namespace BHFudbal.Services.Interfaces
     public interface IMatchService : ICRUDService<Model.Match, MatchSearchObject, MatchInsertRequest, MatchUpdateRequest>
     {
         public MatchDetails GetDetails(int matchId);
+        public List<Tabela> GetTabelaByLigaId(int ligaId);
     }
 }

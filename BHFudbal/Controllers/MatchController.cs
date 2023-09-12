@@ -24,5 +24,11 @@ namespace BHFudbal.Controllers
         {
             return _matchService.GetDetails(matchId);
         }
+
+        [HttpGet("Tabela/{ligaId}")]
+        public List<Tabela> GetTabelaByLigaId(int ligaId)
+        {
+            return _matchService.GetTabelaByLigaId(ligaId);   
+        }
     }
 }
