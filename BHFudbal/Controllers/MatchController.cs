@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace BHFudbal.Controllers
 {
-    public class MatchController : BaseCRUDController<Model.Match,MatchSearchObject,MatchInsertRequest,MatchUpdateRequest>
+    public class MatchController : BaseCRUDController<Model.Match, MatchSearchObject, MatchInsertRequest, MatchUpdateRequest>
     {
         IMatchService _matchService;
-        public MatchController(IMatchService service): base(service)
+        public MatchController(IMatchService service) : base(service)
         {
             _matchService = service;
         }
 
         [HttpGet("Details/{matchId}")]
-        public MatchDetails GetMatchDetails (int matchId)
+        public MatchDetails GetMatchDetails(int matchId)
         {
             return _matchService.GetDetails(matchId);
         }
@@ -28,7 +28,19 @@ namespace BHFudbal.Controllers
         [HttpGet("Tabela/{ligaId}")]
         public List<Tabela> GetTabelaByLigaId(int ligaId)
         {
-            return _matchService.GetTabelaByLigaId(ligaId);   
+            return _matchService.GetTabelaByLigaId(ligaId);
+        }
+
+        [HttpGet("All/{klubId}")]
+        public MatchesByKlubId GetMatchesByKlubIdInActiveSeason(int klubId)
+        {
+            return _matchService.GetMatchesByKlubIds(klubId, null);
+        }
+
+        [HttpGet("AllBySezona")]
+        public MatchesByKlubId GetMatchesByKlubIdAndSeasonId(int klubId, int sezonaId)
+        {
+            return _matchService.GetMatchesByKlubIds(klubId, sezonaId);
         }
     }
 }

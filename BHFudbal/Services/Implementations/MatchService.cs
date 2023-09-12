@@ -6,6 +6,7 @@ using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Klub = BHFudbal.BHFudbalDatabase.Klub;
@@ -116,6 +117,58 @@ namespace BHFudbal.Services.Implementations
             tabela = tabela.OrderByDescending(x => x.BrojBodova).ToList();
 
             return tabela;
+        }
+
+        public MatchesByKlubId GetMatchesByKlubIds(int klubId, int? sezonaId)
+        {
+            var matchContext = Context.Set<Match>();
+            if (sezonaId == null || sezonaId == 0)
+            {
+                var matches = matchContext.Include(x => x.Liga).ThenInclude(x => x.Sezona).Where(x => (x.DomacinId == klubId || x.GostId == klubId) && x.Liga.Sezona.Aktivna == true);
+                return CalculateMatchesByKlubId(matches, klubId);
+            }
+            else
+            {
+                var matches = matchContext.Include(x => x.Liga).ThenInclude(x => x.Sezona).Where(x => (x.DomacinId == klubId || x.GostId == klubId) && x.Liga.Sezona.SezonaId == sezonaId);
+                return CalculateMatchesByKlubId(matches, klubId);
+            }
+        }
+
+        private MatchesByKlubId CalculateMatchesByKlubId(IQueryable<Match> matches, int klubId)
+        {
+            int brojDatihGolova = 0;
+            int brojPrimljenihGolova = 0;
+            foreach (var match in matches)
+            {
+                if (match.DomacinId == klubId)
+                {
+                    if (char.IsDigit(match.Rezultat[0]))
+                    {
+                        brojDatihGolova += (int)Char.GetNumericValue(match.Rezultat[0]);
+                    }
+
+                    if (char.IsDigit(match.Rezultat[match.Rezultat.Length - 1]))
+                    {
+                        brojPrimljenihGolova += (int)Char.GetNumericValue(match.Rezultat[match.Rezultat.Length - 1]);
+                    }
+                }
+                else
+                {
+                    if (char.IsDigit(match.Rezultat[0]))
+                    {
+                        brojDatihGolova += (int)Char.GetNumericValue(match.Rezultat[match.Rezultat.Length - 1]);
+                    }
+
+                    if (char.IsDigit(match.Rezultat[match.Rezultat.Length - 1]))
+                    {
+                        brojPrimljenihGolova += (int)Char.GetNumericValue(match.Rezultat[0]);
+                    }
+                }
+            }
+
+            List<string> rezultati = matches.Include(x => x.Domacin).Include(x => x.Gost).Select(x => x.RedniBrojKola + ".kolo" + "        " + x.Domacin.Naziv + "    " + x.Rezultat + "    " + x.Gost.Naziv).ToList();
+            MatchesByKlubId matchesByKlubId = new MatchesByKlubId() { BrojDatihGolova = brojDatihGolova, BrojPrimljenihGolova = brojPrimljenihGolova, Rezultati = rezultati };
+            return matchesByKlubId;
         }
     }
 }

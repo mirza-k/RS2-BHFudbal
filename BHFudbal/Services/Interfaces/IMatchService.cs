@@ -9,5 +9,6 @@ namespace BHFudbal.Services.Interfaces
     {
         public MatchDetails GetDetails(int matchId);
         public List<Tabela> GetTabelaByLigaId(int ligaId);
+        public MatchesByKlubId GetMatchesByKlubIds(int klubId, int? sezona);
     }
 }
