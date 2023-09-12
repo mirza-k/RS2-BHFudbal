@@ -4,14 +4,16 @@ using BHFudbal.BHFudbalDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BHFudbal.Migrations
 {
     [DbContext(typeof(BHFudbalDBContext))]
-    partial class BHFudbalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230912100744_add_Pobjednik_column_into_Match_tbl")]
+    partial class add_Pobjednik_column_into_Match_tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
