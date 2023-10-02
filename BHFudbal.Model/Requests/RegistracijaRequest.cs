@@ -10,7 +10,7 @@ namespace BHFudbal.Model.Requests
         public string Password { get; set; }
         public string Ime { get; set; }
         public string Prezime{ get; set; }
-        public int DržavaId { get; set; }
+        public int DržavaId { get; set; } = 1;
         public DateTime DatumRodjenja { get; set; }
         public int GradId { get; set; } = 1;
         public int UlogaId { get; set; } = 2;

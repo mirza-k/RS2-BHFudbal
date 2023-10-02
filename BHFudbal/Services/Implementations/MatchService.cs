@@ -61,7 +61,8 @@ namespace BHFudbal.Services.Implementations
             {
                 ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
                 KlubId = x.Fudbaler.KlubId,
-                MinutaGola = x.MinutaGola
+                MinutaGola = x.MinutaGola,
+                Domacin = x.Fudbaler.KlubId == matchObject.DomacinId
             }).ToList();
             matchDetails.GolDetails = golDetails;
 
@@ -71,7 +72,8 @@ namespace BHFudbal.Services.Implementations
             {
                 ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
                 KlubId = x.Fudbaler.KlubId,
-                MinutaKartona = x.MinutaKartona
+                MinutaKartona = x.MinutaKartona,
+                Domacin = x.Fudbaler.KlubId == matchObject.DomacinId
             }).ToList();
             matchDetails.ZutiKartonDetails = zutiKartonDetails;
 
@@ -81,7 +83,8 @@ namespace BHFudbal.Services.Implementations
             {
                 ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
                 KlubId = x.Fudbaler.KlubId,
-                MinutaKartona = x.MinutaKartona
+                MinutaKartona = x.MinutaKartona,
+                Domacin = x.Fudbaler.KlubId == matchObject.DomacinId
             }).ToList();
             matchDetails.CrveniKartonDetails = crveniKartonDetails;
 
@@ -89,7 +92,11 @@ namespace BHFudbal.Services.Implementations
             var domaci = klubEntity.Include(x => x.Fudbalers).FirstOrDefault(x => x.KlubId == matchObject.DomacinId);
             var gosti = klubEntity.Include(x => x.Fudbalers).FirstOrDefault(x => x.KlubId == matchObject.GostId);
             matchDetails.PostaveDomaci = domaci.Fudbalers.Select(x => x.Ime + " " + x.Prezime).ToList();
+            matchDetails.Domaci = domaci.Naziv;
+            matchDetails.DomaciSlika = domaci.Grb;
             matchDetails.PostaveGosti = gosti.Fudbalers.Select(x => x.Ime + " " + x.Prezime).ToList();
+            matchDetails.Gosti = gosti.Naziv;
+            matchDetails.GostiSlika = gosti.Grb;
             return matchDetails;
         }
 
@@ -196,6 +203,13 @@ namespace BHFudbal.Services.Implementations
             }
 
             return formaView;
+        }
+
+        public int GetMaxBrojKola(int ligaId)
+        {
+            var matchEntity = Context.Set<Match>();
+            var maxBrojKola = matchEntity.Where(x => x.LigaId == ligaId).Max(x => x.RedniBrojKola);
+            return maxBrojKola;
         }
     }
 }

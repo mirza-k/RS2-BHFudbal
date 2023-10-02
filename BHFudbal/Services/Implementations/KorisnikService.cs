@@ -34,6 +34,10 @@ namespace BHFudbal.Services.Implementations
             try
             {
                 var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
+                var provjera = setKorisnickiRacun.FirstOrDefault(x => x.Username == korisničkiRačun.Username);
+                if (provjera != null)
+                    return false;
+
                 var racun = setKorisnickiRacun.Add(korisničkiRačun);
                 Context.SaveChanges();
 

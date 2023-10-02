@@ -9,5 +9,6 @@ namespace BHFudbal.Model
         public string ImeFudbalera { get; set; }
         public int MinutaKartona { get; set; }
         public int KlubId { get; set; }
+        public bool Domacin { get; set; }
     }
 }

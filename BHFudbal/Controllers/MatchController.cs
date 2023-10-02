@@ -54,5 +54,11 @@ namespace BHFudbal.Controllers
         {
             return _matchService.GetForma(ligaId);
         }
+
+        [HttpGet("MaxBrojKola/{ligaId}")]
+        public int GetMaxBrojKola(int ligaId)
+        {
+            return _matchService.GetMaxBrojKola(ligaId);
+        }
     }
 }

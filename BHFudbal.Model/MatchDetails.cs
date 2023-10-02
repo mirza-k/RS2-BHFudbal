@@ -13,5 +13,9 @@ namespace BHFudbal.Model
         public List<CrveniKartonDetails> CrveniKartonDetails { get; set; }
         public List<string> PostaveDomaci { get; set; }
         public List<string> PostaveGosti { get; set; }
+        public string Domaci { get; set; }
+        public byte[] DomaciSlika { get; set; }
+        public string Gosti { get; set; }
+        public byte[] GostiSlika { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace BHFudbal.Services.Interfaces
         public MatchesByKlubId GetMatchesByKlubIds(int klubId, int? sezona);
         public List<PrikazStrijelaca> GetStrijelciByLigaId(int ligaId);
         public List<FormaView> GetForma(int ligaId);
-
+        public int GetMaxBrojKola(int ligaId);
     }
 }
