@@ -4,10 +4,12 @@
     {
         public string NazivKluba { get; set; }
         public int BrojBodova { get; set; }
-        public Tabela(string nazivKluba, int brojBodova)
+        public int BrojOdigranihUtakmica { get; set; }
+        public Tabela(string nazivKluba, int brojBodova, int brojKola)
         {
             this.NazivKluba = nazivKluba;
             this.BrojBodova = brojBodova;
+            this.BrojOdigranihUtakmica = brojKola;
         }
     }
 }

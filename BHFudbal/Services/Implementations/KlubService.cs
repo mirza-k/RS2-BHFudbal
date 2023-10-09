@@ -28,6 +28,11 @@ namespace BHFudbal.Services.Implementations
                 entity = entity.Where(x => x.KlubId == search.KlubId);
             }
 
+            if(search.Naziv != null && search.Naziv != "")
+            {
+                entity = entity.Where(x => x.Naziv.Contains(search.Naziv));
+            }
+
             entity = entity.Include(x => x.Liga).Include(x => x.Grad);
 
             return _mapper.Map<List<Model.Klub>>(entity);

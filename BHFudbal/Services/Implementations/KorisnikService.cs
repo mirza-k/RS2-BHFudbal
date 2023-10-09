@@ -84,5 +84,16 @@ namespace BHFudbal.Services.Implementations
 
             return _mapper.Map<Model.Korisnik>(entity.FirstOrDefault());
         }
+
+        public int Uredi(UrediKorisnika request)
+        {
+            var set = Context.Set<Korisnik>();
+            var model = set.Include(x=>x.KorisničkiRačun).FirstOrDefault(x=> x.KorisnikId == request.KorisnikId);
+            model.Ime = request.Ime;
+            model.Prezime = request.Prezime;
+            model.KorisničkiRačun.Username = request.Username;
+            Context.SaveChanges();
+            return 1;
+        }
     }
 }

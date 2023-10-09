@@ -5,8 +5,10 @@ using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BHFudbal.Services.Implementations
 {
@@ -25,7 +27,26 @@ namespace BHFudbal.Services.Implementations
 
             entity = entity.Include(x => x.Klub).Include(x => x.Drzava);
 
-            return _mapper.Map<List<Model.Fudbaler>>(entity);
+            var model = _mapper.Map<List<Model.Fudbaler>>(entity);
+            foreach (var x in model)
+            {
+                x.BrojGodina = CalculateAge(x.DatumRodjenja);
+            }
+            return model;
+        }
+
+        private int CalculateAge(DateTime birthdate)
+        {
+            DateTime currentDate = DateTime.Now;
+            int age = currentDate.Year - birthdate.Year;
+
+            // Check if the birthdate has occurred this year already
+            if (currentDate.Month < birthdate.Month || (currentDate.Month == birthdate.Month && currentDate.Day < birthdate.Day))
+            {
+                age--;
+            }
+
+            return age;
         }
 
         public override Model.Fudbaler Update(int id, FudbalerUpdateRequest request)
@@ -46,7 +67,7 @@ namespace BHFudbal.Services.Implementations
         public FudbalerDetails GetFudbaler(int fudbalerId)
         {
             var fudbalerContext = Context.Set<BHFudbalDatabase.Fudbaler>();
-            var fudbaler = fudbalerContext.Include(x=>x.Klub).FirstOrDefault(x => x.FudbalerId == fudbalerId);
+            var fudbaler = fudbalerContext.Include(x => x.Klub).FirstOrDefault(x => x.FudbalerId == fudbalerId);
 
             var matchContext = Context.Set<BHFudbalDatabase.Match>();
             var matches = matchContext.Include(x => x.Domacin).Include(x => x.Gost).Where(x => x.DomacinId == fudbaler.KlubId || x.GostId == fudbaler.KlubId).Select(x => new FudbalerMatchDetail()
@@ -55,7 +76,7 @@ namespace BHFudbal.Services.Implementations
                 Rezultat = $"{x.Domacin.Naziv} {x.Rezultat} {x.Gost.Naziv}"
             }).ToList();
 
-            foreach(FudbalerMatchDetail matchDetail in matches)
+            foreach (FudbalerMatchDetail matchDetail in matches)
             {
                 var golContext = Context.Set<Gol>();
                 var gols = golContext.Where(x => x.FudbalerId == fudbaler.FudbalerId && x.MatchId == matchDetail.MatchId).Count();
@@ -82,6 +103,22 @@ namespace BHFudbal.Services.Implementations
             };
 
             return fudbalerDetails;
+        }
+
+        public List<FudbalerHistorijaTransfera> GetFudbalerHistorijaTransfera(int fudbalerId)
+        {
+            var transferContent = Context.Set<BHFudbalDatabase.Transfer>();
+            var transferi = transferContent.Where(x => x.FudbalerId == fudbalerId).Include(x => x.StariKlub).Include(x => x.Klub).Include(x => x.Fudbaler).Select(x => new FudbalerHistorijaTransfera
+            {
+                Cijena = x.Cijena.ToString(),
+                ImeFudbalera = x.Fudbaler.Ime + " " + x.Fudbaler.Prezime,
+                FudbalerId = x.FudbalerId,
+                NoviKlub = x.Klub.Naziv,
+                StariKlub = x.StariKlub.Naziv,
+                Ugovor = x.BrojGodinaUgovora.ToString()
+            }).ToList();
+
+            return transferi;
         }
     }
 }

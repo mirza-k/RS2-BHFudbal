@@ -3,6 +3,7 @@ using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace BHFudbal.Controllers
 {
@@ -13,10 +14,17 @@ namespace BHFudbal.Controllers
         {
             _fudbalerService = service;
         }
-        [HttpGet("/details/{fudbalerId}")]
+
+        [HttpGet("details/{fudbalerId}")]
         public FudbalerDetails GetFudbalerDetails(int fudbalerId)
         {
             return _fudbalerService.GetFudbaler(fudbalerId);
+        }
+
+        [HttpGet("transferhistory/{fudbalerId}")]
+        public List<FudbalerHistorijaTransfera> GetFudbalerHistorijaTransfera(int fudbalerId)
+        {
+            return _fudbalerService.GetFudbalerHistorijaTransfera(fudbalerId);
         }
     }
 }

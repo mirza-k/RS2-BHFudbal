@@ -27,5 +27,11 @@ namespace BHFudbal.Controllers
         {
             return _korisnikService.Registracija(registracijaRequest);
         }
+
+        [HttpPost("Uredi")]
+        public int Uredi([FromBody] UrediKorisnika request)
+        {
+            return _korisnikService.Uredi(request);
+        }
     }
 }

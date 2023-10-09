@@ -17,5 +17,6 @@ namespace BHFudbal.Model
         public int DrzavaId { get; set; }
         public string Drzava { get; set; }
         public byte[] Slika { get; set; }
+        public int BrojGodina { get; set; }
     }
 }

@@ -118,7 +118,8 @@ namespace BHFudbal.Services.Implementations
                 int brojPoraza = brojUtakmica - (brojPobjeda + brojNerjesenih);
 
                 int brojBodova = (brojPobjeda * 3) + brojNerjesenih;
-                tabela.Add(new Tabela(klub.nazivKluba, brojBodova));
+                int brojKola = GetMaxBrojKola(ligaId);
+                tabela.Add(new Tabela(klub.nazivKluba, brojBodova, brojKola));
             }
 
             tabela = tabela.OrderByDescending(x => x.BrojBodova).ToList();
@@ -181,7 +182,7 @@ namespace BHFudbal.Services.Implementations
         public List<PrikazStrijelaca> GetStrijelciByLigaId(int ligaId)
         {
             var fudbalerEntity = Context.Set<Gol>();
-            var fudbalerGoalCounts = fudbalerEntity.Include(x => x.Fudbaler).GroupBy(g => g.Fudbaler.Ime + " " + g.Fudbaler.Prezime).Select(g => new { Fudbaler = g.Key, GolCount = g.Count() }).OrderByDescending(x => x.GolCount).ToList();
+            var fudbalerGoalCounts = fudbalerEntity.Include(x => x.Fudbaler).ThenInclude(x => x.Klub).Where(x => x.Fudbaler.Klub.LigaId == ligaId).GroupBy(g => g.Fudbaler.Ime + " " + g.Fudbaler.Prezime).Select(g => new { Fudbaler = g.Key, GolCount = g.Count() }).OrderByDescending(x => x.GolCount).ToList();
 
             var result = fudbalerGoalCounts.Select(x => new PrikazStrijelaca() { BrojGolova = x.GolCount, NazivFudbalera = x.Fudbaler }).ToList();
             return result;
