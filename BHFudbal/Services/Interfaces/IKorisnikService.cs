@@ -8,5 +8,7 @@ namespace BHFudbal.Services.Interfaces
         public int Login(KorisnikInsertRequest login);
         public bool Registracija(RegistracijaRequest registracijaRequest);
         public int Uredi(UrediKorisnika request);
+        public int UpdateToPremium(UpdateToPremiumRequest request);
+        public int IsKorisnikPremium(UpdateToPremiumRequest request);
     }
 }

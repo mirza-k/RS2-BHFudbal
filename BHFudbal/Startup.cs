@@ -62,7 +62,7 @@ namespace BHFudbal
             services.AddScoped<IFudbalerService, FudbalerService>();
             services.AddScoped<IKorisnikService, KorisnikService>();
             services.AddScoped<ILigaService, LigaService>();
-            services.AddScoped<ITransferService, TransferService>();
+            services.AddScoped<ITransferService, BHFudbal.Services.Implementations.TransferService>();
             services.AddScoped<ISezonaService, SezonaService>();
             services.AddScoped<IMatchService, MatchService>();
 
@@ -92,7 +92,7 @@ namespace BHFudbal
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

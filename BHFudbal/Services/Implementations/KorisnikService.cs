@@ -88,12 +88,44 @@ namespace BHFudbal.Services.Implementations
         public int Uredi(UrediKorisnika request)
         {
             var set = Context.Set<Korisnik>();
-            var model = set.Include(x=>x.KorisničkiRačun).FirstOrDefault(x=> x.KorisnikId == request.KorisnikId);
+            var model = set.Include(x => x.KorisničkiRačun).FirstOrDefault(x => x.KorisnikId == request.KorisnikId);
             model.Ime = request.Ime;
             model.Prezime = request.Prezime;
             model.KorisničkiRačun.Username = request.Username;
             Context.SaveChanges();
             return 1;
+        }
+
+        public int UpdateToPremium(UpdateToPremiumRequest request)
+        {
+            var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
+            var korisnickiRacunId = setKorisnickiRacun.FirstOrDefault(x => x.Username == request.Username && x.Password == request.Password).KorisničkiRačunId;
+            var setKorisnik = Context.Set<Korisnik>();
+            var korisnik = setKorisnik.FirstOrDefault(x => x.KorisničkiRačunId == korisnickiRacunId);
+            korisnik.IsPremium = true;
+            Context.SaveChanges();
+            return 1;
+        }
+
+        public int IsKorisnikPremium(UpdateToPremiumRequest request)
+        {
+            var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
+            var korisnickiRacun = setKorisnickiRacun.FirstOrDefault(x => x.Username == request.Username && x.Password == request.Password);
+            if (korisnickiRacun != null)
+            {
+                int korisnickiRacunId = korisnickiRacun.KorisničkiRačunId;
+                var setKorisnik = Context.Set<Korisnik>();
+                var korisnik = setKorisnik.FirstOrDefault(x => x.KorisničkiRačunId == korisnickiRacunId);
+                if (korisnik != null)
+                {
+                    if (korisnik.IsPremium)
+                        return 1;
+                    else
+                        return 0;
+                }
+            }
+
+            return 0;
         }
     }
 }

@@ -33,5 +33,17 @@ namespace BHFudbal.Controllers
         {
             return _korisnikService.Uredi(request);
         }
+
+        [HttpPost("UpdateToPremium")]
+        public int UpdateToPremium([FromBody] UpdateToPremiumRequest request)
+        {
+            return _korisnikService.UpdateToPremium(request);
+        }
+
+        [HttpPost("IsKorisnikPremium")]
+        public int IsKorisnikPremium([FromBody] UpdateToPremiumRequest request)
+        {
+            return _korisnikService.IsKorisnikPremium(request);
+        }
     }
 }
