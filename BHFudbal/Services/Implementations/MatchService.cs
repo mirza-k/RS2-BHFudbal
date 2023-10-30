@@ -41,7 +41,7 @@ namespace BHFudbal.Services.Implementations
                 GostId = x.GostId,
                 MatchId = x.MatchId,
                 RedniBrojKola = x.RedniBrojKola,
-                Prikaz = x.RedniBrojKola + ".kolo" + "        " + x.Domacin.Naziv + "    " + x.Rezultat + "    " + x.Gost.Naziv
+                Prikaz = x.Domacin.Naziv + "  " + x.Rezultat + "  " + x.Gost.Naziv
             });
 
             return _mapper.Map<List<Model.Match>>(models);

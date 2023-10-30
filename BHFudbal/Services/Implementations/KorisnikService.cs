@@ -1,15 +1,21 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
+using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
+using static System.Net.Mime.MediaTypeNames;
+using Fudbaler = BHFudbal.BHFudbalDatabase.Fudbaler;
+using Match = BHFudbal.BHFudbalDatabase.Match;
 
 namespace BHFudbal.Services.Implementations
 {
-    public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
+    public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, BHFudbalDatabase.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
         public KorisnikService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
         {
@@ -17,7 +23,7 @@ namespace BHFudbal.Services.Implementations
 
         public int Login(KorisnikInsertRequest login)
         {
-            var query = Context.Set<Korisnik>().Include(x => x.KorisničkiRačun).AsQueryable();
+            var query = Context.Set<BHFudbalDatabase.Korisnik>().Include(x => x.KorisničkiRačun).AsQueryable();
 
             if (!string.IsNullOrEmpty(login?.Username) && !string.IsNullOrEmpty(login?.Password))
             {
@@ -42,8 +48,8 @@ namespace BHFudbal.Services.Implementations
                 Context.SaveChanges();
 
                 registracijaRequest.KorisničkiRačunId = racun.Entity.KorisničkiRačunId;
-                var newObj = _mapper.Map<Korisnik>(registracijaRequest);
-                var setKorisnik = Context.Set<Korisnik>();
+                var newObj = _mapper.Map<BHFudbalDatabase.Korisnik>(registracijaRequest);
+                var setKorisnik = Context.Set<BHFudbalDatabase.Korisnik>();
                 setKorisnik.Add(newObj);
                 Context.SaveChanges();
 
@@ -62,7 +68,7 @@ namespace BHFudbal.Services.Implementations
 
         public override IEnumerable<Model.Korisnik> Get(KorisnikSearchObject search = null)
         {
-            var entity = Context.Set<Korisnik>().AsQueryable();
+            var entity = Context.Set<BHFudbalDatabase.Korisnik>().AsQueryable();
 
             if (search?.Ime != null)
             {
@@ -76,7 +82,7 @@ namespace BHFudbal.Services.Implementations
 
         public override Model.Korisnik GetById(int id)
         {
-            var entity = Context.Set<Korisnik>().AsQueryable();
+            var entity = Context.Set<BHFudbalDatabase.Korisnik>().AsQueryable();
 
             entity = entity.Where(x => x.KorisnikId == id);
 
@@ -87,7 +93,7 @@ namespace BHFudbal.Services.Implementations
 
         public int Uredi(UrediKorisnika request)
         {
-            var set = Context.Set<Korisnik>();
+            var set = Context.Set<BHFudbalDatabase.Korisnik>();
             var model = set.Include(x => x.KorisničkiRačun).FirstOrDefault(x => x.KorisnikId == request.KorisnikId);
             model.Ime = request.Ime;
             model.Prezime = request.Prezime;
@@ -100,7 +106,7 @@ namespace BHFudbal.Services.Implementations
         {
             var setKorisnickiRacun = Context.Set<KorisničkiRačun>();
             var korisnickiRacunId = setKorisnickiRacun.FirstOrDefault(x => x.Username == request.Username && x.Password == request.Password).KorisničkiRačunId;
-            var setKorisnik = Context.Set<Korisnik>();
+            var setKorisnik = Context.Set<BHFudbalDatabase.Korisnik>();
             var korisnik = setKorisnik.FirstOrDefault(x => x.KorisničkiRačunId == korisnickiRacunId);
             korisnik.IsPremium = true;
             Context.SaveChanges();
@@ -114,7 +120,7 @@ namespace BHFudbal.Services.Implementations
             if (korisnickiRacun != null)
             {
                 int korisnickiRacunId = korisnickiRacun.KorisničkiRačunId;
-                var setKorisnik = Context.Set<Korisnik>();
+                var setKorisnik = Context.Set<BHFudbalDatabase.Korisnik>();
                 var korisnik = setKorisnik.FirstOrDefault(x => x.KorisničkiRačunId == korisnickiRacunId);
                 if (korisnik != null)
                 {
@@ -127,5 +133,123 @@ namespace BHFudbal.Services.Implementations
 
             return 0;
         }
+
+        public PremiumReport PremiumReport(int sezonaId)
+        {
+            var setTransfer = Context.Set<BHFudbalDatabase.Transfer>();
+            var setKlub = Context.Set<BHFudbalDatabase.Klub>();
+            var setMatch = Context.Set<BHFudbalDatabase.Match>();
+            var kluboviIds = setKlub.Select(x => x.KlubId).ToList();
+            List<FinancijskiRezultati> financijskiRezultati = new List<FinancijskiRezultati>();
+
+            foreach (var id in kluboviIds)
+            {
+                var prodano = setTransfer.Where(x => x.StariKlubId == id && x.SezonaId == sezonaId).Count();
+                var kupljeno = setTransfer.Where(x => x.KlubId == id && x.SezonaId == sezonaId).Count();
+                var nazivKluba = setKlub.FirstOrDefault(x => x.KlubId == id).Naziv;
+                var potroseniNovac = setTransfer.Where(x => x.KlubId == id && x.SezonaId == sezonaId).Sum(x => x.Cijena);
+                var zaradjeniNovac = setTransfer.Where(x => x.StariKlubId == id && x.SezonaId == sezonaId).Sum(x => x.Cijena);
+
+                financijskiRezultati.Add(new FinancijskiRezultati
+                {
+                    BrojKupljenihIgraca = kupljeno.ToString(),
+                    BrojProdatihIgraca = prodano.ToString(),
+                    Finansije = (zaradjeniNovac - potroseniNovac).ToString() + " KM",
+                    NazivKluba = nazivKluba.ToString()
+                });
+            }
+
+            List<KlubGoloviReport> klubGoloviReport = new List<KlubGoloviReport>();
+            foreach (var id in kluboviIds)
+            {
+                var nazivKluba = setKlub.FirstOrDefault(x => x.KlubId == id).Naziv;
+                var rezultatiKuci = setMatch.Include(x => x.Liga).Where(x => x.Liga.SezonaId == sezonaId && x.DomacinId == id).Select(x => x.Rezultat).ToList();
+                int brojGolovaKuci = 0;
+                foreach (var x in rezultatiKuci)
+                {
+                    var str = x.Split("-")[0];
+                    var broj = int.Parse(str);
+                    brojGolovaKuci += broj;
+                }
+                var rezultatiUGostima = setMatch.Include(x => x.Liga).Where(x => x.Liga.SezonaId == sezonaId && x.GostId == id).Select(x => x.Rezultat).ToList();
+                int brojGolovaUGostima = 0;
+                foreach (var x in rezultatiUGostima)
+                {
+                    var str = x.Split("-")[1];
+                    var broj = int.Parse(str);
+                    brojGolovaUGostima += broj;
+                }
+                klubGoloviReport.Add(new KlubGoloviReport
+                {
+                    BrojGolovaKuci = brojGolovaKuci.ToString(),
+                    BrojGolovaUGostima = brojGolovaUGostima.ToString(),
+                    Naziv = nazivKluba
+                });
+            }
+
+            //prikaz strijelaca kroz sezonu po klubu
+            List<KlubFudbalerSezonaReport> klubFudbalerSezonaReport = new List<KlubFudbalerSezonaReport>();
+            foreach (var id in kluboviIds)
+            {
+                List<FudbalerReport> fudbalerReports = new List<FudbalerReport>();
+                var nazivKluba = setKlub.FirstOrDefault(x => x.KlubId == id).Naziv;
+                var setGols = Context.Set<Gol>();
+                var setFudbaler = Context.Set<Fudbaler>();
+                var setZuti = Context.Set<ZutiKarton>();
+                var setCrveni = Context.Set<CrveniKarton>();
+
+                var queryGols = from g in setGols
+                                join f in setFudbaler on g.FudbalerId equals f.FudbalerId
+                                where f.KlubId == id
+                                group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
+                                select new
+                                {
+                                    FudbalerId = grouped.Key.FudbalerId,
+                                    Ime = grouped.Key.Ime,
+                                    Prezime = grouped.Key.Prezime,
+                                    GoloviCount = grouped.Count()
+                                };
+                //queryGols = queryGols.OrderByDescending(x => x.Count);
+
+                var queryZutiKarton = from zk in setZuti
+                                      join f in setFudbaler on zk.FudbalerId equals f.FudbalerId
+                                      where f.KlubId == id
+                                      group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
+                                      select new
+                                      {
+                                          FudbalerId = grouped.Key.FudbalerId,
+                                          Ime = grouped.Key.Ime,
+                                          Prezime = grouped.Key.Prezime,
+                                          ZutiCount = grouped.Count()
+                                      };
+                var queryCrveniKartons = from ck in setCrveni
+                                         join f in setFudbaler on ck.FudbalerId equals f.FudbalerId
+                                         where f.KlubId == id
+                                         group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
+                                         select new
+                                         {
+                                             FudbalerId = grouped.Key.FudbalerId,
+                                             Ime = grouped.Key.Ime,
+                                             Prezime = grouped.Key.Prezime,
+                                             CrveniCount = grouped.Count()
+                                         };
+                var fudbalerIds = setFudbaler.Where(x => x.KlubId == id).Select(x => x.FudbalerId).ToList();
+                foreach (var fudbalerId in fudbalerIds)
+                {
+                    var fudbaler = setFudbaler.FirstOrDefault(x => x.FudbalerId == fudbalerId);
+                    var imePrezime = fudbaler.Ime + " " + fudbaler.Prezime;
+                    var brojGolova = queryGols.FirstOrDefault(x => x.FudbalerId == fudbalerId)?.GoloviCount ?? 0;
+                    var brojZutih = queryZutiKarton.FirstOrDefault(x => x.FudbalerId == fudbalerId)?.ZutiCount ?? 0;
+                    var brojCrvenih = queryCrveniKartons.FirstOrDefault(x => x.FudbalerId == fudbalerId)?.CrveniCount ?? 0;
+                    fudbalerReports.Add(new FudbalerReport { ImeFudbalera = imePrezime, BrojGolova = brojGolova.ToString(), BrojCrvenih = brojCrvenih.ToString(), BrojZutih = brojZutih.ToString() });
+                }
+                klubFudbalerSezonaReport.Add(new KlubFudbalerSezonaReport { NazivKluba = nazivKluba, FudbalerReport = fudbalerReports });
+            }
+
+
+            var res = new PremiumReport { FinancijskiRezultati = financijskiRezultati, KlubGoloviReport = klubGoloviReport, KlubFudbalerSezonaReport = klubFudbalerSezonaReport };
+            return res;
+        }
+
     }
 }

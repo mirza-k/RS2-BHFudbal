@@ -1,5 +1,7 @@
-﻿using BHFudbal.Model.QueryObjects;
+﻿using BHFudbal.Model;
+using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
+using System.Collections.Generic;
 
 namespace BHFudbal.Services.Interfaces
 {
@@ -10,5 +12,6 @@ namespace BHFudbal.Services.Interfaces
         public int Uredi(UrediKorisnika request);
         public int UpdateToPremium(UpdateToPremiumRequest request);
         public int IsKorisnikPremium(UpdateToPremiumRequest request);
+        public PremiumReport PremiumReport(int sezonaId);
     }
 }
