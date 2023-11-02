@@ -4,21 +4,19 @@ using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.Xml;
-using static System.Net.Mime.MediaTypeNames;
 using Fudbaler = BHFudbal.BHFudbalDatabase.Fudbaler;
-using Match = BHFudbal.BHFudbalDatabase.Match;
 
 namespace BHFudbal.Services.Implementations
 {
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, BHFudbalDatabase.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
-        public KorisnikService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
+        private readonly IMessageProducer _messageProducer;
+        public KorisnikService(BHFudbalDBContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
+            _messageProducer = messageProducer;
         }
 
         public int Login(KorisnikInsertRequest login)
@@ -28,7 +26,13 @@ namespace BHFudbal.Services.Implementations
             if (!string.IsNullOrEmpty(login?.Username) && !string.IsNullOrEmpty(login?.Password))
             {
                 var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
-                return korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
+                var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
+                if (result != 0)
+                    _messageProducer.SendingMessage<string>("Uspjesan login!");
+                else
+                    _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
+
+                return result;
             }
 
             return 0;

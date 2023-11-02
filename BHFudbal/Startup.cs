@@ -65,6 +65,7 @@ namespace BHFudbal
             services.AddScoped<ITransferService, BHFudbal.Services.Implementations.TransferService>();
             services.AddScoped<ISezonaService, SezonaService>();
             services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<IMessageProducer, MessageProducer>();
 
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
