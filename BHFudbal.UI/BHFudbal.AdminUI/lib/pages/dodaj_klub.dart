@@ -32,6 +32,8 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
   late KlubProvider _klubProvider;
   late LigaProvider _ligaProvider;
   late GradProvider _gradProvider;
+  late File image;
+  late String path;
   String? nazivKlubaError;
   String? nadimakKlubaError;
   String? osnivanjeKlubaError;
@@ -44,7 +46,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
       ligaResults = widget.ligeParam ?? [];
     } else {
       _ligaProvider = context.read<LigaProvider>();
-      var result = await _ligaProvider.get();
+      var result = await _ligaProvider.get(true);
       setState(() {
         ligaResults = result.result;
       });
@@ -83,6 +85,8 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                       _image = File(result.files.single.path!);
                       _base64Image = base64Encode(_image!.readAsBytesSync());
                       setState(() {
+                        image = _image!;
+                        path = result.files.single.path!;
                         _model.grb = Uint8List.fromList(
                             base64.decode(_base64Image ?? ""));
                       });
@@ -197,13 +201,6 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
         null;
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   void saveData() async {
     _klubProvider = context.read<KlubProvider>();
     var klub = KlubRequest(
@@ -224,7 +221,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
                   title: const Text("Uspjesno dodan klub!"),
                   actions: [
                     TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => Navigator.pop(context, true),
                         child: const Text("OK"))
                   ],
                 ));

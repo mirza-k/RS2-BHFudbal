@@ -4,5 +4,6 @@
     {
         public int LigaId { get; set; }
         public int RedniBrojKola { get; set; }
+        public bool AdminPage { get; set; }
     }
 }

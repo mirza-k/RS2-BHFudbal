@@ -14,7 +14,7 @@ class SezonaProvider with ChangeNotifier {
   static String endpoint = "Sezona";
   SezonaProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:44344/");
+        defaultValue: "http://localhost:5001/");
   }
 
   Future<SearchResult<SezonaResponse>> get() async {
@@ -29,6 +29,19 @@ class SezonaProvider with ChangeNotifier {
         result.result.add(SezonaResponse.fromJson(item));
       }
       return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+  Future<String> GenerisiSezonu() async {
+    var url = "$_baseUrl$endpoint/GenerisiSezonu";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = response.body;
+      return data;
     } else {
       throw new Exception("Unexpected error");
     }

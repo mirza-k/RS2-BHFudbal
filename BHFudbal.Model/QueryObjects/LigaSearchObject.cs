@@ -4,5 +4,6 @@
     {
         public string Naziv { get; set; }
         public int SezonaId { get; set; }
+        public bool SamoAktivne { get; set; }
     }
 }

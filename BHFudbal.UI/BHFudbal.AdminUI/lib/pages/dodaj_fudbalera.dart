@@ -52,8 +52,8 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
       return 'Unesite vrijednost!';
     }
 
-    if (value.length < 5) {
-      return 'Najmanje 5 slova!';
+    if (value.length < 2) {
+      return 'Najmanje 2 slova!';
     }
 
     return null;

@@ -14,11 +14,11 @@ class LigaProvider with ChangeNotifier {
   static String endpoint = "Liga";
   LigaProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:44344/");
+        defaultValue: "http://localhost:5001/");
   }
 
-  Future<SearchResult<LigaResponse>> get() async {
-    var url = "$_baseUrl$endpoint";
+  Future<SearchResult<LigaResponse>> get(bool samoAktivne) async {
+    var url = "$_baseUrl$endpoint?SamoAktivne=$samoAktivne";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);

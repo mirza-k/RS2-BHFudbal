@@ -56,6 +56,9 @@ namespace BHFudbal.Services.Implementations
             var set = Context.Set<Transfer>();
             Transfer entity = _mapper.Map<Transfer>(request);
             set.Add(entity);
+            var fudbalerId = request.FudbalerId;
+            var noviKlubId = request.KlubId;
+            Context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == fudbalerId).KlubId = noviKlubId;
             Context.SaveChanges();
             return _mapper.Map<Model.Transfer>(entity);
         }

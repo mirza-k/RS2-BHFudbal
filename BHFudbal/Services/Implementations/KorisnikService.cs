@@ -16,7 +16,7 @@ namespace BHFudbal.Services.Implementations
         private readonly IMessageProducer _messageProducer;
         public KorisnikService(BHFudbalDBContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
-            _messageProducer = messageProducer;
+            //_messageProducer = messageProducer;
         }
 
         public int Login(KorisnikInsertRequest login)
@@ -25,14 +25,26 @@ namespace BHFudbal.Services.Implementations
 
             if (!string.IsNullOrEmpty(login?.Username) && !string.IsNullOrEmpty(login?.Password))
             {
-                var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
-                var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
-                if (result != 0)
-                    _messageProducer.SendingMessage<string>("Uspjesan login!");
+                if (login.AuthHandler)
+                {
+                    var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
+                    var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
+                    return result;
+                }
                 else
-                    _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
-
-                return result;
+                {
+                    var adminUloga = Context.Set<Uloga>().FirstOrDefault(x => x.Naziv == "Admin");
+                    var userUloga = Context.Set<Uloga>().FirstOrDefault(x => x.Naziv == "User");
+                    var ulogaId = login.AdminPage ? adminUloga.UlogaId : userUloga.UlogaId;
+                    var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password &&
+                    x.UlogaId == ulogaId);
+                    var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
+                //if (result != 0)
+                //_messageProducer.SendingMessage<string>("Uspjesan login!");
+                //else
+                //_messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
+                    return result;
+                }
             }
 
             return 0;
@@ -201,10 +213,13 @@ namespace BHFudbal.Services.Implementations
                 var setFudbaler = Context.Set<Fudbaler>();
                 var setZuti = Context.Set<ZutiKarton>();
                 var setCrveni = Context.Set<CrveniKarton>();
+                var setLiga = Context.Set<LigaId>();
 
                 var queryGols = from g in setGols
                                 join f in setFudbaler on g.FudbalerId equals f.FudbalerId
-                                where f.KlubId == id
+                                join m in setMatch on g.MatchId equals m.MatchId
+                                join l in setLiga on m.LigaId equals l.LigaId1
+                                where f.KlubId == id && l.SezonaId == sezonaId
                                 group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
                                 select new
                                 {
@@ -217,7 +232,9 @@ namespace BHFudbal.Services.Implementations
 
                 var queryZutiKarton = from zk in setZuti
                                       join f in setFudbaler on zk.FudbalerId equals f.FudbalerId
-                                      where f.KlubId == id
+                                      join m in setMatch on zk.MatchId equals m.MatchId
+                                      join l in setLiga on m.LigaId equals l.LigaId1
+                                      where f.KlubId == id && l.SezonaId == sezonaId
                                       group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
                                       select new
                                       {
@@ -228,7 +245,9 @@ namespace BHFudbal.Services.Implementations
                                       };
                 var queryCrveniKartons = from ck in setCrveni
                                          join f in setFudbaler on ck.FudbalerId equals f.FudbalerId
-                                         where f.KlubId == id
+                                         join m in setMatch on ck.MatchId equals m.MatchId
+                                         join l in setLiga on m.LigaId equals l.LigaId1
+                                         where f.KlubId == id && l.SezonaId == sezonaId
                                          group f by new { f.FudbalerId, f.Ime, f.Prezime } into grouped
                                          select new
                                          {

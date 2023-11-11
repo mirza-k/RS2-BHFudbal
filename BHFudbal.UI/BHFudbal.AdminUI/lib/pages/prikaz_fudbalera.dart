@@ -37,16 +37,9 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
     _fetchLige();
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   Future<void> _fetchLige() async {
     _ligaProvider = context.read<LigaProvider>();
-    var result = await _ligaProvider.get();
+    var result = await _ligaProvider.get(true);
     setState(() {
       ligaResults = result.result;
     });

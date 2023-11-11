@@ -13,7 +13,7 @@ class KorisnikProvider with ChangeNotifier {
   static String endpoint = "Korisnik";
   KorisnikProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:44344/");
+        defaultValue: "http://localhost:5001/");
   }
 
   Future<SearchResult<KorisnikResponse>> get(String? ime) async {
@@ -30,6 +30,20 @@ class KorisnikProvider with ChangeNotifier {
       for (var item in data) {
         result.result.add(KorisnikResponse.fromJson(item));
       }
+      return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+  Future<int> login(dynamic request) async {
+    var url = "$_baseUrl$endpoint/login";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (isValidResponse(response)) {
+      var result = jsonDecode(response.body);
       return result;
     } else {
       throw new Exception("Unexpected error");

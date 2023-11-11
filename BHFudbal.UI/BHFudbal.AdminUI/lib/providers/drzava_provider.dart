@@ -9,7 +9,7 @@ class DrzavaProvider with ChangeNotifier {
   static String endpoint = "Drzava";
   DrzavaProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:44344/");
+        defaultValue: "http://localhost:5001/");
   }
 
   Future<List<dynamic>> get() async {

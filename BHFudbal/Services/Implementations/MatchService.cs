@@ -5,6 +5,7 @@ using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace BHFudbal.Services.Implementations
             {
                 entity = entity.Where(x => x.LigaId == search.LigaId).OrderBy(x => x.RedniBrojKola);
             }
-            if (search?.RedniBrojKola != null)
+            if (search?.RedniBrojKola != null && search?.RedniBrojKola != 0)
             {
                 entity = entity.Where(x => x.RedniBrojKola == search.RedniBrojKola);
             }
@@ -41,7 +42,7 @@ namespace BHFudbal.Services.Implementations
                 GostId = x.GostId,
                 MatchId = x.MatchId,
                 RedniBrojKola = x.RedniBrojKola,
-                Prikaz = x.Domacin.Naziv + "  " + x.Rezultat + "  " + x.Gost.Naziv
+                Prikaz = search.AdminPage ? x.RedniBrojKola + ". kolo    " + x.Domacin.Naziv + "  " + x.Rezultat + "  " + x.Gost.Naziv : x.Domacin.Naziv + "  " + x.Rezultat + "  " + x.Gost.Naziv
             });
 
             return _mapper.Map<List<Model.Match>>(models);
@@ -104,22 +105,26 @@ namespace BHFudbal.Services.Implementations
         {
             var matchContext = Context.Set<Match>();
             var matchesByLigaId = matchContext.Where(x => x.LigaId == ligaId).ToList();
-
-            var klubContext = Context.Set<Klub>();
-            var klubByLigaId = klubContext.Where(x => x.LigaId == ligaId).Select(x => new { klubId = x.KlubId, nazivKluba = x.Naziv }).ToList();
+            var klubIds = matchesByLigaId.Select(x => x.DomacinId).Distinct().ToList();
 
             List<Tabela> tabela = new List<Tabela>();
 
-            foreach (var klub in klubByLigaId)
+            foreach (var klubId in klubIds)
             {
-                int brojUtakmica = matchesByLigaId.Where(x => x.DomacinId == klub.klubId || x.GostId == klub.klubId).Count();
-                int brojPobjeda = matchesByLigaId.Where(x => x.Pobjednik == klub.klubId).Count();
-                int brojNerjesenih = matchesByLigaId.Where(x => x.Pobjednik == null && (x.DomacinId == klub.klubId || x.GostId == klub.klubId)).Count();
-                int brojPoraza = brojUtakmica - (brojPobjeda + brojNerjesenih);
+                //samo ako klub nije tek dodan, uzmi u obzir njega u tabeli
+                Match imaMatcheva = matchContext.FirstOrDefault(x => (x.DomacinId == klubId || x.GostId == klubId) && x.LigaId == ligaId);
+                if (imaMatcheva != null)
+                {
+                    int brojUtakmica = matchesByLigaId.Where(x => x.DomacinId == klubId || x.GostId == klubId).Count();
+                    int brojPobjeda = matchesByLigaId.Where(x => x.Pobjednik == klubId).Count();
+                    int brojNerjesenih = matchesByLigaId.Where(x => x.Pobjednik == null && (x.DomacinId == klubId || x.GostId == klubId)).Count();
+                    int brojPoraza = brojUtakmica - (brojPobjeda + brojNerjesenih);
 
-                int brojBodova = (brojPobjeda * 3) + brojNerjesenih;
-                int brojKola = GetMaxBrojKola(ligaId);
-                tabela.Add(new Tabela(klub.nazivKluba, brojBodova, brojKola));
+                    int brojBodova = (brojPobjeda * 3) + brojNerjesenih;
+                    int brojKola = GetMaxBrojKola(ligaId);
+                    var nazivKluba = Context.Set<Klub>().FirstOrDefault(x => x.KlubId == klubId)?.Naziv;
+                    tabela.Add(new Tabela(nazivKluba, brojBodova, brojKola));
+                }
             }
 
             tabela = tabela.OrderByDescending(x => x.BrojBodova).ToList();
@@ -174,17 +179,22 @@ namespace BHFudbal.Services.Implementations
                 }
             }
 
-            List<string> rezultati = matches.Include(x => x.Domacin).Include(x => x.Gost).Select(x => x.RedniBrojKola + ".kolo" + "        " + x.Domacin.Naziv + "    " + x.Rezultat + "    " + x.Gost.Naziv).ToList();
+            List<string> rezultati = matches.Include(x => x.Domacin).Include(x => x.Gost).OrderBy(x => x.RedniBrojKola).Select(x => x.RedniBrojKola + ".kolo" + "   " + x.Domacin.Naziv + "   " + x.Rezultat + "   " + x.Gost.Naziv).ToList();
             MatchesByKlubId matchesByKlubId = new MatchesByKlubId() { BrojDatihGolova = brojDatihGolova, BrojPrimljenihGolova = brojPrimljenihGolova, Rezultati = rezultati };
             return matchesByKlubId;
         }
 
         public List<PrikazStrijelaca> GetStrijelciByLigaId(int ligaId)
         {
+            var matchContext = Context.Set<Match>();
+            var matchesByLigaId = matchContext.Where(x => x.LigaId == ligaId).Select(x => x.MatchId).ToList();
+
+            var test = Context.Set<Gol>().Include(x => x.Match).Include(x => x.Fudbaler).Where(x => matchesByLigaId.Contains(x.MatchId)).GroupBy(g => g.Fudbaler.Ime + " " + g.Fudbaler.Prezime).Select(g => new { Fudbaler = g.Key, GolCount = g.Count() }).OrderByDescending(x => x.GolCount).ToList();
+
             var fudbalerEntity = Context.Set<Gol>();
             var fudbalerGoalCounts = fudbalerEntity.Include(x => x.Fudbaler).ThenInclude(x => x.Klub).Where(x => x.Fudbaler.Klub.LigaId == ligaId).GroupBy(g => g.Fudbaler.Ime + " " + g.Fudbaler.Prezime).Select(g => new { Fudbaler = g.Key, GolCount = g.Count() }).OrderByDescending(x => x.GolCount).ToList();
 
-            var result = fudbalerGoalCounts.Select(x => new PrikazStrijelaca() { BrojGolova = x.GolCount, NazivFudbalera = x.Fudbaler }).ToList();
+            var result = test.Select(x => new PrikazStrijelaca() { BrojGolova = x.GolCount, NazivFudbalera = x.Fudbaler }).ToList();
             return result;
         }
 
@@ -193,12 +203,15 @@ namespace BHFudbal.Services.Implementations
             var matchEntity = Context.Set<Match>();
             var klubEntity = Context.Set<Klub>();
 
-            var klubovi = klubEntity.Where(x => x.LigaId == ligaId).ToList();
-            var matches = matchEntity.Where(x => x.LigaId == ligaId);
+            var matchesByLigaId = Context.Set<Match>().Include(x => x.Domacin).Where(x => x.LigaId == ligaId).ToList();
+            var klubs = matchesByLigaId.Select(x=>x.Domacin).Distinct().ToList();
+
+            //var klubovi = klubEntity.Where(x => x.LigaId == ligaId).ToList();
+            //var matches = matchEntity.Where(x => x.LigaId == ligaId);
             List<FormaView> formaView = new List<FormaView>();
-            foreach (var klub in klubovi)
+            foreach (var klub in klubs)
             {
-                var forma = matches.Where(x => x.DomacinId == klub.KlubId || x.GostId == klub.KlubId).OrderByDescending(x => x.RedniBrojKola)
+                var forma = matchesByLigaId.Where(x => x.DomacinId == klub.KlubId || x.GostId == klub.KlubId).OrderByDescending(x => x.RedniBrojKola)
                     .Select(x => x.Pobjednik == klub.KlubId ? "P" : x.Pobjednik == null ? "N" : "I").Take(4).ToList();
                 formaView.Add(new FormaView() { Klub = klub.Naziv, Forma = forma });
             }

@@ -5,8 +5,10 @@ import 'package:bhfudbal_admin/providers/drzava_provider.dart';
 import 'package:bhfudbal_admin/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:bhfudbal_admin/providers/korisnik_provider.dart';
 import '../models/login_model.dart';
+import '../models/request/login_request.dart';
+import '../providers/sezona_provider.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -49,13 +51,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     _model.passwordControllerValidator = customPasswordValidator;
     _model.emailAddressController ??= TextEditingController();
     _model.passwordController ??= TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -297,15 +292,42 @@ class _LoginWidgetState extends State<LoginWidget> {
                                           _model.emailAddressController?.text;
                                       var password =
                                           _model.passwordController?.text;
-
-                                      Authorization.username = username;
-                                      Authorization.password = password;
                                       try {
-                                        await _drzavaProvider.get();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => Home()));
+                                        var _korisnikProvider =
+                                            context.read<KorisnikProvider>();
+                                        var login = LoginRequest(
+                                            username: username,
+                                            password: password,
+                                            adminPage: true);
+                                        var request =
+                                            LoginRequest().toJson(login);
+                                        var result = await _korisnikProvider
+                                            .login(request);
+                                        if (result > 0) {
+                                          Authorization.username = username;
+                                          Authorization.password = password;
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Home()));
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Text("Error"),
+                                                    content: Text(
+                                                        "Neispravan username ili password."),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                          child: Text("OK"))
+                                                    ],
+                                                  ));
+                                        }
                                       } on Exception catch (e) {
                                         showDialog(
                                             context: context,
@@ -330,11 +352,110 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      minimumSize: Size(370, 44),
+                                      minimumSize: Size(377, 44),
                                       padding: EdgeInsets.zero,
                                     ),
                                     child: Text(
                                       'Uloguj se',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      0, 50, 0, 16),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      var username =
+                                          _model.emailAddressController?.text;
+                                      var password =
+                                          _model.passwordController?.text;
+
+                                      // Authorization.username = username;
+                                      // Authorization.password = password;
+                                      try {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  title: Text("Napoemena!"),
+                                                  content: Text(
+                                                      "Prilikom klika, generisat ce se nova sezona sa odigranim utakmicama."),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          print(
+                                                              "Generisanje...");
+                                                          var _sezonaProvider =
+                                                              context.read<
+                                                                  SezonaProvider>();
+                                                          var rezultat =
+                                                              await _sezonaProvider
+                                                                  .GenerisiSezonu();
+                                                          if (rezultat == "") {
+                                                            Future.delayed(
+                                                                Duration.zero,
+                                                                () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            });
+                                                          } else {
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    AlertDialog(
+                                                                      title: Text(
+                                                                          "Error"),
+                                                                      content: Text(
+                                                                          rezultat),
+                                                                      actions: [
+                                                                        TextButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.pop(context),
+                                                                            child: Text("OK"))
+                                                                      ],
+                                                                    ));
+                                                          }
+                                                        },
+                                                        child: Text("Generisi"))
+                                                  ],
+                                                ));
+                                      } on Exception catch (e) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                                  title: Text("Error"),
+                                                  content: Text(e.toString()),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: Text("OK"))
+                                                  ],
+                                                ));
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.green,
+                                      onPrimary: Colors.white,
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      minimumSize: Size(377, 54),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: Text(
+                                      'Generisi sezonu',
                                       style: TextStyle(
                                         fontFamily: 'Plus Jakarta Sans',
                                         color: Colors.white,

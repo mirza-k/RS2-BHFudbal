@@ -39,7 +39,7 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
 
   Future<void> _fetchLige() async {
     _ligaProvider = context.read<LigaProvider>();
-    var result = await _ligaProvider.get();
+    var result = await _ligaProvider.get(true);
     setState(() {
       ligaResults = result.result;
     });
@@ -64,12 +64,6 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
         });
       }
     }
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-    super.dispose();
   }
 
   Future<void> _navigateToChildPage(int? klubId) async {

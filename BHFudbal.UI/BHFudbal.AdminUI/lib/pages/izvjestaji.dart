@@ -40,13 +40,6 @@ class _IzvjestajWidgetState extends State<IzvjestajWidget> {
     _fetchSezone();
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   pw.Widget buildTable(List<Map<String, dynamic>> dataset) {
     final headers = [
       'Naziv kluba',
@@ -105,7 +98,7 @@ class _IzvjestajWidgetState extends State<IzvjestajWidget> {
           build: (pw.Context context) {
             return pw.Center(
               child: pw.Table.fromTextArray(
-                headers: ['Club Name', 'Total Transfers', 'Total Spending'],
+                headers: ['Klub', 'Broj transfera', 'Ukupno potroseno'],
                 data: result.result.map((data) {
                   return [
                     data.imeKluba.toString(),

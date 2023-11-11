@@ -27,6 +27,9 @@ namespace BHFudbal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("BasicAuthentication")
+            .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
 
@@ -66,9 +69,6 @@ namespace BHFudbal
             services.AddScoped<ISezonaService, SezonaService>();
             services.AddScoped<IMatchService, MatchService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
-
-            services.AddAuthentication("BasicAuthentication")
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
             services.AddCors();
         }

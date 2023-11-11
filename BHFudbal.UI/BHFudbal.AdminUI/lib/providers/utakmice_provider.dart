@@ -13,11 +13,12 @@ class UtakmiceProvider with ChangeNotifier {
   static String endpoint = "Match";
   UtakmiceProvider() {
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:44344/");
+        defaultValue: "http://localhost:5001/");
   }
 
   Future<SearchResult<UtakmiceResponse>> get(int ligaId) async {
-    var url = "$_baseUrl$endpoint?LigaId=$ligaId";
+    var adminPage = true;
+    var url = "$_baseUrl$endpoint?LigaId=$ligaId&AdminPage=$adminPage";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);

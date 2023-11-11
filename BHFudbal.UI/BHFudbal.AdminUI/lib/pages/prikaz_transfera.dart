@@ -30,13 +30,6 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
     _fetchSezone();
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   Future<void> _navigateToChildPage() async {
     final result = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => DodajTransferWidget()));

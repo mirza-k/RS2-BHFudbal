@@ -41,7 +41,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
 
   Future<void> _fetchLige() async {
     _ligaProvider = context.read<LigaProvider>();
-    var result = await _ligaProvider.get();
+    var result = await _ligaProvider.get(true);
     setState(() {
       ligaResults = result.result;
       ligaTargetResults = result.result;
@@ -102,6 +102,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     if (errorMessage.isEmpty) {
       var response = await _transferProvider.post(request);
       if (response) {
+        await _fetchFudbaleri();
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -205,13 +206,6 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
         null;
 
     _fetchLige();
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   @override

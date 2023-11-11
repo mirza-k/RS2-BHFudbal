@@ -27,13 +27,6 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
     _model.textController ??= TextEditingController();
   }
 
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
   Future<void> _fetchKorisnici() async {
     _korisnikProvider = context.read<KorisnikProvider>();
     String? ime;
@@ -46,32 +39,6 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
       korisnikResults = result.result;
     });
   }
-
-  // Mock data for yourDataList
-  List<DataTableRecord> yourDataList = [
-    DataTableRecord(
-      column1: 'Club 1',
-      column2: 'City 1',
-      column3: '1990',
-      column4: 'League 1',
-      column5: 'Nickname 1',
-    ),
-    DataTableRecord(
-      column1: 'Club 2',
-      column2: 'City 2',
-      column3: '1985',
-      column4: 'League 2',
-      column5: 'Nickname 2',
-    ),
-    DataTableRecord(
-      column1: 'Club 3',
-      column2: 'City 3',
-      column3: '2000',
-      column4: 'League 3',
-      column5: 'Nickname 3',
-    ),
-    // Add more mock data as needed
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +62,7 @@ class _PrikazKorisnikaWidgetState extends State<PrikazKorisnikaWidget> {
           centerTitle: false,
           elevation: 2,
         ),
-        body: SafeArea(
-          top: true,
+        body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Column(
