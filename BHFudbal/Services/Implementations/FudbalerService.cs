@@ -4,11 +4,19 @@ using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers;
+using Microsoft.ML.Trainers.Recommender;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Fudbaler = BHFudbal.BHFudbalDatabase.Fudbaler;
+using Korisnik = BHFudbal.BHFudbalDatabase.Korisnik;
 
 namespace BHFudbal.Services.Implementations
 {
@@ -119,6 +127,36 @@ namespace BHFudbal.Services.Implementations
             }).ToList();
 
             return transferi;
+        }
+
+        public void DodajOmiljeniFudbaler(OmiljeniFudbalerInsertRequest request)
+        {
+            var fId = Context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == request.FudbalerId)?.FudbalerId;
+            var kId = Context.Set<Korisnik>().FirstOrDefault(x => x.KorisnikId == request.KorisnikId)?.KorisnikId;
+
+            if ((fId != 0 && fId != null) && (kId != 0 && kId != null))
+            {
+                var set = Context.Set<OmiljeniFudbaler>();
+                var data = new OmiljeniFudbaler
+                {
+                    FudbalerId = request.FudbalerId,
+                    KorisnikId = request.KorisnikId
+                };
+
+                set.Add(data);
+                Context.SaveChanges();
+            }
+        }
+
+        public void UkloniOmiljeniFudbaler(OmiljeniFudbalerInsertRequest request)
+        {
+            var omiljeniFudbaler = Context.Set<OmiljeniFudbaler>().FirstOrDefault(x => x.KorisnikId == request.KorisnikId && x.FudbalerId == request.FudbalerId);
+
+            if (omiljeniFudbaler != null)
+            {
+                Context.Set<OmiljeniFudbaler>().Remove(omiljeniFudbaler);
+                Context.SaveChanges();
+            }
         }
     }
 }

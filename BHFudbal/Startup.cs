@@ -69,6 +69,7 @@ namespace BHFudbal
             services.AddScoped<ISezonaService, SezonaService>();
             services.AddScoped<IMatchService, MatchService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<IRecommender, Recommender>();
 
             services.AddCors();
         }

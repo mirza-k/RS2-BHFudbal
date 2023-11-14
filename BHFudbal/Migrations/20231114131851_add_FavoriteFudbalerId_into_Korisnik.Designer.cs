@@ -4,14 +4,16 @@ using BHFudbal.BHFudbalDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BHFudbal.Migrations
 {
     [DbContext(typeof(BHFudbalDBContext))]
-    partial class BHFudbalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231114131851_add_FavoriteFudbalerId_into_Korisnik")]
+    partial class add_FavoriteFudbalerId_into_Korisnik
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
