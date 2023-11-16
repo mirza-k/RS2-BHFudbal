@@ -47,5 +47,11 @@ namespace BHFudbal.Controllers
         {
             return _recommender.GetSlicneFudbalere(fudbalerId);
         }
+
+        [HttpGet("getRating/{fudbalerId}/{korisnikId}")]
+        public int GetRecommendedPlayers(int fudbalerId, int korisnikId)
+        {
+            return _fudbalerService.GetRating(fudbalerId, korisnikId);
+        }
     }
 }

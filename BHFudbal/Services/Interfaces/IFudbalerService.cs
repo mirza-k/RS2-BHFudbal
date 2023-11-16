@@ -11,6 +11,7 @@ namespace BHFudbal.Services.Interfaces
         public List<FudbalerHistorijaTransfera> GetFudbalerHistorijaTransfera(int fudbalerId);
         public void DodajOmiljeniFudbaler(OmiljeniFudbalerInsertRequest request);
         public void UkloniOmiljeniFudbaler(OmiljeniFudbalerInsertRequest request);
+        public int GetRating(int korisnikId, int fudbalerId);
 
     }
 }

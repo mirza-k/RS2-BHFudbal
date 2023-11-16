@@ -137,14 +137,24 @@ namespace BHFudbal.Services.Implementations
             if ((fId != 0 && fId != null) && (kId != 0 && kId != null))
             {
                 var set = Context.Set<OmiljeniFudbaler>();
-                var data = new OmiljeniFudbaler
-                {
-                    FudbalerId = request.FudbalerId,
-                    KorisnikId = request.KorisnikId
-                };
 
-                set.Add(data);
-                Context.SaveChanges();
+                var postojeci = set.FirstOrDefault(x => x.FudbalerId == request.FudbalerId && x.KorisnikId == request.KorisnikId);
+                if (postojeci != null)
+                {
+                    postojeci.Rating = request.Rating;
+                    Context.SaveChanges();
+                }
+                else
+                {
+                    var data = new OmiljeniFudbaler
+                    {
+                        FudbalerId = request.FudbalerId,
+                        KorisnikId = request.KorisnikId,
+                        Rating = request.Rating
+                    };
+                    set.Add(data);
+                    Context.SaveChanges();
+                }
             }
         }
 
@@ -157,6 +167,16 @@ namespace BHFudbal.Services.Implementations
                 Context.Set<OmiljeniFudbaler>().Remove(omiljeniFudbaler);
                 Context.SaveChanges();
             }
+        }
+
+        public int GetRating(int fudbalerId, int korisnikId)
+        {
+            var model = Context.Set<OmiljeniFudbaler>().FirstOrDefault(x => x.FudbalerId == fudbalerId && x.KorisnikId == korisnikId);
+
+            if (model != null)
+                return model.Rating;
+
+            return 1;
         }
     }
 }
