@@ -16,7 +16,7 @@ namespace BHFudbal.Services.Implementations
         private readonly IMessageProducer _messageProducer;
         public KorisnikService(BHFudbalDBContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
         {
-            //_messageProducer = messageProducer;
+            _messageProducer = messageProducer;
         }
 
         public int Login(KorisnikInsertRequest login)
@@ -29,6 +29,10 @@ namespace BHFudbal.Services.Implementations
                 {
                     var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password);
                     var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
+                    if (result != 0)
+                        _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali kao admin!");
+                    else
+                        _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja kao admin! Pokusajte ponovo.");
                     return result;
                 }
                 else
@@ -39,10 +43,10 @@ namespace BHFudbal.Services.Implementations
                     var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password &&
                     x.UlogaId == ulogaId);
                     var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
-                //if (result != 0)
-                //_messageProducer.SendingMessage<string>("Uspjesan login!");
-                //else
-                //_messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
+                    if (result != 0)
+                        _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali kao user!");
+                    else
+                        _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja kao user! Pokusajte ponovo.");
                     return result;
                 }
             }

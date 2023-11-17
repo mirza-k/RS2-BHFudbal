@@ -20,7 +20,7 @@ services:
     build:
       context: .
     # environment:
-      # - ConnectionStrings:BHFudbalDB=Server=bhfudbal-sql,1433;Database=BHFudbalTestTest;User=sa;Password=QWElkj132!;ConnectRetryCount=0
+      # - ConnectionStrings:BHFudbalDB=Server=bhfudbal-sql,1433;Database=BHFudbalTestTest;User=sa;Password=QWElkj132!;ConnectRetryCount=0;TrustServerCertificate=True
       # - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5001:5001
@@ -30,6 +30,39 @@ services:
       - bhfudbal-sql
     depends_on:
       - bhfudbal-sql
+
+  rabbitmq: # login guest:guest
+    image: rabbitmq:3-management
+    hostname: "rabbitmq"
+    labels:
+      NAME: "rabbitmq"
+    ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+    networks:
+      - bhfudbalnet2023
+    links:
+      - bhfudbal-api
+    depends_on:
+      - bhfudbal-api
+    
+  console-app:
+    build:
+      context: .
+      dockerfile: ./BHFudbal.Subscriber/Dockerfile  # Path to your console app Dockerfile
+    networks:
+      - bhfudbalnet2023
+    links:
+      - bhfudbal-api
+    depends_on:
+      - bhfudbal-api
+      - bhfudbal-sql
+      - rabbitmq
+
       
 networks:
   bhfudbalnet2023:

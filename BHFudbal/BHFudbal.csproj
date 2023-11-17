@@ -36,5 +36,11 @@
     <ProjectReference Include="..\BHFudbal.Model\BHFudbal.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Script\seed_script.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

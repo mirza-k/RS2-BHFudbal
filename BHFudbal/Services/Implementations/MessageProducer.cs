@@ -10,17 +10,13 @@ namespace BHFudbal.Services.Implementations
     {
         public void SendingMessage<T>(T message)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "mirza",
-                Password = "Test123!",
-                VirtualHost = "/"
-            };
+            ConnectionFactory _factory = new ConnectionFactory() { HostName = "rabbitmq", Port = 5672 };
+            _factory.UserName = "guest";
+            _factory.Password = "guest";
+            IConnection _conn = _factory.CreateConnection();
 
             Guid guid = Guid.NewGuid();
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
+            var channel = _conn.CreateModel();
             var queue = $"message-{guid}";
             channel.QueueDeclare(queue, durable: true, exclusive: true);
             var jsonString = JsonSerializer.Serialize(message);

@@ -2,6 +2,7 @@
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace BHFudbal.Subscriber
 {
@@ -9,30 +10,54 @@ namespace BHFudbal.Subscriber
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello world!");
+            ConnectionFactory _factory = new ConnectionFactory() { HostName = "rabbitmq", Port = 5672 };
+            _factory.UserName = "guest";
+            _factory.Password = "guest";
 
-            var factory = new ConnectionFactory()
+            IConnection _conn = null;
+            IModel channel = null;
+
+            // Add retry logic to wait for RabbitMQ to become available
+            const int maxRetries = 10;
+            int retryCount = 0;
+
+            while (retryCount < maxRetries)
             {
-                HostName = "localhost",
-                UserName = "mirza",
-                Password = "Test123!",
-                VirtualHost = "/"
-            };
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
-            channel.QueueDeclare("test", durable: true, exclusive: true);
+                try
+                {
+                    _conn = _factory.CreateConnection();
+                    channel = _conn.CreateModel();
+                    break; // Break out of the loop if connection is successful
+                }
+                catch (Exception ex)
+                {
+                    // Log or print the exception if needed
+                    Console.WriteLine($"Failed to connect to RabbitMQ. Retry count: {retryCount + 1}. Error: {ex.Message}");
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, eventArgs) =>
+                    retryCount++;
+                    Thread.Sleep(10000); // Wait for 5 seconds before retrying
+                }
+            }
+
+            if (channel != null)
             {
-                var body = eventArgs.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine($"A message has been recieved -> {message}");
-            };
-            channel.BasicConsume("test", true, consumer);
+                channel.QueueDeclare("test", durable: true, exclusive: true);
 
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, eventArgs) =>
+                {
+                    var body = eventArgs.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    Console.WriteLine($"A message has been received -> {message}");
+                };
+                channel.BasicConsume("test", true, consumer);
+            }
+            else
+            {
+                Console.WriteLine("Failed to establish a connection to RabbitMQ after multiple retries. Exiting application.");
+            }
+
+            Thread.Sleep(Timeout.Infinite);
         }
     }
 }
