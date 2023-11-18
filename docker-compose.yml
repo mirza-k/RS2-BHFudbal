@@ -10,8 +10,6 @@ services:
       - MSSQL_PID=Developer
     ports:
       - 1433:1433
-    # expose:
-      # - 1433
     networks:
       - bhfudbalnet2023
 
@@ -19,9 +17,6 @@ services:
     restart: unless-stopped
     build:
       context: .
-    # environment:
-      # - ConnectionStrings:BHFudbalDB=Server=bhfudbal-sql,1433;Database=BHFudbalTestTest;User=sa;Password=QWElkj132!;ConnectRetryCount=0;TrustServerCertificate=True
-      # - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5001:5001
     networks:
@@ -53,7 +48,7 @@ services:
   console-app:
     build:
       context: .
-      dockerfile: ./BHFudbal.Subscriber/Dockerfile  # Path to your console app Dockerfile
+      dockerfile: ./BHFudbal.Subscriber/Dockerfile
     networks:
       - bhfudbalnet2023
     links:

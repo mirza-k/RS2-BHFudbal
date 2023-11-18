@@ -27,6 +27,7 @@ namespace BHFudbal.Subscriber
                 {
                     _conn = _factory.CreateConnection();
                     channel = _conn.CreateModel();
+                    Console.WriteLine("Connection established sucessfully!");
                     break; // Break out of the loop if connection is successful
                 }
                 catch (Exception ex)
