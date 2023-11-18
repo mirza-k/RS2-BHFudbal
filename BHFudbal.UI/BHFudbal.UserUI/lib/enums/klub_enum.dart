@@ -1,0 +1,4 @@
+enum KlubEnum{
+  domaci,
+  gost
+}

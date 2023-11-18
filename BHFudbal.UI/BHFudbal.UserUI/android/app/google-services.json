@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "165542129276",
+    "project_id": "pushnotificationsbhfudbal",
+    "storage_bucket": "pushnotificationsbhfudbal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165542129276:android:9cabc0ae5250f1b36de3f9",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4Tek1HNysZcxdVu3UM5pL7bV34OwzlaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
