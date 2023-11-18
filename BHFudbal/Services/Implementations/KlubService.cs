@@ -23,6 +23,16 @@ namespace BHFudbal.Services.Implementations
                 entity = entity.Where(x => x.LigaId == search.LigaId);
             }
 
+            if(search.KlubId != 0)
+            {
+                entity = entity.Where(x => x.KlubId == search.KlubId);
+            }
+
+            if(search.Naziv != null && search.Naziv != "")
+            {
+                entity = entity.Where(x => x.Naziv.Contains(search.Naziv));
+            }
+
             entity = entity.Include(x => x.Liga).Include(x => x.Grad);
 
             return _mapper.Map<List<Model.Klub>>(entity);
@@ -32,7 +42,12 @@ namespace BHFudbal.Services.Implementations
         {
             var set = Context.Set<Klub>();
             var entity = set.Find(id);
-            _mapper.Map(request, entity);
+            entity.Naziv = request.Naziv;
+            entity.Nadimak = request.Nadimak;
+            entity.GodinaOsnivanja = request.GodinaOsnivanja;
+            entity.GradId = request.GradId;
+            entity.Grb = request.Grb;
+            //_mapper.Map(request, entity);
             Context.Entry(entity).State = EntityState.Modified;
             Context.Entry(entity).Collection(x => x.Transfers).IsModified = false;
             Context.Entry(entity).Collection(x => x.Fudbalers).IsModified = false;

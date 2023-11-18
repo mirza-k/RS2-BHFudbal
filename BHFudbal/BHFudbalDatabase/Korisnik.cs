@@ -20,5 +20,6 @@ namespace BHFudbal.BHFudbalDatabase
         public virtual Grad Grad { get; set; }
         public virtual KorisničkiRačun KorisničkiRačun { get; set; }
         public virtual Uloga Uloga { get; set; }
+        public int? FavoriteFudbalerId { get; set; }
     }
 }

@@ -32,15 +32,10 @@ namespace BHFudbal.BHFudbalDatabase
         public virtual DbSet<Statistika> Statistikas { get; set; }
         public virtual DbSet<Transfer> Transfers { get; set; }
         public virtual DbSet<Uloga> Ulogas { get; set; }
-
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BHFudbalDB");
-//            }
-//        }
+        public virtual DbSet<Gol> Gols{ get; set; }
+        public virtual DbSet<ZutiKarton> ZutiKartons{ get; set; }
+        public virtual DbSet<CrveniKarton> CrveniKartons{ get; set; }
+        public virtual DbSet<OmiljeniFudbaler> OmiljeniFudbalers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -190,7 +185,7 @@ namespace BHFudbal.BHFudbalDatabase
                 entity.HasOne(d => d.KorisničkiRačun)
                     .WithMany(p => p.Korisniks)
                     .HasForeignKey(d => d.KorisničkiRačunId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("Fk_KorisničkiRačun_Korisnik_KorisničkiRačunId");
 
                 entity.HasOne(d => d.Uloga)

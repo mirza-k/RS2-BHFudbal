@@ -4,6 +4,7 @@ using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,10 @@ namespace BHFudbal.Services.Implementations
             if (search?.SezonaId != 0)
             {
                 entity = entity.Where(x => x.SezonaId == search.SezonaId);
+            }
+            else if (search?.SamoAktivne == true)
+            {
+                entity = entity.Where(x => x.Sezona.Aktivna == true).Include(x => x.Sezona);
             }
 
             return _mapper.Map<List<Model.Liga>>(entity);

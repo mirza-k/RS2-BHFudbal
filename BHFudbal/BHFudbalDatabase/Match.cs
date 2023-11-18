@@ -20,6 +20,7 @@ namespace BHFudbal.BHFudbalDatabase
         public int LigaId { get; set; }
         public string Rezultat { get; set; }
         public int RedniBrojKola { get; set; }
+        public int? Pobjednik{ get; set; }
 
         public virtual Klub Domacin { get; set; }
         public virtual Klub Gost { get; set; }

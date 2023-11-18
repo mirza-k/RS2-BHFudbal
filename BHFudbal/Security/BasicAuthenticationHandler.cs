@@ -1,6 +1,8 @@
 ﻿using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -23,6 +25,22 @@ namespace BHFudbal.Security
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            var endpoint = Context.GetEndpoint();
+            if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+            {
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, "Anonymous")
+                };
+
+                claims.Add(new Claim(ClaimTypes.Role, "Anonymous"));
+                var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var principal = new ClaimsPrincipal(identity);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                return AuthenticateResult.Success(ticket);
+            }
+
             if (!Request.Headers.ContainsKey("Authorization"))
                 return AuthenticateResult.Fail("Missing authorization header!");
 
@@ -34,7 +52,7 @@ namespace BHFudbal.Security
                 var username = credentials[0];
                 var password = credentials[1];
 
-                var login = new KorisnikInsertRequest() { Username = username, Password = password };
+                var login = new KorisnikInsertRequest() { Username = username, Password = password, AuthHandler = true };
                 var korisnikId = _korisnikService.Login(login);
 
                 if (korisnikId == 0)

@@ -11,8 +11,10 @@ namespace BHFudbal.Services.Implementations
 {
     public class TransferService : BaseCRUDService<Model.Transfer, TransferSearchObject, Transfer, TransferInsertRequest, TransferUpdateRequest>, ITransferService
     {
-        public TransferService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
+        ISezonaService _sezonaService;
+        public TransferService(BHFudbalDBContext context, IMapper mapper, ISezonaService sezonaService) : base(context, mapper)
         {
+            _sezonaService = sezonaService;
         }
 
         public override IEnumerable<Model.Transfer> Get(TransferSearchObject search = null)
@@ -46,6 +48,19 @@ namespace BHFudbal.Services.Implementations
             }).ToList();
 
             return list;
+        }
+
+        public override Model.Transfer Insert(TransferInsertRequest request)
+        {
+            request.SezonaId = _sezonaService.Get().FirstOrDefault(x => x.Aktivna).SezonaId;
+            var set = Context.Set<Transfer>();
+            Transfer entity = _mapper.Map<Transfer>(request);
+            set.Add(entity);
+            var fudbalerId = request.FudbalerId;
+            var noviKlubId = request.KlubId;
+            Context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == fudbalerId).KlubId = noviKlubId;
+            Context.SaveChanges();
+            return _mapper.Map<Model.Transfer>(entity);
         }
     }
 }

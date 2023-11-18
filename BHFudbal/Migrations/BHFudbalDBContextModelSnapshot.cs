@@ -20,6 +20,31 @@ namespace BHFudbal.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.CrveniKarton", b =>
+                {
+                    b.Property<int>("CrveniKartonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FudbalerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinutaKartona")
+                        .HasColumnType("int");
+
+                    b.HasKey("CrveniKartonId");
+
+                    b.HasIndex("FudbalerId");
+
+                    b.HasIndex("MatchId");
+
+                    b.ToTable("CrveniKartons");
+                });
+
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Država", b =>
                 {
                     b.Property<int>("DržavaId")
@@ -156,6 +181,31 @@ namespace BHFudbal.Migrations
                     b.ToTable("FudbalerStatistika");
                 });
 
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Gol", b =>
+                {
+                    b.Property<int>("GolId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FudbalerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinutaGola")
+                        .HasColumnType("int");
+
+                    b.HasKey("GolId");
+
+                    b.HasIndex("FudbalerId");
+
+                    b.HasIndex("MatchId");
+
+                    b.ToTable("Gols");
+                });
+
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Grad", b =>
                 {
                     b.Property<int>("GradId")
@@ -224,6 +274,9 @@ namespace BHFudbal.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int>("DržavaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FavoriteFudbalerId")
                         .HasColumnType("int");
 
                     b.Property<int>("GradId")
@@ -363,6 +416,9 @@ namespace BHFudbal.Migrations
                     b.Property<int>("LigaId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Pobjednik")
+                        .HasColumnType("int");
+
                     b.Property<int>("RedniBrojKola")
                         .HasColumnType("int");
 
@@ -385,6 +441,31 @@ namespace BHFudbal.Migrations
                     b.HasIndex("LigaId");
 
                     b.ToTable("Match");
+                });
+
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.OmiljeniFudbaler", b =>
+                {
+                    b.Property<int>("OmiljeniFudbalerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FudbalerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("OmiljeniFudbalerId");
+
+                    b.HasIndex("FudbalerId");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("OmiljeniFudbalers");
                 });
 
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Sezona", b =>
@@ -491,6 +572,50 @@ namespace BHFudbal.Migrations
                     b.ToTable("Uloga");
                 });
 
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.ZutiKarton", b =>
+                {
+                    b.Property<int>("ZutiKartonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("FudbalerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinutaKartona")
+                        .HasColumnType("int");
+
+                    b.HasKey("ZutiKartonId");
+
+                    b.HasIndex("FudbalerId");
+
+                    b.HasIndex("MatchId");
+
+                    b.ToTable("ZutiKartons");
+                });
+
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.CrveniKarton", b =>
+                {
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
+                        .WithMany()
+                        .HasForeignKey("FudbalerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Match", "Match")
+                        .WithMany()
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fudbaler");
+
+                    b.Navigation("Match");
+                });
+
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Fudbaler", b =>
                 {
                     b.HasOne("BHFudbal.BHFudbalDatabase.Država", "Drzava")
@@ -560,12 +685,32 @@ namespace BHFudbal.Migrations
                     b.Navigation("Statistika");
                 });
 
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Gol", b =>
+                {
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
+                        .WithMany()
+                        .HasForeignKey("FudbalerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Match", "Match")
+                        .WithMany()
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fudbaler");
+
+                    b.Navigation("Match");
+                });
+
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Klub", b =>
                 {
                     b.HasOne("BHFudbal.BHFudbalDatabase.Grad", "Grad")
                         .WithMany("Klubs")
                         .HasForeignKey("GradId")
                         .HasConstraintName("Fk_Grad_Klub_GradId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BHFudbal.BHFudbalDatabase.LigaId", "Liga")
@@ -597,6 +742,7 @@ namespace BHFudbal.Migrations
                         .WithMany("Korisniks")
                         .HasForeignKey("KorisničkiRačunId")
                         .HasConstraintName("Fk_KorisničkiRačun_Korisnik_KorisničkiRačunId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BHFudbal.BHFudbalDatabase.Uloga", "Uloga")
@@ -679,6 +825,25 @@ namespace BHFudbal.Migrations
                     b.Navigation("Liga");
                 });
 
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.OmiljeniFudbaler", b =>
+                {
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
+                        .WithMany()
+                        .HasForeignKey("FudbalerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Korisnik", "Korisnik")
+                        .WithMany()
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fudbaler");
+
+                    b.Navigation("Korisnik");
+                });
+
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Transfer", b =>
                 {
                     b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
@@ -712,6 +877,25 @@ namespace BHFudbal.Migrations
                     b.Navigation("Sezona");
 
                     b.Navigation("StariKlub");
+                });
+
+            modelBuilder.Entity("BHFudbal.BHFudbalDatabase.ZutiKarton", b =>
+                {
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Fudbaler", "Fudbaler")
+                        .WithMany()
+                        .HasForeignKey("FudbalerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BHFudbal.BHFudbalDatabase.Match", "Match")
+                        .WithMany()
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fudbaler");
+
+                    b.Navigation("Match");
                 });
 
             modelBuilder.Entity("BHFudbal.BHFudbalDatabase.Država", b =>

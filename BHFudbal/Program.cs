@@ -1,4 +1,6 @@
+using BHFudbal.BHFudbalDatabase;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace BHFudbal
@@ -7,7 +9,14 @@ namespace BHFudbal
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<BHFudbalDBContext>();
+                new DatabaseSetupService().Init(context);
+                new DatabaseSetupService().InsertData(context);
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
