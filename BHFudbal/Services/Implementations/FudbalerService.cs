@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
+using BHFudbal.Helpers;
 using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
@@ -24,6 +25,30 @@ namespace BHFudbal.Services.Implementations
     {
         public FudbalerService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
         { }
+
+        public override Model.Fudbaler Insert(FudbalerInsertRequest request)
+        {
+            try
+            {
+                if (ImageValidator.IsJpeg(request.Slika) || ImageValidator.IsPng(request.Slika))
+                {
+                    var set = Context.Set<BHFudbalDatabase.Fudbaler>();
+                    BHFudbalDatabase.Fudbaler entity = _mapper.Map<BHFudbalDatabase.Fudbaler>(request);
+                    set.Add(entity);
+                    Context.SaveChanges();
+                    return _mapper.Map<Model.Fudbaler>(entity);
+                }
+                else
+                {
+                    throw new Exception("Error!");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
         public override IEnumerable<Model.Fudbaler> Get(FudbalerSearchObject search = null)
         {

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
+using BHFudbal.Helpers;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,6 +15,30 @@ namespace BHFudbal.Services.Implementations
     {
         public KlubService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+        public override Model.Klub Insert(KlubInsertRequest request)
+        {
+            try
+            {
+                if (ImageValidator.IsJpeg(request.Grb) || ImageValidator.IsPng(request.Grb))
+                {
+                    var set = Context.Set<BHFudbalDatabase.Klub>();
+                    BHFudbalDatabase.Klub entity = _mapper.Map<BHFudbalDatabase.Klub>(request);
+                    set.Add(entity);
+                    Context.SaveChanges();
+                    return _mapper.Map<Model.Klub>(entity);
+                }
+                else
+                {
+                    throw new Exception("Error!");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public override IEnumerable<Model.Klub> Get(KlubSearchObject search = null)

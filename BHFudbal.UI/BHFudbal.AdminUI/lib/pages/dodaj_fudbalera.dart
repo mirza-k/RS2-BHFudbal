@@ -91,6 +91,22 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     return null; // Return null when the value is valid
   }
 
+    void clearForm() {
+      setState(() {
+        _model.ime!.text = "";
+        _model.prezime!.text = "";
+        _model.visina!.text = "";
+        _model.tezina!.text = "";
+        _model.jacaNoga!.text = "";
+        _model.datumRodjenja = null;
+        _model.klub = null;
+        _model.slika = null;
+        _base64Image = null;
+        _image = null;
+        appendValidation();
+      });
+    }
+
   void saveData() async {
     _fudbalerProvider = context.read<FudbalerProvider>();
     var klub = FudbalerRequest(
@@ -106,6 +122,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
       var request = FudbalerRequest().toJson(klub);
       var response = await _fudbalerProvider.post(request);
       if (response) {
+        clearForm();
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -121,6 +138,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
       klub.klubId = 0;
       var request = FudbalerRequest().toJson(klub);
       var response = await _fudbalerProvider.put(request, widget.fudbalerId);
+      clearForm();
       if (response) {
         showDialog(
             context: context,

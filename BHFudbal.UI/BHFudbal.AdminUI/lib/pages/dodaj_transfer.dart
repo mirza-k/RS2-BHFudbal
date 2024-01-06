@@ -75,6 +75,23 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     });
   }
 
+  void clearForm() {
+    setState(() {
+      _model.cijenaController!.text = "";
+      _model.klubTarget = null;
+      _model.klub = null;
+      _model.godineUgovoraController!.text = "";
+      _model.fudbaler = null;
+      _model.klub = null;
+      _model.liga = null;
+      _model.ligaTarget = null;
+      fudbalerResults = [];
+      klubResults = [];
+      klubTargetResults = [];
+    });
+    appendValidation();
+  }
+
   Future<void> _fetchFudbaleri() async {
     _fudbalerProvider = context.read<FudbalerProvider>();
     if (_model.klub != null) {
@@ -103,6 +120,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
       var response = await _transferProvider.post(request);
       if (response) {
         await _fetchFudbaleri();
+        clearForm();
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -195,6 +213,12 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     _model.cijenaController = new TextEditingController();
     _model.godineUgovoraController = new TextEditingController();
 
+    appendValidation();
+
+    _fetchLige();
+  }
+
+  void appendValidation() {
     _model.cijenaControllerValidator = onlyNumbers;
     cijenaValid = _model.cijenaControllerValidator!(
             context, _model.cijenaController!.text) ==
@@ -204,8 +228,6 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     godineUgovoraValid = _model.godineUgovoraControllerValidator!(
             context, _model.godineUgovoraController!.text) ==
         null;
-
-    _fetchLige();
   }
 
   @override

@@ -9,9 +9,9 @@ VALUES ('Admin', ''),
 INSERT INTO Država(Naziv) VALUES('Bosna i Hercegovina')
 
 -- Grad tabela 
-INSERT INTO Grad(Naziv) VALUES('Grad')
+INSERT INTO Grad(Naziv) VALUES('Sarajevo')
 DECLARE @gradId INT
-SELECT @gradId = GradId FROM Grad WHERE Naziv = 'Grad'
+SELECT @gradId = GradId FROM Grad WHERE Naziv = 'Sarajevo'
 
 DECLARE @UserId INT
 DECLARE @AdminId INT

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
+using BHFudbal.Helpers;
 using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;

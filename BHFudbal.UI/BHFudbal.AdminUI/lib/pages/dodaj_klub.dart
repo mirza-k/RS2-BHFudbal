@@ -201,6 +201,19 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
         null;
   }
 
+  void clearForm() {
+    setState(() {
+      _model.textController1!.text = "";
+      _model.textController2!.text = "";
+      _model.textController3!.text = "";
+      _model.dropDownValue1 = null;
+      _model.dropDownValue2 = null;
+      _base64Image = null;
+      _model.grb = null;
+      _appendValidation();
+    });
+  }
+
   void saveData() async {
     _klubProvider = context.read<KlubProvider>();
     var klub = KlubRequest(
@@ -215,6 +228,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
     if (widget.klubId == null) {
       var response = await _klubProvider.post(request);
       if (response) {
+        clearForm();
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -236,6 +250,7 @@ class _DodajKlubWidgetState extends State<DodajKlubWidget> {
       var request = klubUpdateRequest.toJson(klubUpdateRequest);
       var response = await _klubProvider.put(request, widget.klubId);
       if (response) {
+        clearForm();
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(
