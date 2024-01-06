@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:bhfudbal_admin/pages/izvjestaji.dart';
 import 'package:bhfudbal_admin/pages/prikaz_fudbalera.dart';
+import 'package:bhfudbal_admin/pages/prikaz_grad.dart';
 import 'package:bhfudbal_admin/pages/prikaz_klubova.dart';
 import 'package:bhfudbal_admin/pages/prikaz_korisnika.dart';
 import 'package:bhfudbal_admin/pages/prikaz_transfera.dart';
@@ -21,7 +22,8 @@ class _HomeState extends State<Home> {
     PrikazUtakmicaWidget(),
     PrikazTransferaWidget(),
     PrikazKorisnikaWidget(),
-    IzvjestajWidget()
+    IzvjestajWidget(),
+    PrikazGradWidget()
   ];
 
   int currentIndex = 0;
@@ -78,6 +80,12 @@ class _HomeState extends State<Home> {
                   size: 30,
                 ),
                 label: "Izvjestaji"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.location_city,
+                  size: 30,
+                ),
+                label: "Grad"),
           ]),
     );
   }

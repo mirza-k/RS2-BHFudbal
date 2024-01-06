@@ -5,7 +5,6 @@ import 'package:bhfudbal_admin/models/search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-
 import '../utils/util.dart';
 
 class GradProvider with ChangeNotifier {
@@ -28,6 +27,19 @@ class GradProvider with ChangeNotifier {
         result.result.add(GradResponse.fromJson(item));
       }
       return result;
+    } else {
+      throw new Exception("Unexpected error");
+    }
+  }
+
+    Future<bool> post(dynamic request) async {
+    var url = "$_baseUrl$endpoint";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (isValidResponse(response)) {
+      return true;
     } else {
       throw new Exception("Unexpected error");
     }
