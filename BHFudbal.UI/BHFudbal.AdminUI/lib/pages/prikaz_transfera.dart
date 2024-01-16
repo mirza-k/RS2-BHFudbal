@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../models/prikaz_transfera_model.dart';
 import '../models/response/sezona_response.dart';
 import '../providers/sezona_provider.dart';
+import 'login.dart';
 
 class PrikazTransferaWidget extends StatefulWidget {
   const PrikazTransferaWidget({Key? key}) : super(key: key);
@@ -68,18 +69,29 @@ class _PrikazTransferaWidgetState extends State<PrikazTransferaWidget> {
         key: scaffoldKey,
         backgroundColor: Theme.of(context).secondaryHeaderColor,
         appBar: AppBar(
-          backgroundColor: Theme.of(context)
-              .primaryColor, // Replace with your desired app bar color
+          backgroundColor: Theme.of(context).primaryColor,
           automaticallyImplyLeading: false,
           title: Text(
-            'Transferi',
+            'Prikaz transfera',
             style: TextStyle(
               fontFamily: 'Outfit',
               color: Colors.white,
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),

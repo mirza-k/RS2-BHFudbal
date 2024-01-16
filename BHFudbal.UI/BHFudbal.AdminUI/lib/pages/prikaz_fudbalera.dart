@@ -11,6 +11,7 @@ import '../models/response/klub_response.dart';
 import '../providers/fudbaler_provider.dart';
 import '../providers/klub_provider.dart';
 import '../providers/liga_provider.dart';
+import 'login.dart';
 
 class PrikazFudbaleraWidget extends StatefulWidget {
   const PrikazFudbaleraWidget({Key? key}) : super(key: key);
@@ -104,7 +105,19 @@ class _PrikazFudbaleraWidgetState extends State<PrikazFudbaleraWidget> {
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),

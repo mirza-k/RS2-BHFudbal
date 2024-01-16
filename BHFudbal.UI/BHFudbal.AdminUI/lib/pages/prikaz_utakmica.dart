@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/prikaz_utamica_model.dart';
 import '../models/response/liga_response.dart';
 import '../providers/liga_provider.dart';
+import 'login.dart';
 
 class PrikazUtakmicaWidget extends StatefulWidget {
   const PrikazUtakmicaWidget({Key? key}) : super(key: key);
@@ -88,7 +89,19 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),
@@ -223,7 +236,7 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top:20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -232,8 +245,8 @@ class _PrikazUtakmicaWidgetState extends State<PrikazUtakmicaWidget> {
                             DataColumn(
                               label: Text(
                                 'Rezultati',
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
                               ),
                             ),
                           ],

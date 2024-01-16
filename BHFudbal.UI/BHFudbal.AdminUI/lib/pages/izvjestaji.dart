@@ -9,6 +9,7 @@ import '../models/izvjestaji_model.dart';
 import '../models/response/sezona_response.dart';
 import '../providers/sezona_provider.dart';
 import '../providers/transfer_provider.dart';
+import 'login.dart';
 
 class IzvjestajWidget extends StatefulWidget {
   const IzvjestajWidget({Key? key}) : super(key: key);
@@ -146,18 +147,29 @@ class _IzvjestajWidgetState extends State<IzvjestajWidget> {
         backgroundColor:
             Theme.of(context).secondaryHeaderColor, // Change to desired color
         appBar: AppBar(
-          backgroundColor:
-              Theme.of(context).primaryColor, // Change to desired color
+          backgroundColor: Theme.of(context).primaryColor,
           automaticallyImplyLeading: false,
-          title: const Text(
-            'Izvjestaj',
+          title: Text(
+            'Izvjestaji',
             style: TextStyle(
               fontFamily: 'Outfit',
               color: Colors.white,
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),

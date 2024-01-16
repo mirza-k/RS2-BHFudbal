@@ -10,6 +10,7 @@ import 'package:bhfudbal_admin/providers/liga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/prikaz_klubova_model.dart';
+import 'login.dart';
 
 class PrikazGradWidget extends StatefulWidget {
   const PrikazGradWidget({Key? key}) : super(key: key);
@@ -64,14 +65,26 @@ class _PrikazGradWidgetState extends State<PrikazGradWidget> {
           backgroundColor: Theme.of(context).primaryColor,
           automaticallyImplyLeading: false,
           title: Text(
-            'Prikaz Gradova',
+            'Prikaz gradova',
             style: TextStyle(
               fontFamily: 'Outfit',
               color: Colors.white,
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),

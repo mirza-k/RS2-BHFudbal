@@ -8,6 +8,8 @@ import 'package:flutter_application_1/pages/lige.dart';
 import 'package:flutter_application_1/pages/payment.dart';
 import 'package:flutter_application_1/pages/uredi_profil.dart';
 
+import 'login.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -38,6 +40,19 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text("BH Fudbal"),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.white),
+            onPressed: () {
+              // Navigate to the logout page or perform logout logic
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Login())); // Replace '/logout' with your logout page route
+            },
+          ),
+        ],
       ),
       body: pages[currentIndex],
       bottomNavigationBar: Padding(

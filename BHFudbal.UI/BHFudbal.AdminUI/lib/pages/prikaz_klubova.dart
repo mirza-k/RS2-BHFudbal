@@ -3,6 +3,7 @@ import 'package:bhfudbal_admin/models/response/grad_response.dart';
 import 'package:bhfudbal_admin/models/response/klub_response.dart';
 import 'package:bhfudbal_admin/models/response/liga_response.dart';
 import 'package:bhfudbal_admin/pages/dodaj_klub.dart';
+import 'package:bhfudbal_admin/pages/login.dart';
 import 'package:bhfudbal_admin/providers/grad_provider.dart';
 import 'package:bhfudbal_admin/providers/klub_provider.dart';
 import 'package:bhfudbal_admin/providers/liga_provider.dart';
@@ -98,7 +99,19 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
               fontSize: 22,
             ),
           ),
-          actions: [],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                // Navigate to the logout page or perform logout logic
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginWidget())); // Replace '/logout' with your logout page route
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2,
         ),
