@@ -13,8 +13,8 @@ namespace BHFudbal
             using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<BHFudbalDBContext>();
-                new DatabaseSetupService().Init(context);
-                new DatabaseSetupService().InsertData(context);
+                //new DatabaseSetupService().Init(context);
+                //new DatabaseSetupService().InsertData(context);
             }
             host.Run();
         }

@@ -4,6 +4,7 @@ import 'package:flutter_application_1/pages/detalji_utakmice.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/igraci.dart';
 import 'package:flutter_application_1/pages/login.dart';
+import 'package:flutter_application_1/pages/najslicniji_fudbaleri.dart';
 import 'package:flutter_application_1/pages/payment.dart';
 import 'package:flutter_application_1/pages/register.dart';
 
@@ -29,6 +30,12 @@ class RouteGenerator {
         if (args is int) {
           return MaterialPageRoute(
               builder: (_) => HistorijaFudbalera(fudbalerId: args));
+        }
+        return _errorRoute();
+      case '/najslicniji-fudbaleri':
+        if (args is int) {
+          return MaterialPageRoute(
+              builder: (_) => NajslicnijiFudbaleri(fudbalerId: args));
         }
         return _errorRoute();
       default:

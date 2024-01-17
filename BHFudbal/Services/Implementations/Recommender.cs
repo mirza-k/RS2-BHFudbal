@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
 using BHFudbal.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace BHFudbal.Services.Implementations
                 double slicnost = GetSlicnost(zajednickeOcjene1, zajednickeOcjene2);
                 if (slicnost >= 0.95)
                 {
-                    Fudbaler fudbaler = context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == f.Key);
+                    Fudbaler fudbaler = context.Set<Fudbaler>().Include(x => x.Klub).Include(x => x.Drzava).FirstOrDefault(x => x.FudbalerId == f.Key);
                     var model = _mapper.Map<Model.Fudbaler>(fudbaler);
                     preporuceniProizvodi.Add(model);
                 }

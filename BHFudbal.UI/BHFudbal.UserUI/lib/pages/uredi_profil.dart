@@ -124,9 +124,18 @@ class UrediProfilState extends State<UrediProfil> {
       ime: _imeController.text,
       prezime: _prezimeController.text,
     );
-    print(Authorization.id);
     var korisnikProvider = context.read<KorisnikProvider>();
     var response = await korisnikProvider.urediKorisnika(request);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(""),
+              content: Text("Uspjesno ste uredili profil."),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context), child: Text("OK"))
+              ],
+            ));
   }
 
   @override

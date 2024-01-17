@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BHFudbal.BHFudbalDatabase;
 using BHFudbal.Model.Requests;
+using System;
 
 namespace BHFudbal.Mapping
 {
@@ -27,6 +28,7 @@ namespace BHFudbal.Mapping
             CreateMap<FudbalerUpdateRequest, Fudbaler>();
             CreateMap<Fudbaler, Model.Fudbaler>()
                 .ForMember(m => m.Klub, db => db.MapFrom(x => x.Klub.Naziv))
+                .ForMember(m => m.BrojGodina, db => db.MapFrom(x => DateTime.Now.Year - x.DatumRodjenja.Year))
                 .ForMember(m => m.Drzava, db => db.MapFrom(x => x.Drzava.Naziv));
 
             //Liga

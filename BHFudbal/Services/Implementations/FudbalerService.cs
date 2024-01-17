@@ -201,7 +201,7 @@ namespace BHFudbal.Services.Implementations
             if (model != null)
                 return model.Rating;
 
-            return 1;
+            return 0;
         }
     }
 }

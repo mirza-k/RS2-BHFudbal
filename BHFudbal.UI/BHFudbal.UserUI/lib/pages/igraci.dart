@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/request/omiljeni_fudbaler_insert_request.dart';
 import 'package:flutter_application_1/models/response/fudbaler_detail_response.dart';
@@ -236,13 +236,37 @@ class _IgraciState extends State<Igraci> {
   }
 
   void _sendRating() async {
-    var fudbalerProvider = context.read<FudbalerProvider>();
-    var ratingRequest = OmiljeniFudbalerInsertRequest(
-        korisnikId: Authorization.id ?? 0,
-        fudbalerId: izabraniFudbaler,
-        rating: selectedNumber);
-    var request = OmiljeniFudbalerInsertRequest().toJson(ratingRequest);
-    await fudbalerProvider.ocijeniFudbalera(request);
+    if (currentPlayerRating != 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                content: Text("Igrac vec jednom ocijenjen!"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"))
+                ],
+              ));
+    } else {
+      var fudbalerProvider = context.read<FudbalerProvider>();
+      var ratingRequest = OmiljeniFudbalerInsertRequest(
+          korisnikId: Authorization.id ?? 0,
+          fudbalerId: izabraniFudbaler,
+          rating: selectedNumber);
+      var request = OmiljeniFudbalerInsertRequest().toJson(ratingRequest);
+      await fudbalerProvider.ocijeniFudbalera(request);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                content: Text("Uspjesno ste ocijenili fudbalera!"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("OK"))
+                ],
+              ));
+      currentPlayerRating = selectedNumber;
+    }
   }
 
   Future<void> _fetchRating() async {
@@ -250,7 +274,8 @@ class _IgraciState extends State<Igraci> {
     var response =
         await fudbalerProvider.getRating(izabraniFudbaler, Authorization.id);
     setState(() {
-      selectedNumber = response;
+      selectedNumber = response != 0 ? response : 1;
+      currentPlayerRating = response;
     });
   }
 
@@ -260,6 +285,7 @@ class _IgraciState extends State<Igraci> {
     _fetchKlubovi();
   }
 
+  int currentPlayerRating = 0;
   int selectedNumber = 1; // Default selected number
   int izabraniFudbaler = 0;
 
@@ -403,19 +429,21 @@ class _IgraciState extends State<Igraci> {
                               ),
                             ),
                           ),
-                          Padding(padding: EdgeInsets.only(top: 10)),
-                          if (slicniFudbaleri.isNotEmpty)
-                            Text('Najslicniji fudbaleri: '),
-                          Padding(padding: EdgeInsets.only(top: 5)),
-                          if (slicniFudbaleri.isNotEmpty)
-                            Column(
-                                children: slicniFudbaleri
-                                    .map((item) => Text(
-                                          item.ime ?? "",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ))
-                                    .toList()),
+                          InkWell(
+                            onTap: () {
+                              if (fudbalerValue != null) {
+                                Navigator.of(context).pushNamed(
+                                    '/najslicniji-fudbaleri',
+                                    arguments: fudbalerValue!.fudbalerId ?? 0);
+                              }
+                            },
+                            child: Text(
+                              "Najslicniji fudbaleri",
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -426,7 +454,11 @@ class _IgraciState extends State<Igraci> {
                   child: Column(
                     children: [
                       Padding(padding: EdgeInsets.only(top: 15)),
-                      if (fudbalerValue != null) Text("Ocijeni fudbalera"),
+                      if (fudbalerValue != null)
+                        Text(
+                          "Ocijeni fudbalera",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       if (fudbalerValue != null)
                         DropdownButton<int>(
                           value: selectedNumber,
