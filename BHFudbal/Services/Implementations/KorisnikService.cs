@@ -39,10 +39,10 @@ namespace BHFudbal.Services.Implementations
                     var korisnik = query.FirstOrDefault(x => login.Username == x.KorisničkiRačun.Username && login.Password == x.KorisničkiRačun.Password &&
                     x.UlogaId == ulogaId);
                     var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
-                    //if (result != 0)
-                    //    _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali!");
-                    //else
-                    //    _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
+                    if (result != 0)
+                        _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali!");
+                    else
+                        _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
                     return result;
                 }
             }
