@@ -42,16 +42,21 @@ namespace BHFudbal.Subscriber
 
             if (channel != null)
             {
-                channel.QueueDeclare("test", durable: true, exclusive: true);
+                string queueName = "login";
+                channel.QueueDeclare(queueName, durable: true, exclusive: true);
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, eventArgs) =>
                 {
-                    var body = eventArgs.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine($"A message has been received -> {message}");
+                    if (eventArgs.RoutingKey == queueName)
+                    {
+
+                        var body = eventArgs.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        Console.WriteLine($"A message has been received -> {message}");
+                    }
                 };
-                channel.BasicConsume("test", true, consumer);
+                channel.BasicConsume(queueName, true, consumer);
             }
             else
             {

@@ -8,7 +8,7 @@ namespace BHFudbal.Services.Implementations
 {
     public class MessageProducer : IMessageProducer
     {
-        public void SendingMessage<T>(T message)
+        public void SendingMessage<T>(T message, string routingKey, string exchadminangeKey)
         {
             ConnectionFactory _factory = new ConnectionFactory() { HostName = "rabbitmq", Port = 5672 };
             _factory.UserName = "guest";
@@ -21,7 +21,7 @@ namespace BHFudbal.Services.Implementations
             channel.QueueDeclare(queue, durable: true, exclusive: true);
             var jsonString = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(jsonString);
-            channel.BasicPublish("", "test", body: body);
+            channel.BasicPublish(exchadminangeKey, routingKey, body: body);
         }
     }
 }

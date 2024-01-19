@@ -5,17 +5,10 @@ using BHFudbal.Model;
 using BHFudbal.Model.QueryObjects;
 using BHFudbal.Model.Requests;
 using BHFudbal.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.ML;
-using Microsoft.ML.Data;
-using Microsoft.ML.Trainers;
-using Microsoft.ML.Trainers.Recommender;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Fudbaler = BHFudbal.BHFudbalDatabase.Fudbaler;
 using Korisnik = BHFudbal.BHFudbalDatabase.Korisnik;
 
@@ -23,8 +16,11 @@ namespace BHFudbal.Services.Implementations
 {
     public class FudbalerService : BaseCRUDService<Model.Fudbaler, FudbalerSearchObject, BHFudbalDatabase.Fudbaler, FudbalerInsertRequest, FudbalerUpdateRequest>, IFudbalerService
     {
-        public FudbalerService(BHFudbalDBContext context, IMapper mapper) : base(context, mapper)
-        { }
+        private readonly IMessageProducer _messageProducer;
+        public FudbalerService(BHFudbalDBContext context, IMapper mapper, IMessageProducer messageProducer) : base(context, mapper)
+        {
+            _messageProducer = messageProducer;
+        }
 
         public override Model.Fudbaler Insert(FudbalerInsertRequest request)
         {
@@ -156,7 +152,8 @@ namespace BHFudbal.Services.Implementations
 
         public void DodajOmiljeniFudbaler(OmiljeniFudbalerInsertRequest request)
         {
-            var fId = Context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == request.FudbalerId)?.FudbalerId;
+            var fudbaler = Context.Set<Fudbaler>().FirstOrDefault(x => x.FudbalerId == request.FudbalerId);
+            var fId = fudbaler.FudbalerId;
             var kId = Context.Set<Korisnik>().FirstOrDefault(x => x.KorisnikId == request.KorisnikId)?.KorisnikId;
 
             if ((fId != 0 && fId != null) && (kId != 0 && kId != null))
@@ -180,6 +177,7 @@ namespace BHFudbal.Services.Implementations
                     set.Add(data);
                     Context.SaveChanges();
                 }
+                _messageProducer.SendingMessage<string>($"Fudbaler {fudbaler.Ime} {fudbaler.Prezime} je dobio ocjenu {request.Rating}!", "ocjene", "ocjene");
             }
         }
 

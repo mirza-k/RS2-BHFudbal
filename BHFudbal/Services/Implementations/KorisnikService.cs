@@ -40,9 +40,9 @@ namespace BHFudbal.Services.Implementations
                     x.UlogaId == ulogaId);
                     var result = korisnik?.KorisnikId != null ? korisnik.KorisnikId : 0;
                     if (result != 0)
-                        _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali!");
+                        _messageProducer.SendingMessage<string>("Uspjesno ste se ulogovali!", "login", "");
                     else
-                        _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.");
+                        _messageProducer.SendingMessage<string>("Doslo je do greske prilikom logiranja! Pokusajte ponovo.", "login", "");
                     return result;
                 }
             }

@@ -7,6 +7,7 @@ import 'package:bhfudbal_admin/pages/prikaz_korisnika.dart';
 import 'package:bhfudbal_admin/pages/prikaz_transfera.dart';
 import 'package:bhfudbal_admin/pages/prikaz_utakmica.dart';
 import 'package:flutter/material.dart';
+import 'package:dart_amqp/dart_amqp.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,6 +31,56 @@ class _HomeState extends State<Home> {
   void onTap(int index) {
     setState(() {
       currentIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    initRabbitMQ();
+  }
+
+  void initRabbitMQ() async {
+    ConnectionSettings settings = ConnectionSettings(
+      host: 'localhost',
+      port: 5672, // Default RabbitMQ port
+      virtualHost: '/',
+      authProvider: PlainAuthenticator('guest', 'guest'), // Default credentials
+    );
+
+    Client client = Client(settings: settings);
+    Channel channel = await client.channel();
+
+    var exchangeKey = "ocjene";
+    Exchange exchange =
+        await channel.exchange(exchangeKey, ExchangeType.FANOUT);
+
+    // Replace 'message-...' with the queue name generated in your ASP.NET Core backend
+    Queue queue = await channel.queue('message-...');
+    await queue.bind(exchange, exchangeKey);
+
+    Consumer consumer = await queue.consume();
+
+    consumer.listen((AmqpMessage message) {
+      // Handle incoming message
+      if (message.routingKey == "ocjene") {
+        print('Received message: ${message.payloadAsString}');
+        var text = message.payloadAsString.replaceAll('"', '');
+        final snackBar = SnackBar(
+          content: Text(
+            text,
+          ),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              // Some code to undo the change.
+            },
+          ),
+        );
+
+        // Find the ScaffoldMessenger in the widget tree
+        // and use it to show a SnackBar.
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     });
   }
 
@@ -87,6 +138,34 @@ class _HomeState extends State<Home> {
                 ),
                 label: "Grad"),
           ]),
+    );
+  }
+}
+
+class SnackBarPage extends StatelessWidget {
+  const SnackBarPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          final snackBar = SnackBar(
+            content: const Text('Yay! A SnackBar!'),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change.
+              },
+            ),
+          );
+
+          // Find the ScaffoldMessenger in the widget tree
+          // and use it to show a SnackBar.
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+        child: const Text('Show SnackBar'),
+      ),
     );
   }
 }
