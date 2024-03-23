@@ -23,10 +23,14 @@ class DodajTransferWidget extends StatefulWidget {
 
 class _DodajTransferWidgetState extends State<DodajTransferWidget> {
   late DodajTransferModel _model;
-  late bool cijenaValid;
-  late bool godineUgovoraValid;
+  static const globalErrorMessage = "Nevalidno polje!";
   String cijenaError = "";
   String godineUgovoraError = "";
+  String ligaPrimaryError = "";
+  String klubPrimaryError = "";
+  String fudbalerValidError = "";
+  String ligaSecondaryError = "";
+  String klubSecondaryError = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late LigaProvider _ligaProvider;
   late KlubProvider _klubProvider;
@@ -38,6 +42,41 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
   List<KlubResponse> klubResults = [];
   List<KlubResponse> klubTargetResults = [];
   List<LigaResponse> ligaTargetResults = [];
+
+  late bool ligaPrimaryValid = true;
+  late bool klubPrimaryValid = true;
+  late bool fudbalerValid = true;
+
+  late bool cijenaValid = true;
+  late bool godineUgovoraValid = true;
+
+  late bool ligaSecondaryValid = true;
+  late bool klubSecondaryValid = true;
+
+  void doValidation() {
+    setState(() {
+      ligaPrimaryValid = _model.liga != null;
+      ligaPrimaryError = globalErrorMessage;
+
+      klubPrimaryValid = _model.klub != null;
+      klubPrimaryError = globalErrorMessage;
+
+      fudbalerValid = _model.fudbaler != null;
+      fudbalerValidError = globalErrorMessage;
+
+      cijenaValid = _model.cijenaController!.text.isNotEmpty;
+      cijenaError = globalErrorMessage;
+
+      godineUgovoraValid = _model.godineUgovoraController!.text.isNotEmpty;
+      godineUgovoraError = globalErrorMessage;
+
+      ligaSecondaryValid = _model.ligaTarget != null;
+      ligaSecondaryError = globalErrorMessage;
+
+      klubSecondaryValid = _model.klubTarget != null;
+      klubSecondaryError = globalErrorMessage;
+    });
+  }
 
   Future<void> _fetchLige() async {
     _ligaProvider = context.read<LigaProvider>();
@@ -78,9 +117,11 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
   void clearForm() {
     setState(() {
       _model.cijenaController!.text = "";
+      cijenaValid = true;
       _model.klubTarget = null;
       _model.klub = null;
       _model.godineUgovoraController!.text = "";
+      godineUgovoraValid = true;
       _model.fudbaler = null;
       _model.klub = null;
       _model.liga = null;
@@ -89,7 +130,6 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
       klubResults = [];
       klubTargetResults = [];
     });
-    appendValidation();
   }
 
   Future<void> _fetchFudbaleri() async {
@@ -213,9 +253,21 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
     _model.cijenaController = new TextEditingController();
     _model.godineUgovoraController = new TextEditingController();
 
-    appendValidation();
-
     _fetchLige();
+  }
+
+  void appendCijenaValidation() {
+    _model.cijenaControllerValidator = onlyNumbers;
+    cijenaValid = _model.cijenaControllerValidator!(
+            context, _model.cijenaController!.text) ==
+        null;
+  }
+
+  void appendGodineUgovoraValidation() {
+    _model.godineUgovoraControllerValidator = onlyNumbers;
+    godineUgovoraValid = _model.godineUgovoraControllerValidator!(
+            context, _model.godineUgovoraController!.text) ==
+        null;
   }
 
   void appendValidation() {
@@ -304,7 +356,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.grey,
+                                color: !ligaPrimaryValid
+                                    ? Colors.red
+                                    : Theme.of(context).primaryColor,
                                 width: 2,
                               ),
                             ),
@@ -313,7 +367,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               isExpanded: true,
                               value: _model.liga,
                               onChanged: (val) {
-                                setState(() => _model.liga = val!);
+                                setState(() {
+                                  _model.liga = val!;
+                                  ligaPrimaryValid = true;
+                                });
                                 _model.fudbaler = null;
                                 _fetchKlubovi(false);
                               },
@@ -334,6 +391,11 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               underline: SizedBox(),
                             ),
                           ),
+                          if (!ligaPrimaryValid)
+                            Text(
+                              ligaPrimaryError,
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
@@ -353,7 +415,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.grey,
+                                color: klubPrimaryValid
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red,
                                 width: 2,
                               ),
                             ),
@@ -362,7 +426,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               isExpanded: true,
                               value: _model.klub,
                               onChanged: (val) {
-                                setState(() => _model.klub = val!);
+                                setState(() {
+                                  klubPrimaryValid = true;
+                                  _model.klub = val!;
+                                });
                                 _fetchFudbaleri();
                               },
                               items: klubResults
@@ -382,6 +449,11 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               underline: SizedBox(),
                             ),
                           ),
+                          if (!klubPrimaryValid)
+                            Text(
+                              klubPrimaryError,
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
@@ -401,7 +473,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.grey,
+                                color: fudbalerValid
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red,
                                 width: 2,
                               ),
                             ),
@@ -409,8 +483,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             child: DropdownButton<FudbalerResponse>(
                               isExpanded: true,
                               value: _model.fudbaler,
-                              onChanged: (val) =>
-                                  setState(() => _model.fudbaler = val!),
+                              onChanged: (val) => setState(() {
+                                _model.fudbaler = val!;
+                                fudbalerValid = true;
+                              }),
                               items: fudbalerResults
                                   .map((val) => DropdownMenuItem(
                                       value: val,
@@ -430,6 +506,11 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               underline: SizedBox(),
                             ),
                           ),
+                          if (!fudbalerValid)
+                            Text(
+                              fudbalerValidError,
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                         ],
                       ),
                     ),
@@ -449,7 +530,6 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                           ),
                           TextFormField(
                             controller: _model.cijenaController,
-                            autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
                               labelStyle: Theme.of(context)
@@ -460,28 +540,32 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                   .hintStyle,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
+                                  color: cijenaValid
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
+                                  color: cijenaValid
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).errorColor,
+                                  color: Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).errorColor,
+                                  color: Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
@@ -491,9 +575,8 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               errorText: !cijenaValid ? cijenaError : null,
                             ),
                             style: Theme.of(context).textTheme.bodyText1,
-                            validator: (value) => _model
-                                .cijenaControllerValidator!(context, value),
                             onChanged: (value) {
+                              appendCijenaValidation();
                               setState(() {
                                 cijenaError = _model.cijenaControllerValidator!(
                                         context, value) ??
@@ -516,7 +599,6 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                           ),
                           TextFormField(
                             controller: _model.godineUgovoraController,
-                            autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
                               labelStyle: Theme.of(context)
@@ -527,28 +609,32 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                   .hintStyle,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
+                                  color: godineUgovoraValid
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
+                                  color: godineUgovoraValid
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).errorColor,
+                                  color: Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).errorColor,
+                                  color: Colors.red,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
@@ -564,6 +650,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                 _model.godineUgovoraControllerValidator!(
                                     context, value),
                             onChanged: (value) {
+                              appendGodineUgovoraValidation();
                               setState(() {
                                 godineUgovoraError =
                                     _model.godineUgovoraControllerValidator!(
@@ -606,7 +693,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.grey,
+                                color: ligaSecondaryValid
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red,
                                 width: 2,
                               ),
                             ),
@@ -615,7 +704,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               isExpanded: true,
                               value: _model.ligaTarget,
                               onChanged: (val) {
-                                setState(() => _model.ligaTarget = val!);
+                                setState(() {
+                                  ligaSecondaryValid = true;
+                                  _model.ligaTarget = val!;
+                                });
                                 _fetchKlubovi(true);
                               },
                               items: ligaTargetResults
@@ -635,6 +727,11 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               underline: SizedBox(),
                             ),
                           ),
+                          if (!ligaSecondaryValid)
+                            Text(
+                              ligaSecondaryError,
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
@@ -654,7 +751,9 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: Colors.grey,
+                                color: klubSecondaryValid
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red,
                                 width: 2,
                               ),
                             ),
@@ -662,8 +761,10 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                             child: DropdownButton<KlubResponse>(
                               isExpanded: true,
                               value: _model.klubTarget,
-                              onChanged: (val) =>
-                                  setState(() => _model.klubTarget = val!),
+                              onChanged: (val) => setState(() {
+                                klubSecondaryValid = true;
+                                _model.klubTarget = val!;
+                              }),
                               items: klubTargetResults
                                   .map((val) => DropdownMenuItem(
                                       value: val, child: Text(val.naziv ?? "")))
@@ -681,11 +782,19 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                               underline: SizedBox(),
                             ),
                           ),
+                          if (!klubSecondaryValid)
+                            Text(
+                              klubSecondaryError,
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
                             child: ElevatedButton(
                               onPressed: () {
+                                doValidation();
+                                appendValidation();
+
                                 !_model.areTextFieldsValid(
                                         cijenaValid, godineUgovoraValid)
                                     ? null
@@ -704,10 +813,7 @@ class _DodajTransferWidgetState extends State<DodajTransferWidget> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                backgroundColor: !_model.areTextFieldsValid(
-                                        cijenaValid, godineUgovoraValid)
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColor,
+                                backgroundColor: Theme.of(context).primaryColor,
                                 textStyle: TextStyle(
                                   fontFamily: 'Readex Pro',
                                   color: Colors.white,

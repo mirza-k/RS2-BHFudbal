@@ -262,11 +262,9 @@ class _PrikazKlubovaWidgetState extends State<PrikazKlubovaWidget> {
                             DataCell(Text(data.nadimak ?? "")),
                             DataCell(TextButton(
                               onPressed: () {
-                                // Call the update function with the ID of the clicked row
-                                // _updateRow(data.id);
                                 _navigateToChildPage(data.klubId);
                               },
-                              child: Text('Update'),
+                              child: Text('Uredi'),
                             )),
                           ]);
                         }).toList(),

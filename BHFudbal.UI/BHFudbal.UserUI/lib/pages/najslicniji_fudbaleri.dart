@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 class NajslicnijiFudbaleri extends StatefulWidget {
   int fudbalerId;
+  bool fetchHappened = false;
   NajslicnijiFudbaleri({super.key, required this.fudbalerId});
 
   @override
@@ -18,6 +19,7 @@ class _NajslicnijiFudbaleriState extends State<NajslicnijiFudbaleri> {
   Future<void> _fetchSlicneFudbalere() async {
     var fudbalerProvider = context.read<FudbalerProvider>();
     var response = await fudbalerProvider.getSlicneFudbalere(widget.fudbalerId);
+    widget.fetchHappened = true;
     setState(() {
       slicniFudbaleriResults = response.result;
     });
@@ -39,6 +41,15 @@ class _NajslicnijiFudbaleriState extends State<NajslicnijiFudbaleri> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
+              if (slicniFudbaleriResults.isEmpty &&
+                  widget.fetchHappened == true)
+                Text(
+                  "Fudbaler nema nijednu ocjenu te je nemoguce prikazati listu najslicnijih fudbalera!",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold),
+                ),
               Table(
                 border: TableBorder.all(),
                 columnWidths: const {

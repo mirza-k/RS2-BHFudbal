@@ -23,16 +23,20 @@ class DodajFudbaleraWidget extends StatefulWidget {
 class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
   late DodajFudbaleraModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  late bool imeValid;
-  late bool prezimeValid;
-  late bool visinaValid;
-  late bool tezinaValid;
-  late bool jacaNogaValid;
+  late bool imeValid = true;
+  late bool prezimeValid = true;
+  late bool visinaValid = true;
+  late bool tezinaValid = true;
+  late bool jacaNogaValid = true;
+  late bool slikaValid = true;
+  late bool datumValid = true;
+  late bool klubValid = true;
   String imeError = "";
   String prezimeError = "";
   String visinaError = "";
   String tezinaError = "";
   String jacaNogaError = "";
+  String slikaError = "";
 
   late KlubProvider _klubProvider;
   List<KlubResponse> klubResults = [];
@@ -57,6 +61,33 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     }
 
     return null;
+  }
+
+  void doValidation() {
+    setState(() {
+      imeError = _model.imeValidator!(context, _model.ime!.text) ?? '';
+      imeValid = imeError.isEmpty;
+
+      prezimeError =
+          _model.prezimeValidator!(context, _model.prezime!.text) ?? '';
+      prezimeValid = prezimeError.isEmpty;
+
+      visinaError = _model.visinaValidator!(context, _model.visina!.text) ?? '';
+      visinaValid = visinaError.isEmpty;
+
+      tezinaError = _model.tezinaValidator!(context, _model.tezina!.text) ?? '';
+      tezinaValid = tezinaError.isEmpty;
+
+      jacaNogaError =
+          _model.jacaNogaValidator!(context, _model.jacaNoga!.text) ?? '';
+      jacaNogaValid = jacaNogaError.isEmpty;
+
+      slikaValid = _model.slika != null;
+
+      datumValid = _model.datumRodjenja != null;
+
+      klubValid = _model.klub != null;
+    });
   }
 
   String? visinaValidator(BuildContext context, String? value) {
@@ -91,21 +122,21 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
     return null; // Return null when the value is valid
   }
 
-    void clearForm() {
-      setState(() {
-        _model.ime!.text = "";
-        _model.prezime!.text = "";
-        _model.visina!.text = "";
-        _model.tezina!.text = "";
-        _model.jacaNoga!.text = "";
-        _model.datumRodjenja = null;
-        _model.klub = null;
-        _model.slika = null;
-        _base64Image = null;
-        _image = null;
-        appendValidation();
-      });
-    }
+  void clearForm() {
+    setState(() {
+      _model.ime!.text = "";
+      _model.prezime!.text = "";
+      _model.visina!.text = "";
+      _model.tezina!.text = "";
+      _model.jacaNoga!.text = "";
+      _model.datumRodjenja = null;
+      _model.klub = null;
+      _model.slika = null;
+      _base64Image = null;
+      _image = null;
+      appendValidation();
+    });
+  }
 
   void saveData() async {
     _fudbalerProvider = context.read<FudbalerProvider>();
@@ -138,7 +169,6 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
       klub.klubId = 0;
       var request = FudbalerRequest().toJson(klub);
       var response = await _fudbalerProvider.put(request, widget.fudbalerId);
-      clearForm();
       if (response) {
         showDialog(
             context: context,
@@ -170,7 +200,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
 
     await Future.wait([_fetchKlubovi()]);
 
-    appendValidation();
+    // appendValidation();
   }
 
   void appendValidation() {
@@ -187,7 +217,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
   void initState() {
     super.initState();
     _initialize();
-    appendValidation();
+    // appendValidation();
     if (widget.fudbalerId != null && widget.fudbalerId != 0) {
       _loadData(widget.fudbalerId);
     }
@@ -374,8 +404,6 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 errorText: !imeValid ? imeError : null,
                               ),
                               style: Theme.of(context).textTheme.bodyText1,
-                              validator: (value) =>
-                                  _model.imeValidator!(context, value),
                               onChanged: (value) {
                                 setState(() {
                                   imeError =
@@ -466,6 +494,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
 
                                 if (_datePickedDate != null) {
                                   setState(() {
+                                    datumValid = true;
                                     _model.datumRodjenja = DateTime(
                                       _datePickedDate.year,
                                       _datePickedDate.month,
@@ -488,7 +517,9 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                primary: Theme.of(context).primaryColor,
+                                primary: !datumValid
+                                    ? Colors.red
+                                    : Theme.of(context).primaryColor,
                                 textStyle: Theme.of(context)
                                     .textTheme
                                     .headline6!
@@ -507,9 +538,10 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                       _model.datumRodjenja ?? DateTime.now())
                                   : 'Izaberi datum',
                               style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 24,
-                              ),
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 24,
+                                  color:
+                                      !datumValid ? Colors.red : Colors.black),
                             ),
                           ),
                           Padding(
@@ -723,8 +755,10 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                     child: _model.slika == null
                                         ? Icon(
                                             Icons.image_outlined,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: !slikaValid
+                                                ? Colors.red
+                                                : Theme.of(context)
+                                                    .primaryColor,
                                             size: 80,
                                           )
                                         : Image.memory(
@@ -738,6 +772,9 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                   if (_model.slika == null)
                                     Text(
                                       'Dodaj sliku fudbalera',
+                                      style: !slikaValid
+                                          ? TextStyle(color: Colors.red)
+                                          : TextStyle(color: Colors.black),
                                     ),
                                 ],
                               ),
@@ -760,7 +797,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: Colors.grey,
+                                  color: !klubValid ? Colors.red : Colors.grey,
                                   width: 2,
                                 ),
                               ),
@@ -768,8 +805,10 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                               child: DropdownButton<KlubResponse>(
                                 isExpanded: true,
                                 value: _model.klub,
-                                onChanged: (val) =>
-                                    setState(() => _model.klub = val!),
+                                onChanged: (val) {
+                                  setState(() => _model.klub = val!);
+                                  doValidation();
+                                },
                                 items: klubResults
                                     .map((val) => DropdownMenuItem(
                                         value: val,
@@ -788,11 +827,17 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 underline: SizedBox(),
                               ),
                             ),
+                          if (!klubValid && widget.fudbalerId == null)
+                            Text(
+                              "Izaberi klub",
+                              style: TextStyle(color: Colors.red),
+                            ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                             child: ElevatedButton(
                               onPressed: () {
+                                doValidation();
                                 !_model.areTextFieldsValid(
                                         imeValid,
                                         prezimeValid,
@@ -812,16 +857,7 @@ class _DodajFudbaleraWidgetState extends State<DodajFudbaleraWidget> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: !_model.areTextFieldsValid(
-                                        imeValid,
-                                        prezimeValid,
-                                        visinaValid,
-                                        tezinaValid,
-                                        jacaNogaValid,
-                                        _base64Image,
-                                        widget.fudbalerId != null)
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColor,
+                                backgroundColor: Theme.of(context).primaryColor,
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     24, 0, 24, 0),
                                 elevation: 3,

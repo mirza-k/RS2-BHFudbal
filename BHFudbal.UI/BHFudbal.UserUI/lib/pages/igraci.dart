@@ -12,6 +12,7 @@ import '../utils/auth_utils.dart';
 
 class HistorijaFudbalera extends StatefulWidget {
   int fudbalerId;
+  bool fetchHappened = false;
   HistorijaFudbalera({super.key, required this.fudbalerId});
 
   @override
@@ -25,6 +26,7 @@ class _HistorijaFudbaleraState extends State<HistorijaFudbalera> {
       var fudbalerProvider = context.read<FudbalerProvider>();
       var response =
           await fudbalerProvider.getFudbalerHistoryTransfer(widget.fudbalerId);
+      widget.fetchHappened = true;
       setState(() {
         transferHistoryResult = response.result;
       });
@@ -46,6 +48,14 @@ class _HistorijaFudbaleraState extends State<HistorijaFudbalera> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
+            if (transferHistoryResult.isEmpty && widget.fetchHappened == true)
+              Text(
+                "Fudbaler nema nijedan izvrsen transfer tako da je historija prazna!",
+                style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold),
+              ),
             Table(
               border: TableBorder.all(),
               columnWidths: const {
@@ -265,7 +275,9 @@ class _IgraciState extends State<Igraci> {
                       child: Text("OK"))
                 ],
               ));
-      currentPlayerRating = selectedNumber;
+      setState(() {
+        currentPlayerRating = selectedNumber;
+      });
     }
   }
 
@@ -478,9 +490,18 @@ class _IgraciState extends State<Igraci> {
                       if (fudbalerValue != null)
                         ElevatedButton(
                           onPressed: () {
-                            _sendRating();
+                            currentPlayerRating != 0 ? null : _sendRating();
                           },
-                          child: Text('Ocijeni'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: currentPlayerRating != 0
+                                  ? Colors.grey
+                                  : Colors.blue),
+                          child: Text(
+                            currentPlayerRating != 0
+                                ? "Ovog fudbalera ste vec ocijenili"
+                                : 'Ocijeni',
+                            style: TextStyle(fontSize: 13),
+                          ),
                         ),
                     ],
                   ),
