@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
       host: 'localhost',
       port: 5672, // Default RabbitMQ port
       virtualHost: '/',
-      authProvider: PlainAuthenticator('guest', 'guest'), // Default credentials
+      authProvider: PlainAuthenticator('mirza', 'pass123'), // Default credentials
     );
 
     Client client = Client(settings: settings);

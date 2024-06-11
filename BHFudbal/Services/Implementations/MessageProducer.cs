@@ -10,9 +10,10 @@ namespace BHFudbal.Services.Implementations
     {
         public void SendingMessage<T>(T message, string routingKey, string exchadminangeKey)
         {
-            ConnectionFactory _factory = new ConnectionFactory() { HostName = "rabbitmq", Port = 5672 };
-            _factory.UserName = "guest";
-            _factory.Password = "guest";
+            ConnectionFactory _factory = new ConnectionFactory() { HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? "rabbitmq", Port = 5672 };
+            _factory.UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "mirza";
+            _factory.Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass123";
+            _factory.VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VIRTUAL_HOST") ?? "/";
             IConnection _conn = _factory.CreateConnection();
 
             Guid guid = Guid.NewGuid();

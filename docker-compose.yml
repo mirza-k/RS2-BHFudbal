@@ -17,6 +17,11 @@ services:
     restart: unless-stopped
     build:
       context: .
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_DEFAULT_USER=mirza
+      - RABBITMQ_DEFAULT_PASS=pass123
+      - RABBITMQ_VIRTUAL_HOST=/
     ports:
       - 5001:5001
     networks:
@@ -26,11 +31,12 @@ services:
     depends_on:
       - bhfudbal-sql
 
-  rabbitmq: # login guest:guest
+  rabbitmq: 
     image: rabbitmq:3-management
     hostname: "rabbitmq"
-    labels:
-      NAME: "rabbitmq"
+    environment:
+    - RABBITMQ_DEFAULT_USER=mirza
+    - RABBITMQ_DEFAULT_PASS=pass123
     ports:
     - "4369:4369"
     - "5671:5671"
@@ -49,6 +55,11 @@ services:
     build:
       context: .
       dockerfile: ./BHFudbal.Subscriber/Dockerfile
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_DEFAULT_USER=mirza
+      - RABBITMQ_DEFAULT_PASS=pass123
+      - RABBITMQ_VIRTUAL_HOST=/
     networks:
       - bhfudbalnet2023
     links:
