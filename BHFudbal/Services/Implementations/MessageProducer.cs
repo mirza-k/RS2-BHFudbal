@@ -8,21 +8,45 @@ namespace BHFudbal.Services.Implementations
 {
     public class MessageProducer : IMessageProducer
     {
-        public void SendingMessage<T>(T message, string routingKey, string exchadminangeKey)
+        public void SendingMessage(string message, string routingKey)
         {
-            ConnectionFactory _factory = new ConnectionFactory() { HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? "rabbitmq", Port = 5672 };
-            _factory.UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "mirza";
-            _factory.Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass123";
-            _factory.VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VIRTUAL_HOST") ?? "/";
-            IConnection _conn = _factory.CreateConnection();
+            try
+            {
+                ConnectionFactory factory = new ConnectionFactory()
+                {
+                    HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? "rabbitmq",
+                    Port = 5672,
+                    UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "mirza",
+                    Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass123",
+                    VirtualHost = Environment.GetEnvironmentVariable("RABBITMQ_VIRTUAL_HOST") ?? "/"
+                };
 
-            Guid guid = Guid.NewGuid();
-            var channel = _conn.CreateModel();
-            var queue = $"message-{guid}";
-            channel.QueueDeclare(queue, durable: true, exclusive: true);
-            var jsonString = JsonSerializer.Serialize(message);
-            var body = Encoding.UTF8.GetBytes(jsonString);
-            channel.BasicPublish(exchadminangeKey, routingKey, body: body);
+                using var connection = factory.CreateConnection();
+                using var channel = connection.CreateModel();
+
+                // Declare a direct exchange
+                channel.ExchangeDeclare(exchange: "my_direct_exchange", type: ExchangeType.Direct);
+
+                // Declare queues
+                channel.QueueDeclare(queue: "LoginQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "TransferQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "OcjeneQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+                // Bind queues to the exchange with specific routing keys
+                channel.QueueBind(queue: "LoginQueue", exchange: "my_direct_exchange", routingKey: "LoginKey");
+                channel.QueueBind(queue: "TransferQueue", exchange: "my_direct_exchange", routingKey: "GradKey");
+                channel.QueueBind(queue: "OcjeneQueue", exchange: "my_direct_exchange", routingKey: "OcjeneKey");
+
+                //var jsonString = JsonSerializer.Serialize(message);
+                var body = Encoding.UTF8.GetBytes(message);
+
+                // Publish the message to the direct exchange with the routing key
+                channel.BasicPublish(exchange: "my_direct_exchange", routingKey: routingKey, basicProperties: null, body: body);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SendingMessage: {ex.Message}");
+            }
         }
     }
 }

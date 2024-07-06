@@ -39,48 +39,45 @@ class _HomeState extends State<Home> {
     initRabbitMQ();
   }
 
+  Client? client;
+  Channel? channel;
+
   void initRabbitMQ() async {
     ConnectionSettings settings = ConnectionSettings(
       host: 'localhost',
       port: 5672, // Default RabbitMQ port
       virtualHost: '/',
-      authProvider: PlainAuthenticator('mirza', 'pass123'), // Default credentials
+      authProvider:
+          PlainAuthenticator('mirza', 'pass123'), // Default credentials
     );
 
     Client client = Client(settings: settings);
     Channel channel = await client.channel();
 
-    var exchangeKey = "ocjene";
-    Exchange exchange =
-        await channel.exchange(exchangeKey, ExchangeType.FANOUT);
-
-    // Replace 'message-...' with the queue name generated in your ASP.NET Core backend
-    Queue queue = await channel.queue('message-...');
-    await queue.bind(exchange, exchangeKey);
+    // Using the "LoginQueue" queue name
+    Queue queue = await channel.queue('OcjeneQueue');
 
     Consumer consumer = await queue.consume();
 
     consumer.listen((AmqpMessage message) {
       // Handle incoming message
-      if (message.routingKey == "ocjene") {
-        print('Received message: ${message.payloadAsString}');
-        var text = message.payloadAsString.replaceAll('"', '');
-        final snackBar = SnackBar(
-          content: Text(
-            text,
-          ),
-          action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              // Some code to undo the change.
-            },
-          ),
-        );
+      print('Received message: ${message.payloadAsString}');
+      var text = message.payloadAsString.replaceAll('"', '');
+      final snackBar = SnackBar(
+        content: Text(
+          text,
+        ),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      );
 
-        // Find the ScaffoldMessenger in the widget tree
-        // and use it to show a SnackBar.
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+      // Find the ScaffoldMessenger in the widget tree
+      // and use it to show a SnackBar.
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
 

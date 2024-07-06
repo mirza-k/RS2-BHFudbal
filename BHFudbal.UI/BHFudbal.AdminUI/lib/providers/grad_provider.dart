@@ -32,8 +32,9 @@ class GradProvider with ChangeNotifier {
     }
   }
 
-    Future<bool> post(dynamic request) async {
-    var url = "$_baseUrl$endpoint";
+  Future<bool> post(dynamic request) async {
+    var mqRabbitEndpoint = "MQRabbit/Add-new-message";
+    var url = "$_baseUrl$mqRabbitEndpoint";
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var jsonRequest = jsonEncode(request);

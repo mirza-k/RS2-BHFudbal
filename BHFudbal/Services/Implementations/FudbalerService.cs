@@ -177,7 +177,7 @@ namespace BHFudbal.Services.Implementations
                     set.Add(data);
                     Context.SaveChanges();
                 }
-                _messageProducer.SendingMessage<string>($"Fudbaler {fudbaler.Ime} {fudbaler.Prezime} je dobio ocjenu {request.Rating}!", "ocjene", "ocjene");
+                _messageProducer.SendingMessage($"Fudbaler {fudbaler.Ime} {fudbaler.Prezime} je dobio ocjenu {request.Rating}!", "OcjeneKey");
             }
         }
 

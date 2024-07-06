@@ -2,6 +2,6 @@
 {
     public interface IMessageProducer
     {
-        public void SendingMessage<T>(T message, string routingKey, string exchangeKey);
+        public void SendingMessage(string message, string routingKey);
     }
 }
