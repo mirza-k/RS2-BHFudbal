@@ -43,12 +43,17 @@ class _HomeState extends State<Home> {
   Channel? channel;
 
   void initRabbitMQ() async {
+  const rabbitMQHost = String.fromEnvironment('RABBITMQ_HOST', defaultValue: 'localhost');
+  const rabbitMQPort = int.fromEnvironment('RABBITMQ_PORT', defaultValue: 5672);
+  const rabbitMQVirtualHost = String.fromEnvironment('RABBITMQ_VIRTUAL_HOST', defaultValue: '/');
+  const rabbitMQUser = String.fromEnvironment('RABBITMQ_USER', defaultValue: 'mirza');
+  const rabbitMQPassword = String.fromEnvironment('RABBITMQ_PASSWORD', defaultValue: 'pass123');
+
     ConnectionSettings settings = ConnectionSettings(
-      host: 'localhost',
-      port: 5672, // Default RabbitMQ port
-      virtualHost: '/',
-      authProvider:
-          PlainAuthenticator('mirza', 'pass123'), // Default credentials
+      host: rabbitMQHost,
+      port: rabbitMQPort,
+      virtualHost: rabbitMQVirtualHost,
+      authProvider: PlainAuthenticator(rabbitMQUser, rabbitMQPassword),
     );
 
     Client client = Client(settings: settings);

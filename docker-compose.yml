@@ -22,6 +22,7 @@ services:
       - RABBITMQ_DEFAULT_USER=mirza
       - RABBITMQ_DEFAULT_PASS=pass123
       - RABBITMQ_VIRTUAL_HOST=/
+      - ConnectionStrings_BHFudbalDB=Server=bhfudbal-sql,1433;Database=BHFudbalNajnovija;User=sa;Password=QWElkj132!;ConnectRetryCount=0;TrustServerCertificate=True
     ports:
       - 5001:5001
     networks:
