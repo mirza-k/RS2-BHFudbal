@@ -10,8 +10,11 @@
 3. In order to open Windows app, open Visual Studio Code than navigate to cloned repo -> BHFudbal.UI -> BHFudbal.AdminUI and run following command:
 
          flutter pub get
-4. Start Android Studio and run emulator device
-5. In order to open Android app, open Visual Studio Code than navigate to cloned repo -> BHFudbal.UI -> BHFudbal.UserUI and run following command:
+4. To run Windows app, use this command because of env variables:
+   
+            flutter run --dart-define=RABBITMQ_HOST=localhost --dart-define=RABBITMQ_PORT=5672 --dart-define=RABBITMQ_VIRTUAL_HOST=/ --dart-define=RABBITMQ_USER=mirza --dart-define=RABBITMQ_PASSWORD=pass123
+5. Start Android Studio and run emulator device
+6. In order to open Android app, open Visual Studio Code than navigate to cloned repo -> BHFudbal.UI -> BHFudbal.UserUI and run following command:
 
          flutter pub get
 
